@@ -57,75 +57,67 @@
             margin-bottom: 35px;
         }
 
-        /* Logo box perfettamente centrato e allineato */
+        /* Logo box con Effetto Glow Puro CSS (Rotazione + Battito Cardiaco) */
         .logo-box {
             position: relative;
             width: 140px;
             height: 140px;
             margin: 0 auto 16px auto;
-        }
-
-        .logo-glow-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 170px;
-            height: 170px;
-            border-radius: 50%;
-            z-index: 1;
-            pointer-events: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            animation: rotateGlow 12s infinite linear;
         }
 
-        .logo-glow-img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            animation: heartBeatGlow 1.8s infinite ease-in-out;
+        /* Aura Energetica Rotante (Anello di luce) */
+        .logo-box::before {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #38bdf8, #6366f1, #34d399, #38bdf8);
+            z-index: 1;
+            animation: rotateGlow 6s linear infinite, heartBeatGlow 1.8s ease-in-out infinite;
+            filter: blur(14px);
+            opacity: 0.8;
+        }
+
+        /* Nucleo luminoso pulsante (Effetto cuore che batte) */
+        .logo-box::after {
+            content: '';
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.5) 0%, rgba(99, 102, 241, 0.2) 70%, transparent 100%);
+            z-index: 1;
+            animation: heartBeatGlow 1.8s ease-in-out infinite alternate;
         }
 
         .logo-box img.main-logo {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            position: relative;
             z-index: 2;
-            width: 110px;
-            height: 110px;
+            width: 120px;
+            height: 120px;
             object-fit: contain;
-            filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.45));
+            filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.6));
             border-radius: 50%;
         }
 
-        /* Animazioni Glow */
+        /* Animazioni CSS pure */
         @keyframes rotateGlow {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @keyframes heartBeatGlow {
             0%, 100% { 
                 transform: scale(0.92); 
                 opacity: 0.5; 
-                filter: drop-shadow(0 0 8px rgba(0, 102, 255, 0.4)); 
             }
-            25% { 
+            50% { 
                 transform: scale(1.12); 
-                opacity: 1; 
-                filter: drop-shadow(0 0 22px rgba(0, 230, 118, 0.8)); 
-            }
-            40% { 
-                transform: scale(0.96); 
-                opacity: 0.7; 
-            }
-            60% { 
-                transform: scale(1.08); 
                 opacity: 0.95; 
-                filter: drop-shadow(0 0 18px rgba(0, 102, 255, 0.7)); 
             }
         }
 
@@ -456,9 +448,6 @@
 
     <header class="hero">
         <div class="logo-box">
-            <div class="logo-glow-container">
-                <img src="Glow.png" alt="Glow" class="logo-glow-img" onerror="this.style.display='none'">
-            </div>
             <img src="logoluxa.png" alt="LUXA Token Logo" class="main-logo" onerror="this.src='https://raw.githubusercontent.com/t.me/logoluxa.png'; this.onerror=null;">
         </div>
         <div class="hero-badge">BEP-20 Standard • BNB Smart Chain</div>
@@ -933,11 +922,4 @@
         <p>© 2026 LUXA Token. Built for Web3.</p>
         <p style="margin-top:8px;">
             <a href="https://t.me/LuxaToken_bot" target="_blank">Telegram Game (@LuxaToken_bot)</a> • 
-            <a href="https://t.me/LuxaCommunity" target="_blank">Official Telegram Group</a>
-        </p>
-    </footer>
-
-</div>
-
-</body>
-</html>
+            <a href="https://t.me/LuxaCommunity" target="_blank">
