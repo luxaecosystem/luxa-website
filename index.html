@@ -57,21 +57,21 @@
             margin-bottom: 35px;
         }
 
-        /* Logo box con effetto Glow (Rotazione + Battito Cardiaco) */
+        /* Logo box perfettamente centrato e allineato */
         .logo-box {
             position: relative;
             width: 140px;
             height: 140px;
             margin: 0 auto 16px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .logo-glow-container {
             position: absolute;
-            width: 180px;
-            height: 180px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 170px;
+            height: 170px;
             border-radius: 50%;
             z-index: 1;
             pointer-events: none;
@@ -89,10 +89,13 @@
         }
 
         .logo-box img.main-logo {
-            position: relative;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             z-index: 2;
-            width: 120px;
-            height: 120px;
+            width: 110px;
+            height: 110px;
             object-fit: contain;
             filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.45));
             border-radius: 50%;
@@ -100,8 +103,8 @@
 
         /* Animazioni Glow */
         @keyframes rotateGlow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         @keyframes heartBeatGlow {
@@ -451,7 +454,6 @@
 
 <div class="container">
 
-    <!-- Header Section -->
     <header class="hero">
         <div class="logo-box">
             <div class="logo-glow-container">
@@ -478,7 +480,6 @@
         </div>
     </header>
 
-    <!-- Table of Contents -->
     <nav class="toc-box">
         <div class="toc-title">📑 Table of Contents</div>
         <div class="toc-grid">
@@ -499,7 +500,6 @@
         </div>
     </nav>
 
-    <!-- 1. Introduction -->
     <section id="section-1">
         <h2>1. Introduction</h2>
         <p>
@@ -511,7 +511,6 @@
         </p>
     </section>
 
-    <!-- 2. The Problem -->
     <section id="section-2">
         <h2>2. The Problem</h2>
         <p>
@@ -558,7 +557,6 @@
         </div>
     </section>
 
-    <!-- 3. The LUXA Solution -->
     <section id="section-3">
         <h2>3. The LUXA Solution</h2>
         <p>
@@ -579,7 +577,6 @@
         </div>
     </section>
 
-    <!-- 4. Technical Architecture -->
     <section id="section-4">
         <h2>4. Technical Architecture</h2>
         <p>
@@ -641,7 +638,6 @@
         </div>
     </section>
 
-    <!-- 5. Tokenomics -->
     <section id="section-5">
         <h2>5. Tokenomics</h2>
         <p>
@@ -713,7 +709,6 @@
         </div>
     </section>
 
-    <!-- 6. Algorithmic Mining Mechanism -->
     <section id="section-6">
         <h2>6. Algorithmic Mining Mechanism</h2>
         <p>
@@ -734,7 +729,6 @@
         </div>
     </section>
 
-    <!-- 7. Reward & Referral System -->
     <section id="section-7">
         <h2>7. Reward & Referral System</h2>
         <p>
@@ -776,7 +770,6 @@
         </div>
     </section>
 
-    <!-- 8. Governance and Security Framework -->
     <section id="section-8">
         <h2>8. Governance and Security Framework</h2>
         <p>
@@ -790,7 +783,6 @@
         </ul>
     </section>
 
-    <!-- 9. Market Analysis & Positioning -->
     <section id="section-9">
         <h2>9. Market Analysis & Positioning</h2>
         <p>
@@ -837,7 +829,6 @@
         </div>
     </section>
 
-    <!-- 10. Development Roadmap -->
     <section id="section-10">
         <h2>10. Development Roadmap</h2>
         <p>
@@ -884,7 +875,6 @@
         </div>
     </section>
 
-    <!-- 11. Team & Transparency Philosophy -->
     <section id="section-11">
         <h2>11. Team & Transparency Philosophy</h2>
         <p>
@@ -898,7 +888,6 @@
         </ul>
     </section>
 
-    <!-- 12. Regulatory & Legal Compliance -->
     <section id="section-12">
         <h2>12. Regulatory & Legal Compliance</h2>
         <p>
@@ -912,7 +901,6 @@
         </ul>
     </section>
 
-    <!-- 13. Risk Factors -->
     <section id="section-13">
         <h2>13. Risk Factors</h2>
         <p>
@@ -926,7 +914,6 @@
         </ul>
     </section>
 
-    <!-- 14. Legal Disclaimer -->
     <section id="section-14">
         <h2>14. Legal Disclaimer</h2>
         <div class="disclaimer-box">
@@ -942,7 +929,6 @@
         </audio>
     </div>
 
-    <!-- Footer -->
     <footer>
         <p>© 2026 LUXA Token. Built for Web3.</p>
         <p style="margin-top:8px;">
