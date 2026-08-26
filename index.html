@@ -1,177 +1,895 @@
-<!DOCTYPE html>
+html_webpage = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUXA Token - Rare. Decentralized. Built for Web3.</title>
+    <title>LUXA Token White Paper — Official Web3 Documentation</title>
+    <meta name="description" content="Official White Paper of LUXA Token. Rare. Decentralized. Built for Web3 on BNB Smart Chain. Total Supply: 1,000,000 LUXA.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #050b1f;
-            color: white;
-            min-height: 100vh;
-            overflow-x: hidden;
+        :root {
+            --bg-dark: #070a13;
+            --card-bg: #0f172a;
+            --card-border: #1e293b;
+            --accent-cyan: #38bdf8;
+            --accent-blue: #6366f1;
+            --accent-purple: #818cf8;
+            --text-main: #cbd5e1;
+            --text-heading: #ffffff;
+            --text-muted: #94a3b8;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #ef4444;
         }
 
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            text-align: center;
-        }
-
-        .logo {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            border: 3px solid #0066FF;
-            box-shadow: 0 0 40px rgba(0, 102, 255, 0.6);
-            object-fit: cover;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 34px;
-            color: #0066FF;
-            text-shadow: 0 0 30px rgba(0, 102, 255, 0.7);
-            margin-bottom: 10px;
-        }
-
-        .tagline {
-            font-size: 16px;
-            color: #BBD6FF;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: rgba(0, 102, 255, 0.1);
-            border: 1px solid rgba(0, 102, 255, 0.3);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .card h2 {
-            font-size: 18px;
-            color: #66AAFF;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .card p, .card li {
-            font-size: 14px;
-            color: #D6E8FF;
-            line-height: 1.6;
-        }
-
-        .card ul {
-            list-style: none;
+        * {
+            box-sizing: border-box;
+            margin: 0;
             padding: 0;
         }
 
-        .card li {
-            padding: 6px 0;
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            font-size: 15px;
+            scroll-behavior: smooth;
         }
 
-        .contract {
-            background: rgba(0, 20, 60, 0.6);
-            border: 1px solid rgba(0, 102, 255, 0.4);
-            border-radius: 12px;
-            padding: 12px;
+        /* Container */
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 20px 80px 20px;
+        }
+
+        /* Header / Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #030712 100%);
+            border: 1px solid #312e81;
+            border-radius: 16px;
+            padding: 40px 24px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(56, 189, 248, 0.15);
+            margin-bottom: 35px;
+        }
+
+        .logo-box {
+            margin-bottom: 16px;
+        }
+
+        .logo-box img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 20px rgba(56, 189, 248, 0.45));
+            border-radius: 50%;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.18);
+            border: 1px solid var(--accent-blue);
+            color: #a5b4fc;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 6px 16px;
+            border-radius: 30px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: var(--text-heading);
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--accent-cyan);
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            margin-bottom: 24px;
+        }
+
+        .meta-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px 25px;
             font-size: 13px;
-            color: #88BBFF;
-            word-break: break-all;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 18px;
+            margin-bottom: 24px;
+        }
+
+        .meta-bar strong {
+            color: #f1f5f9;
+        }
+
+        /* Action Buttons */
+        .cta-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .btn-bot {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #ffffff;
+            border: 1px solid #38bdf8;
+            box-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
+        }
+
+        .btn-bot:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+        }
+
+        .btn-community {
+            background: rgba(99, 102, 241, 0.15);
+            color: #a5b4fc;
+            border: 1px solid #6366f1;
+        }
+
+        .btn-community:hover {
+            background: rgba(99, 102, 241, 0.3);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        /* Navigation TOC */
+        .toc-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 35px;
+        }
+
+        .toc-title {
+            color: #f8fafc;
+            font-size: 15px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px 20px;
+        }
+
+        .toc-item a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13.5px;
+            transition: color 0.2s;
+        }
+
+        .toc-item a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .toc-item span {
+            color: var(--accent-cyan);
+            font-weight: 700;
+            margin-right: 6px;
+        }
+
+        /* Content Sections */
+        section {
+            margin-bottom: 35px;
+        }
+
+        h2 {
+            color: var(--accent-cyan);
+            font-size: 19px;
+            font-weight: 700;
+            margin-top: 30px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--card-border);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        h3 {
+            color: var(--accent-purple);
+            font-size: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 18px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 12px;
+            color: var(--text-main);
+            text-align: justify;
+        }
+
+        /* Checklists */
+        .check-list {
+            list-style: none;
+            margin: 12px 0 18px 0;
+        }
+
+        .check-list li {
+            position: relative;
+            padding-left: 26px;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .check-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        /* Highlight & Code Boxes */
+        .highlight-box {
+            background-color: #0c1322;
+            border: 1px solid var(--card-border);
+            border-left: 4px solid var(--accent-cyan);
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin: 15px 0 20px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-cyan);
+        }
+
+        .highlight-box .desc {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-muted);
+            font-size: 12.5px;
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .address-card {
+            background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+            border: 1px dashed #6366f1;
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin: 15px 0 20px 0;
             text-align: center;
         }
 
-        .buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 25px;
+        .address-card .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #a5b4fc;
+            letter-spacing: 1px;
+            font-weight: 700;
         }
 
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 15px 20px;
-            border-radius: 16px;
-            font-size: 16px;
+        .address-card .address {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: #ffffff;
             font-weight: bold;
+            margin-top: 6px;
+            word-break: break-all;
+        }
+
+        /* Responsive Tables */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 15px 0 20px 0;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            background-color: var(--card-bg);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1e293b;
+            color: #f8fafc;
+            font-weight: 700;
+            padding: 12px 14px;
+            border-bottom: 1px solid #334155;
+            text-transform: uppercase;
+            font-size: 11.5px;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--card-border);
+            color: var(--text-main);
+        }
+
+        tr:nth-child(even) td {
+            background-color: #090e1a;
+        }
+
+        .status-badge-done {
+            font-weight: bold;
+            color: var(--success);
+        }
+
+        .status-badge-progress {
+            font-weight: bold;
+            color: var(--accent-cyan);
+        }
+
+        .status-badge-soon {
+            font-weight: bold;
+            color: var(--warning);
+        }
+
+        /* Disclaimer Box */
+        .disclaimer-box {
+            background-color: #111827;
+            border: 1px solid #1f2937;
+            border-left: 4px solid var(--danger);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #9ca3af;
+            line-height: 1.55;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        footer a {
+            color: var(--accent-cyan);
             text-decoration: none;
-            transition: 0.2s;
         }
 
-        .btn-telegram {
-            background: #0066FF;
-            color: white;
-            box-shadow: 0 0 25px rgba(0, 102, 255, 0.5);
-        }
-
-        .btn-twitter {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        .btn:active { transform: scale(0.97); }
-
-        .footer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #6688BB;
+        footer a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="logoluxa.png" alt="LUXA" class="logo">
-        <h1>LUXA Token</h1>
-        <p class="tagline">Rare. Decentralized. Built for Web3.</p>
 
-        <div class="card">
-            <h2>💎 Tokenomics</h2>
-            <ul>
-                <li><strong>Name:</strong> LUXA</li>
-                <li><strong>Symbol:</strong> LUXA</li>
-                <li><strong>Network:</strong> BNB Smart Chain (BEP-20)</li>
-                <li><strong>Max Supply:</strong> 1,000,000 LUXA</li>
-                <li><strong>Ownership:</strong> Renounced</li>
-            </ul>
+<div class="container">
+
+    <!-- Header Section -->
+    <header class="hero">
+        <div class="logo-box">
+            <img src="logoluxa.png" alt="LUXA Token Logo" onerror="this.src='https://raw.githubusercontent.com/t.me/logoluxa.png'; this.onerror=null;">
+        </div>
+        <div class="hero-badge">BEP-20 Standard • BNB Smart Chain</div>
+        <h1>LUXA TOKEN WHITE PAPER</h1>
+        <div class="subtitle">Rare. Decentralized. Built for Web3.</div>
+        <div class="meta-bar">
+            <div><strong>Version:</strong> 1.0</div>
+            <div><strong>Year:</strong> 2026</div>
+            <div><strong>Status:</strong> Official White Paper</div>
+            <div><strong>Ecosystem:</strong> Telegram Web3 App</div>
+        </div>
+        <div class="cta-group">
+            <a href="https://t.me/LuxaToken_bot" target="_blank" rel="noopener noreferrer" class="cta-btn btn-bot">
+                🤖 Play on Telegram (@LuxaToken_bot)
+            </a>
+            <a href="https://t.me/+ftwASRTwqnA1ZTE0" target="_blank" rel="noopener noreferrer" class="cta-btn btn-community">
+                💬 Join Official Community
+            </a>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <nav class="toc-box">
+        <div class="toc-title">📑 Table of Contents</div>
+        <div class="toc-grid">
+            <div class="toc-item"><a href="#section-1"><span>1.</span> Introduction & Vision</a></div>
+            <div class="toc-item"><a href="#section-2"><span>2.</span> The Industry Problem</a></div>
+            <div class="toc-item"><a href="#section-3"><span>3.</span> The LUXA Solution & Scarcity Model</a></div>
+            <div class="toc-item"><a href="#section-4"><span>4.</span> Technical Architecture & Stack</a></div>
+            <div class="toc-item"><a href="#section-5"><span>5.</span> Tokenomics & Supply Allocation</a></div>
+            <div class="toc-item"><a href="#section-6"><span>6.</span> Algorithmic Mining Mechanism</a></div>
+            <div class="toc-item"><a href="#section-7"><span>7.</span> Reward & Referral System</a></div>
+            <div class="toc-item"><a href="#section-8"><span>8.</span> Governance, Security & Immutability</a></div>
+            <div class="toc-item"><a href="#section-9"><span>9.</span> Market Analysis & Positioning</a></div>
+            <div class="toc-item"><a href="#section-10"><span>10.</span> Development Roadmap</a></div>
+            <div class="toc-item"><a href="#section-11"><span>11.</span> Team & Transparency Philosophy</a></div>
+            <div class="toc-item"><a href="#section-12"><span>12.</span> Regulatory & Legal Compliance</a></div>
+            <div class="toc-item"><a href="#section-13"><span>13.</span> Risk Factors</a></div>
+            <div class="toc-item"><a href="#section-14"><span>14.</span> Legal Disclaimer</a></div>
+        </div>
+    </nav>
+
+    <!-- 1. Introduction -->
+    <section id="section-1">
+        <h2>1. Introduction</h2>
+        <p>
+            <strong>LUXA</strong> is a BEP-20 standard utility token natively deployed on the <strong>BNB Smart Chain (BSC)</strong>. 
+            The foundation of LUXA rests upon a single, non-negotiable economic principle: <em>verifiable, mathematical scarcity combined with absolute on-chain transparency</em>.
+        </p>
+        <p>
+            Unlike conventional micro-cap assets characterized by hyperinflation, speculative hype, and unchecked administrative privileges, LUXA is architected with a strictly limited supply and an intentionally calibrated emission rate. It is engineered to be rare, decentralized, and durable over time—operating strictly under deterministic smart contract rules.
+        </p>
+    </section>
+
+    <!-- 2. The Problem -->
+    <section id="section-2">
+        <h2>2. The Problem</h2>
+        <p>
+            The cryptocurrency ecosystem is saturated with community and tap-to-earn tokens that suffer from fatal economic and structural vulnerabilities, ultimately destroying participant value and eroding trust.
+        </p>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Market Problem</th>
+                        <th>Underlying Structural Flaw</th>
+                        <th>Economic Consequence</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Infinite or Hidden Supply</strong></td>
+                        <td>Absence of an immutable hard cap</td>
+                        <td>Continuous dilution and irrecoverable price collapse</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Arbitrary Minting Privileges</strong></td>
+                        <td>Contract owner retains rights to create new tokens</td>
+                        <td>High risk of sudden liquidity dumping and rug-pull scams</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hyper-Accelerated Mining</strong></td>
+                        <td>Billions of tokens emitted within days</td>
+                        <td>Total loss of scarcity and severe supply overhang</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Opaque Governance & Centralization</strong></td>
+                        <td>Unverified code with hidden backdoor permissions</td>
+                        <td>Critical loss of trust and market alienation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Lack of Technical Documentation</strong></td>
+                        <td>Closed codebases without public explorer verification</td>
+                        <td>Total inability for users to perform independent auditing</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 3. The LUXA Solution -->
+    <section id="section-3">
+        <h2>3. The LUXA Solution</h2>
+        <p>
+            LUXA eliminates these vulnerabilities through a trustless infrastructure rooted in cryptographic certainty and mathematical rigor:
+        </p>
+        <ul class="check-list">
+            <li><strong>Hard-Capped Supply:</strong> Exactly 1,000,000 LUXA tokens. No subsequent minting function exists.</li>
+            <li><strong>Renounced Ownership:</strong> Permanently trustless—no administrator can alter parameters or freeze balances.</li>
+            <li><strong>Ultra-Low Emission Rate:</strong> Designed to maintain genuine scarcity and prevent rapid hyperinflation.</li>
+            <li><strong>Publicly Verified Code:</strong> Smart contract source code is 100% verified and publicly visible on BscScan.</li>
+            <li><strong>Democratic Community Distribution:</strong> Accessible globally via Telegram Mini App without requiring costly mining hardware.</li>
+        </ul>
+
+        <div class="highlight-box">
+            <strong>Base Emission Rate (Mining Rate):</strong><br>
+            <span id="earnRate">0.00000001</span> LUXA per tick (time unit)<br>
+            <div class="desc">→ Exactly 100,000,000 ticks are required to mine 1 whole LUXA token. A deliberately disciplined, low-velocity emission model inspired by Bitcoin's early scarcity principles.</div>
+        </div>
+    </section>
+
+    <!-- 4. Technical Architecture -->
+    <section id="section-4">
+        <h2>4. Technical Architecture</h2>
+        <p>
+            LUXA combines the speed and low fees of BNB Smart Chain with an enterprise-grade cloud backend and Telegram's interactive mini app interface.
+        </p>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Technology Stack</th>
+                        <th>Primary Functionality</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Blockchain Network</strong></td>
+                        <td>BNB Smart Chain (BSC)</td>
+                        <td>Fast settlement, ultra-low gas fees, and robust decentralized consensus</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Token Standard</strong></td>
+                        <td>BEP-20</td>
+                        <td>Universal interoperability with Web3 wallets (MetaMask, Trust Wallet) and DEXs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Smart Contract</strong></td>
+                        <td>Solidity (Verified on BscScan)</td>
+                        <td>Immutable execution of transfers, balances, and strict supply caps</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Backend Engine</strong></td>
+                        <td>Node.js + Express</td>
+                        <td>Secure session lifecycle handling, mining state calculation, and API validation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Database Layer</strong></td>
+                        <td>MongoDB Atlas</td>
+                        <td>High-performance, fault-tolerant persistence for session tracking and user balances</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Frontend</strong></td>
+                        <td>Telegram Mini App (TMA)</td>
+                        <td>Lightweight, responsive Web3 interactive client optimized for mobile UX</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bot Integration</strong></td>
+                        <td>Telegram Bot API (<a href="https://t.me/LuxaToken_bot" target="_blank" style="color:var(--accent-cyan);">@LuxaToken_bot</a>)</td>
+                        <td>User authentication, automated session-completion alerts, and direct commands</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cloud Infrastructure</strong></td>
+                        <td>Microsoft Azure Cloud</td>
+                        <td>Resilient high-availability hosting with global CDN and DDoS mitigation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 5. Tokenomics -->
+    <section id="section-5">
+        <h2>5. Tokenomics</h2>
+        <p>
+            The economic model of LUXA is designed to preserve long-term rarity and prevent concentrated supply dumps.
+        </p>
+
+        <div class="address-card">
+            <div class="label">Official Smart Contract Address (BSC)</div>
+            <div class="address">0x71b76bba6d913baca78ac26b9168f0e2da9e1b5a</div>
         </div>
 
-        <div class="card">
-            <h2>⛏️ Mining</h2>
-            <p>LUXA is distributed through a slow, rare mining process. The mining rate is intentionally extremely low to preserve scarcity and build long-term value.</p>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Token Parameter</th>
+                        <th>Official Specification</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>Token Name</strong></td><td>LUXA</td></tr>
+                    <tr><td><strong>Token Ticker / Symbol</strong></td><td>LUXA</td></tr>
+                    <tr><td><strong>Blockchain Network</strong></td><td>BNB Smart Chain (BSC)</td></tr>
+                    <tr><td><strong>Total Supply</strong></td><td>1,000,000 LUXA (Fixed Hard Cap)</td></tr>
+                    <tr><td><strong>Decimals</strong></td><td>6</td></tr>
+                    <tr><td><strong>Ownership Status</strong></td><td>Renounced (Permanently Trustless)</td></tr>
+                </tbody>
+            </table>
         </div>
 
-        <div class="card">
-            <h2>🚀 Roadmap</h2>
-            <ul>
-                <li>✅ Phase 1 — Community & Airdrop</li>
-                <li>✅ Phase 2 — Mining App</li>
-                <li>🔜 Phase 3 — Wallet Integration</li>
-                <li>🔜 Phase 4 — PancakeSwap Listing</li>
-            </ul>
+        <h3>Supply Allocation Breakdown</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Allocation Category</th>
+                        <th>Share (%)</th>
+                        <th>Amount (LUXA)</th>
+                        <th>Operational Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Mining & Community Airdrop</strong></td>
+                        <td><strong>70%</strong></td>
+                        <td>700,000</td>
+                        <td>Progressive emission pool for active app miners and community engagement</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Initial DEX Liquidity</strong></td>
+                        <td><strong>15%</strong></td>
+                        <td>150,000</td>
+                        <td>Dedicated liquidity pairing on PancakeSwap to ensure smooth, transparent trading</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Development & Marketing</strong></td>
+                        <td><strong>10%</strong></td>
+                        <td>100,000</td>
+                        <td>Server maintenance, infrastructure scaling, user acquisition, and app expansion</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ecosystem Reserve</strong></td>
+                        <td><strong>5%</strong></td>
+                        <td>50,000</td>
+                        <td>Contingency pool for future exchange listings, integrations, and audits</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+    </section>
 
-        <div class="card">
-            <h2>🔗 Contract</h2>
-            <div class="contract">0x71b76bba6d913baca78ac26b9168f0e2da9e1b5a</div>
+    <!-- 6. Algorithmic Mining Mechanism -->
+    <section id="section-6">
+        <h2>6. Algorithmic Mining Mechanism</h2>
+        <p>
+            Departing from compulsive tap-to-earn models, LUXA implements a <strong>Passive Timed Mining Mechanism</strong> that prioritizes consistency and structured user participation:
+        </p>
+        <ul class="check-list">
+            <li><strong>No Manual Screen Tapping:</strong> Mining proceeds autonomously once a session is initiated.</li>
+            <li><strong>Timed Session Cycles:</strong> Each active mining window runs for a fixed 3-hour duration.</li>
+            <li><strong>COLLECT & Restart Flow:</strong> Upon timer completion, users trigger the "COLLECT" action to claim accumulated tokens and restart the mining cycle.</li>
+            <li><strong>Optional Ad-Powered Boosters:</strong> Users may temporarily accelerate their mining speed by engaging with partner sponsorships.</li>
+        </ul>
+
+        <div class="highlight-box">
+            <strong>Session Example Configuration:</strong><br>
+            • Session Duration: 3 Hours (10,800 Seconds)<br>
+            • Base Mining Rate: 0.00000001 LUXA per tick<br>
+            • 2x Booster Effect: Multiplies the rate to 0.00000002 LUXA per tick for 1 hour
         </div>
+    </section>
 
-        <div class="buttons">
-            <a class="btn btn-telegram" href="https://t.me/LuxaToken_bot" target="_blank" rel="noopener">🤖 Open Telegram Bot</a>
-            <a class="btn btn-telegram" href="https://t.me/+ftwASRTwqnA1ZTE0" target="_blank" rel="noopener">👥 Join Community</a>
-            <a class="btn btn-twitter" href="https://x.com/luxatoken" target="_blank" rel="noopener">🐦 Follow on X</a>
+    <!-- 7. Reward & Referral System -->
+    <section id="section-7">
+        <h2>7. Reward & Referral System</h2>
+        <p>
+            LUXA incorporates a transparent reward matrix to foster organic community expansion and daily platform utility:
+        </p>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reward Type</th>
+                        <th>Assigned Reward Value</th>
+                        <th>Eligibility Condition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Daily Check-In Bonus</strong></td>
+                        <td>0.0000005 LUXA</td>
+                        <td>Consecutive daily login and check-in confirmation in the app</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Referral Program</strong></td>
+                        <td><strong>0.00005 LUXA per friend</strong></td>
+                        <td>Awarded upon successful onboarding and initial mining session by an invitee</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ad Booster Multiplier</strong></td>
+                        <td>2x Mining Rate Boost</td>
+                        <td>Triggered via short sponsored ad impressions or designated micro-tasks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Community Missions</strong></td>
+                        <td>Variable (0.00001 – 0.001 LUXA)</td>
+                        <td>Social channel participation, verification quests, and ecosystem challenges</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+    </section>
 
-        <div class="footer">© 2026 LUXA Token. All rights reserved.</div>
-    </div>
+    <!-- 8. Governance and Security Framework -->
+    <section id="section-8">
+        <h2>8. Governance and Security Framework</h2>
+        <p>
+            Protocol safety is guaranteed by strict on-chain safeguards and code immutability:
+        </p>
+        <ul class="check-list">
+            <li><strong>Renounced Contract Ownership:</strong> No developer or administrator retains backdoor access, privileged mint functions, or transfer pauses.</li>
+            <li><strong>Zero Hidden Minting:</strong> The mint function is completely absent from the deployed and verified bytecode.</li>
+            <li><strong>Public Verifiability:</strong> Every line of code and every transaction can be independently reviewed on BscScan.</li>
+            <li><strong>Non-Custodial Balance Security:</strong> Claimed assets are settled directly into user-controlled Web3 wallets.</li>
+        </ul>
+    </section>
+
+    <!-- 9. Market Analysis & Positioning -->
+    <section id="section-9">
+        <h2>9. Market Analysis & Positioning</h2>
+        <p>
+            LUXA converges two high-growth sectors: the viral distribution of <em>Telegram Mini Apps</em> and the economic sustainability of <em>deflationary, low-supply tokens</em>.
+        </p>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Primary Mechanism</th>
+                        <th>Total Supply Model</th>
+                        <th>LUXA Competitive Edge</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Bitcoin (BTC)</strong></td>
+                        <td>Proof-of-Work / Halving</td>
+                        <td>21,000,000 (Maximum Scarcity)</td>
+                        <td>LUXA adapts strict scarcity principles to mobile Telegram accessibility</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Notcoin (NOT)</strong></td>
+                        <td>Telegram Tap-to-Earn</td>
+                        <td>102+ Billion (High Emission)</td>
+                        <td>LUXA caps supply at only 1,000,000 tokens, eliminating extreme dilution</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Hamster Kombat</strong></td>
+                        <td>Gamified Point Clicker</td>
+                        <td>100 Billion (High Inflation)</td>
+                        <td>LUXA eliminates compulsive clicking with disciplined session-based mining</td>
+                    </tr>
+                    <tr>
+                        <td><strong>LUXA</strong></td>
+                        <td><strong>Passive Mining + Mini App</strong></td>
+                        <td><strong>1,000,000 LUXA (Fixed)</strong></td>
+                        <td><strong>Extreme scarcity, renounced ownership, verified immutable code</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 10. Development Roadmap -->
+    <section id="section-10">
+        <h2>10. Development Roadmap</h2>
+        <p>
+            The evolutionary milestone plan for LUXA is executed across four targeted phases:
+        </p>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Milestone Designation</th>
+                        <th>Core Strategic Objectives</th>
+                        <th>Current Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Phase 1</strong></td>
+                        <td>Community & Inception</td>
+                        <td>Smart contract deployment, BscScan verification, Telegram channel launch, initial community airdrop.</td>
+                        <td><span class="status-badge-done">COMPLETED</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 2</strong></td>
+                        <td>Mining App Integration</td>
+                        <td>Launch of Telegram Mini App, algorithmic passive mining activation, booster systems, referral engine.</td>
+                        <td><span class="status-badge-progress">IN PROGRESS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 3</strong></td>
+                        <td>Wallet & Claim Protocol</td>
+                        <td>Web3 wallet connectivity (MetaMask, Trust Wallet), on-chain claim portal rollout, security audit.</td>
+                        <td><span class="status-badge-soon">UPCOMING</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phase 4</strong></td>
+                        <td>DEX Listing & Liquidity</td>
+                        <td>PancakeSwap liquidity pool opening, price tracking indexation (CoinMarketCap, CoinGecko), ecosystem utilities.</td>
+                        <td><span style="color:#94a3b8; font-weight:bold;">PLANNED</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 11. Team & Transparency Philosophy -->
+    <section id="section-11">
+        <h2>11. Team & Transparency Philosophy</h2>
+        <p>
+            LUXA is an entirely <em>community-driven</em> Web3 initiative. In alignment with cypherpunk principles, trust is anchored in cryptography rather than centralized intermediaries:
+        </p>
+        <ul class="check-list">
+            <li>Fully verified and open-source smart contract on BscScan.</li>
+            <li>Renounced ownership ensuring no single party can alter protocol parameters.</li>
+            <li>Strict mathematical cap of 1,000,000 tokens hardcoded into the contract.</li>
+            <li>Decentralized growth powered exclusively by global user consensus and organic adoption.</li>
+        </ul>
+    </section>
+
+    <!-- 12. Regulatory & Legal Compliance -->
+    <section id="section-12">
+        <h2>12. Regulatory & Legal Compliance</h2>
+        <p>
+            LUXA is strictly classified as a <strong>Utility Token</strong> designed for functional utility within its Telegram Mini App ecosystem:
+        </p>
+        <ul class="check-list">
+            <li>It does not confer corporate shares, equity, voting rights, or dividends.</li>
+            <li>It does not constitute a security, financial derivative, collective investment scheme, or regulated banking product.</li>
+            <li>It makes no promises of profit, capital appreciation, passive income, or investment returns.</li>
+            <li>The project embraces international disclosure guidelines by providing transparent, honest, and unembellished technical documentation.</li>
+        </ul>
+    </section>
+
+    <!-- 13. Risk Factors -->
+    <section id="section-13">
+        <h2>13. Risk Factors</h2>
+        <p>
+            Participants should exercise independent diligence and be fully cognizant of digital asset risk profiles:
+        </p>
+        <ul class="check-list">
+            <li><strong>Market & Volatility Risk:</strong> Digital token valuations are subject to market sentiment and broad crypto market fluctuations.</li>
+            <li><strong>Liquidity Risk:</strong> Secondary market trading depth depends entirely on community-driven liquidity pools.</li>
+            <li><strong>Network & Smart Contract Risk:</strong> Underlying dependencies on BNB Smart Chain operational continuity and gas fees.</li>
+            <li><strong>Self-Custody Responsibility:</strong> Users hold sole accountability for securing their Web3 private keys and seed phrases.</li>
+        </ul>
+    </section>
+
+    <!-- 14. Legal Disclaimer -->
+    <section id="section-14">
+        <h2>14. Legal Disclaimer</h2>
+        <div class="disclaimer-box">
+            <strong>GENERAL DISCLAIMER:</strong> This White Paper is published solely for informational and technical descriptive purposes. It does not constitute financial, investment, legal, taxation, or commercial advice, nor does it constitute an offer or solicitation to purchase securities in any jurisdiction. Cryptographic assets on decentralized networks involve significant market risks, including the potential risk of total capital loss. Users must conduct their own independent research (Do Your Own Research — DYOR) and ensure full compliance with their local legal frameworks before interacting with the protocol.
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 LUXA Token. Built for Web3.</p>
+        <p style="margin-top:8px;">
+            <a href="https://t.me/LuxaToken_bot" target="_blank">Telegram Game (@LuxaToken_bot)</a> • 
+            <a href="https://t.me/+ftwASRTwqnA1ZTE0" target="_blank">Official Telegram Group</a>
+        </p>
+    </footer>
+
+</div>
+
 </body>
 </html>
+"""
+
+with open("index.html", "w", encoding="utf-8") as f:
+    f.write(html_webpage)
+
+print("Web file index.html created successfully!")
