@@ -4,10 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LUXA Token White Paper — Official Web3 Documentation</title>
+    
+    <!-- SEO & Platform Verification Meta Tags -->
     <meta name="description" content="Official White Paper of LUXA Token. Rare. Decentralized. Built for Web3 on BNB Smart Chain. Total Supply: 1,000,000 LUXA.">
+    <meta property="og:title" content="LUXA Token | Official White Paper">
+    <meta property="og:description" content="Rare. Decentralized. Built for Web3. Official documentation for the LUXA ecosystem.">
+    <meta property="og:type" content="website">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg-dark: #070a13;
@@ -154,6 +161,7 @@
 
         .meta-bar strong { color: #f1f5f9; }
 
+        /* Action Buttons Structure */
         .cta-group {
             display: flex;
             flex-direction: column;
@@ -185,6 +193,11 @@
             flex-shrink: 0;
         }
 
+        .cta-btn .btn-text {
+            text-align: left;
+            width: 100%;
+        }
+
         .btn-bot {
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             color: #ffffff;
@@ -209,6 +222,31 @@
             transform: translateY(-2px);
         }
 
+        .btn-secondary {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid #38bdf8;
+            color: #38bdf8;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(56, 189, 248, 0.3);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .btn-document {
+            background: rgba(129, 140, 248, 0.15);
+            border: 1px solid #818cf8;
+            color: #818cf8;
+        }
+        
+        .btn-document:hover {
+            background: rgba(129, 140, 248, 0.3);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        /* Content Styles */
         .toc-box {
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -318,9 +356,23 @@
 
         .disclaimer-box { background-color: #111827; border: 1px solid #1f2937; border-left: 4px solid var(--danger); padding: 16px 20px; border-radius: 8px; margin-top: 20px; font-size: 13px; color: #9ca3af; line-height: 1.55; }
 
-        footer { text-align: center; padding-top: 40px; border-top: 1px solid var(--card-border); color: var(--text-muted); font-size: 13px; }
-        footer a { color: var(--accent-cyan); text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
+        /* Optimized Footer for Reviewers */
+        footer { 
+            text-align: center; 
+            padding-top: 40px; 
+            border-top: 1px solid var(--card-border); 
+            color: var(--text-muted); 
+            font-size: 14px; 
+        }
+        footer a { color: var(--accent-cyan); text-decoration: none; transition: color 0.2s;}
+        footer a:hover { text-decoration: underline; color: #ffffff; }
+        .footer-highlight {
+            background-color: #0c1322;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #1e293b;
+        }
     </style>
 </head>
 <body>
@@ -341,18 +393,23 @@
             <div><strong>Ecosystem:</strong> Telegram Web3 App</div>
         </div>
 
+        <!-- 4 Official CTA Buttons -->
         <div class="cta-group">
             <a href="https://t.me/LuxaToken_bot" target="_blank" rel="noopener noreferrer" class="cta-btn btn-bot">
                 <img src="telegram_bot.png" alt="Bot">
-                <span>Telegram Mainnet</span>
+                <span class="btn-text">Jouez sur Telegram (@LuxaToken_bot)</span>
             </a>
             <a href="https://t.me/LuxaToken_Official" target="_blank" rel="noopener noreferrer" class="cta-btn btn-community">
                 <img src="telegram_channel.png" alt="Channel">
-                <span>Official Channel</span>
+                <span class="btn-text">Canal Officiel (@LuxaToken_Official)</span>
             </a>
-            <a href="https://t.me/LuxaCommunity" target="_blank" rel="noopener noreferrer" class="cta-btn btn-community">
-                <img src="telegram_channel.png" alt="Community">
-                <span>Join the Community</span>
+            <a href="https://t.me/LuxaCommunity" target="_blank" rel="noopener noreferrer" class="cta-btn cta-btn btn-secondary">
+                <img src="telegram_groups.webp" alt="Community">
+                <span class="btn-text">Rejoignez la communauté (@LuxaCommunity)</span>
+            </a>
+            <a href="LUXA_TOKEN_WHITE_PAPER_EN_v1.0_2026.pdf" target="_blank" rel="noopener noreferrer" class="cta-btn btn-document">
+                <span style="font-size: 24px; width: 32px; text-align: center; display: inline-block; flex-shrink: 0;">📄</span>
+                <span class="btn-text">Télécharger le Livre Blanc (PDF)</span>
             </a>
         </div>
     </header>
@@ -595,15 +652,26 @@
         </audio>
     </div>
 
+    <!-- Optimized Footer for BscScan Verification -->
     <footer>
-        <p style="margin-top:10px;">
-    📧 Official Contact: 
-    <a href="mailto:luxatokenofficial@gmail.com">luxatokenofficial@gmail.com</a>
-</p>
-        <p>© 2026 LUXA Token. Built for Web3.</p>
-        <p style="margin-top:8px;">
-            <a href="https://t.me/LuxaToken_bot" target="_blank">Telegram Game (@LuxaToken_bot)</a> • 
-            <a href="https://t.me/LuxaCommunity" target="_blank">Official Telegram Group</a>
+        <div class="footer-highlight">
+            <strong style="color: #ffffff;">Official Smart Contract (BSC):</strong><br>
+            <code style="color: var(--accent-cyan); font-size: 15px; user-select: all;">0x71b76bba6d913baca78ac26b9168f0e2da9e1b5a</code>
+        </div>
+        
+        <p style="margin-top:10px; font-weight: 600;">
+            📧 Official Contact: 
+            <a href="mailto:luxatokenofficial@gmail.com">luxatokenofficial@gmail.com</a>
+        </p>
+
+        <p style="margin-top:12px;">
+            <a href="https://t.me/LuxaToken_bot" target="_blank">Telegram Bot</a> • 
+            <a href="https://t.me/LuxaToken_Official" target="_blank">Official Channel</a> • 
+            <a href="https://t.me/LuxaCommunity" target="_blank">Community Group</a>
+        </p>
+        
+        <p style="margin-top:25px; font-size: 12px; color: #64748b;">
+            © 2026 LUXA Token. Built for Web3.
         </p>
     </footer>
 
