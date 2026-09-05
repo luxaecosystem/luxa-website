@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUXA L1 Explorer - Live Network</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6 font-sans">
+  <div class="max-w-4xl mx-auto space-y-6">
+    
+    <!-- Header -->
+    <header class="flex justify-between items-center border-b border-slate-800 pb-4">
+      <div>
+        <h1 class="text-2xl font-bold text-amber-400">LUXA Chain Explorer</h1>
+        <p class="text-sm text-slate-400">Live Cosmos L1 Node Monitor</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span id="status-dot" class="w-3 h-3 rounded-full bg-yellow-500 animate-pulse"></span>
+        <span id="status-text" class="text-xs uppercase tracking-wider font-semibold text-slate-300">Connessione...</span>
+      </div>
+    </header>
+
+    <!-- Statistiche Principali -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+        <p class="text-xs text-slate-400 font-medium">ULTIMO BLOCCO</p>
+        <p id="block-height" class="text-3xl font-extrabold text-white mt-2">--</p>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+        <p class="text-xs text-slate-400 font-medium">CHAIN ID</p>
+        <p id="network-id" class="text-3xl font-extrabold text-amber-400 mt-2">--</p>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+        <p class="text-xs text-slate-400 font-medium">NODO MONIKER</p>
+        <p id="node-moniker" class="text-2xl font-bold text-emerald-400 mt-2 truncate">--</p>
+      </div>
+    </div>
+
+    <!-- Dettagli Blocco e Validatore -->
+    <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl space-y-4">
+      <h2 class="text-lg font-semibold text-slate-200">Dettagli Ultimo Blocco</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div>
+          <span class="text-slate-500 block">Timestamp:</span>
+          <span id="block-time" class="font-mono text-slate-300">In attesa...</span>
+        </div>
+        <div>
+          <span class="text-slate-500 block">Block Hash:</span>
+          <span id="block-hash" class="font-mono text-xs text-amber-300 truncate block">In attesa...</span>
+        </div>
+        <div>
+          <span class="text-slate-500 block">Indirizzo Proposer / Validatore:</span>
+          <span id="proposer-addr" class="font-mono text-xs text-slate-300 truncate block">--</span>
+        </div>
+        <div>
+          <span class="text-slate-500 block">Endpoint RPC:</span>
+          <span class="font-mono text-xs text-emerald-400">https://rpc.luxaecosystem.xyz</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const RPC_URL = "https://rpc.luxaecosystem.xyz";
+
+    async function fetchChainStatus() {
+      try {
+        const res = await fetch(`${RPC_URL}/status`);
+        if (!res.ok) throw new Error("Offline");
+        const data = await res.json();
+        const sync = data.result.sync_info;
+        const node = data.result.node_info;
+
+        document.getElementById("block-height").innerText = "#" + Number(sync.latest_block_height).toLocaleString();
+        document.getElementById("network-id").innerText = node.network;
+        document.getElementById("node-moniker").innerText = node.moniker;
+        document.getElementById("block-time").innerText = new Date(sync.latest_block_time).toLocaleTimeString();
+        document.getElementById("block-hash").innerText = sync.latest_block_hash;
+
+        document.getElementById("status-dot").className = "w-3 h-3 rounded-full bg-emerald-500";
+        document.getElementById("status-text").innerText = "LIVE (SYNCED)";
+      } catch (err) {
+        document.getElementById("status-dot").className = "w-3 h-3 rounded-full bg-red-500";
+        document.getElementById("status-text").innerText = "DISCONNESSO";
+      }
+    }
+
+    fetchChainStatus();
+    setInterval(fetchChainStatus, 2000);
+  </script>
+</body>
+</html>
