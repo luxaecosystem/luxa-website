@@ -630,6 +630,89 @@
           const gasUsed = tx.tx_result?.gas_used || "0";
           const gasWanted = tx.tx_result?.gas_wanted || "0";
 
+          // Estrazione automatica degli eventi Cosmos (transfer / coin_spent / message)
+          let sender = "--";
+          let recipient = "--";
+          let amountFormatted = "--";
+
+          const events = tx.tx_result?.events || [];
+          for (const ev of events) {
+            // Helper per decodificare base64 se presente o usare valore diretto
+            const getAttr = (k) => {
+              const item = ev.attributes?.find(a => {
+                const keyDecoded = a.key ? (atob(a.key) === k || a.key === k) : false;
+                return keyDecoded;
+              });
+              if (!item) return null;
+              try { return atob(item.value); } catch(e) { return item.value; }
+            };
+
+            if (ev.type === "transfer" || ev.type === "coin_spent" || ev.type === "coin_received") {
+              const s = getAttr("sender") || getAttr("spender");
+              const r = getAttr("recipient") || getAttr("receiver");
+              const a = getAttr("amount");
+
+              if (s && sender === "--") sender = s;
+              if (r && recipient === "--") recipient = r;
+              if (a && amountFormatted === "--") {
+                // Esempio: "150000000uluxa" -> 150 LUXA
+                const num = parseInt(a, 10);
+                if (!isNaN(num)) {
+                  amountFormatted = (num / 1000000).toLocaleString('en-US', { maximumFractionDigits: 6 }) + " LUXA (" + a + ")";
+                } else {
+                  amountFormatted = a;
+                }
+              }
+            }
+          }
+
+          title.innerHTML = '<i class="fas fa-receipt"></i> Transaction Details';
+          content.innerHTML = `
+            <div class="detail-item full-width">
+              <div class="detail-key">Transaction Hash</div>
+              <div class="detail-value hash">${rawQuery.toUpperCase()} <button class="copy-btn" onclick="copyToClipboard(this, '${rawQuery.toUpperCase()}')"><i class="fas fa-copy"></i> Copy</button></div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-key">Status</div>
+              <div class="detail-value" style="color: ${statusSuccess ? 'var(--success)' : 'var(--danger)'}; font-weight: bold;">
+                ${statusSuccess ? '✅ SUCCESS (Confirmed)' : '❌ FAILED (Code: ' + tx.tx_result.code + ')'}
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-key">Transferred Amount</div>
+              <div class="detail-value" style="color: var(--accent-light); font-weight: bold; font-size: 1.05rem;">
+                ${amountFormatted}
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-key">From (Sender)</div>
+              <div class="detail-value addr" style="font-size: 0.8rem;">${sender}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-key">To (Recipient)</div>
+              <div class="detail-value addr" style="font-size: 0.8rem;">${recipient}</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-key">Block Height</div>
+              <div class="detail-value"><a href="#" onclick="searchHeight(${height}); return false;" class="block-link">#${height}</a></div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-key">Gas Used / Wanted</div>
+              <div class="detail-value">${Number(gasUsed).toLocaleString()} / ${Number(gasWanted).toLocaleString()}</div>
+            </div>
+          `;
+        } catch (err) {
+          content.innerHTML = `<div class="detail-item full-width"><div class="detail-value" style="color: var(--danger);">RPC connection error during transaction lookup.</div></div>`;
+        }
+        return;
+      }
+
+          const tx = data.result;
+          const height = tx.height;
+          const statusSuccess = tx.tx_result?.code === 0;
+          const gasUsed = tx.tx_result?.gas_used || "0";
+          const gasWanted = tx.tx_result?.gas_wanted || "0";
+
           title.innerHTML = '<i class="fas fa-receipt"></i> Transaction Details';
           content.innerHTML = `
             <div class="detail-item full-width">
