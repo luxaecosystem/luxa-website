@@ -115,6 +115,10 @@
       color: white;
       box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3);
     }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(168, 85, 247, 0.5);
+    }
     .btn-outline {
       background: transparent;
       color: var(--text);
@@ -128,7 +132,6 @@
       padding: 40px 24px;
     }
 
-    /* Search Bar */
     .search-section {
       margin-bottom: 32px;
     }
@@ -268,7 +271,6 @@
       margin-top: 8px;
     }
 
-    /* Modale / Scheda Risultato Ricerca */
     .search-result-card {
       display: none;
       background: var(--bg-card);
@@ -494,7 +496,7 @@
         <h2 id="searchResultTitle"><i class="fas fa-receipt"></i> Transaction Details</h2>
       </div>
       <div class="detail-grid" id="searchResultContent">
-        <!-- Popolato dinamicamente da handleSearch -->
+        <!-- Popolato via JS -->
       </div>
     </div>
 
@@ -600,18 +602,16 @@
     const RPC_URL = "https://rpc.luxaecosystem.xyz";
     let lastRenderedHeight = 0;
 
-    // Helper per decodificare stringhe Base64 o plain text da CometBFT
     function safeDecode(val) {
       if (!val) return "";
       try {
         const decoded = atob(val);
-        // Se la decodifica produce caratteri ASCII stampabili, la usiamo
         if (/^[\x20-\x7E]+$/.test(decoded)) return decoded;
       } catch(e) {}
       return val;
     }
 
-    // --- RICERCA GLOBALE (HASH TX, WALLET LUXA, BLOCK HEIGHT) ---
+    // --- RICERCA GLOBALE ---
     async function handleSearch(e) {
       if (e) e.preventDefault();
       const rawQuery = document.getElementById("searchInput").value.trim();
@@ -645,7 +645,6 @@
           let recipient = "--";
           let amountFormatted = "--";
 
-          // Parsing degli eventi Cosmos per coin_spent, transfer e message
           const events = tx.tx_result?.events || [];
           for (const ev of events) {
             const evType = safeDecode(ev.type);
@@ -721,20 +720,83 @@
 
       // 2. Ricerca Indirizzo Wallet (luxa1...)
       if (/^luxa1[a-z0-9]+$/i.test(rawQuery)) {
+        const cleanAddr = rawQuery.toLowerCase();
         title.innerHTML = '<i class="fas fa-wallet"></i> Account Overview';
-        content.innerHTML = `
-          <div class="detail-item full-width">
-            <div class="detail-key">Address</div>
-            <div class="detail-value addr">${rawQuery.toLowerCase()} <button class="copy-btn" onclick="copyToClipboard(this, '${rawQuery.toLowerCase()}')"><i class="fas fa-copy"></i> Copy</button></div>
-          </div>
-          <div class="detail-item full-width">
-            <div class="detail-key">On-Chain Actions</div>
-            <div class="detail-value">
-              Use the CLI or Mini App to verify detailed account transactions:
-              <pre style="margin-top: 8px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-size: 0.8rem;">luxad query bank balances ${rawQuery.toLowerCase()}</pre>
+        content.innerHTML = '<div class="detail-item full-width"><div class="detail-value">Loading account balances and history...</div></div>';
+
+        try {
+          const [sentRes, recvRes] = await Promise.all([
+            fetch(`${RPC_URL}/tx_search?query="message.sender='${cleanAddr}'"&prove=false&page=1&per_page=5&order_by="desc"`),
+            fetch(`${RPC_URL}/tx_search?query="transfer.recipient='${cleanAddr}'"&prove=false&page=1&per_page=5&order_by="desc"`)
+          ]);
+
+          const sentData = await sentRes.json();
+          const recvData = await recvRes.json();
+
+          const sentTxs = sentData.result?.txs || [];
+          const recvTxs = recvData.result?.txs || [];
+          const totalTxsCount = (sentData.result?.total_count || 0) + (recvData.result?.total_count || 0);
+
+          let txListHtml = '';
+          const combined = [...sentTxs.map(t => ({ ...t, dir: 'OUT' })), ...recvTxs.map(t => ({ ...t, dir: 'IN' }))];
+          
+          if (combined.length === 0) {
+            txListHtml = '<div style="color: var(--text-dim); font-size: 0.8rem; margin-top: 8px;">No indexed transactions found for this account.</div>';
+          } else {
+            txListHtml = combined.slice(0, 5).map(item => {
+              const h = item.hash;
+              const shortH = h.substring(0, 8) + '...' + h.substring(h.length - 4);
+              const isOut = item.dir === 'OUT';
+              return `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border-light); font-size: 0.8rem;">
+                  <div>
+                    <span style="color: ${isOut ? 'var(--danger)' : 'var(--success)'}; font-weight: bold; margin-right: 6px;">${item.dir}</span>
+                    <a href="#" onclick="document.getElementById('searchInput').value='${h}'; handleSearch(); return false;" class="block-link">${shortH}</a>
+                  </div>
+                  <span style="color: var(--text-dim);">Block #${item.height}</span>
+                </div>
+              `;
+            }).join('');
+          }
+
+          content.innerHTML = `
+            <div class="detail-item full-width">
+              <div class="detail-key">Wallet Address</div>
+              <div class="detail-value addr">${cleanAddr} <button class="copy-btn" onclick="copyToClipboard(this, '${cleanAddr}')"><i class="fas fa-copy"></i> Copy</button></div>
             </div>
-          </div>
-        `;
+            <div class="detail-item">
+              <div class="detail-key">Total Activity (Indexed)</div>
+              <div class="detail-value" style="color: var(--primary-light); font-weight: bold;">
+                ${totalTxsCount} Transactions
+              </div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-key">Node Balance Query (CLI)</div>
+              <div class="detail-value" style="font-size: 0.75rem;">
+                luxad query bank balances ${cleanAddr}
+              </div>
+            </div>
+            <div class="detail-item full-width">
+              <div class="detail-key">Recent Account Transactions</div>
+              <div class="detail-value" style="margin-top: 4px;">
+                ${txListHtml}
+              </div>
+            </div>
+          `;
+        } catch (err) {
+          content.innerHTML = `
+            <div class="detail-item full-width">
+              <div class="detail-key">Wallet Address</div>
+              <div class="detail-value addr">${cleanAddr}</div>
+            </div>
+            <div class="detail-item full-width">
+              <div class="detail-value" style="color: var(--warning);">
+                Unable to query tx_search from RPC. You can inspect balances via CLI:
+                <pre style="margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px;">luxad query bank balances ${cleanAddr}</pre>
+              </div>
+            </div>
+          `;
+        }
         return;
       }
 
