@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -286,15 +286,42 @@
       cursor: pointer;
     }
 
-    /* ---------- Activity note ---------- */
-    .activity-note {
+    /* ---------- Activity table ---------- */
+    .activity-section {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 22px;
-      font-size: 13px;
-      color: var(--muted);
     }
+
+    .activity-section__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .activity-section__header h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    #refreshActivityButton { cursor: pointer; font-size: 11px; padding: 6px 12px; border: none; }
+
+    .activity-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+
+    .activity-table thead tr { border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: var(--muted); }
+    .activity-table th, .activity-table td { padding: 10px 8px; text-align: left; }
+    .activity-table tbody tr { border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+    .activity-table tbody tr[data-hash] { cursor: pointer; }
+    .activity-table tbody tr[data-hash]:hover { background: rgba(255, 255, 255, 0.03); }
+    .activity-table .hash-cell { font-family: 'JetBrains Mono', monospace; }
 
     @media (max-width: 640px) {
       .search-bar { flex-direction: column; }
@@ -313,11 +340,11 @@
       </a>
       <nav class="topbar-links">
         <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
-        <a href="https://t.me/LuxaToken_bot" target="_blank" rel="noopener" class="nav-link"><i class="fab fa-telegram"></i> Apri l'app</a>
+        <a href="https://t.me/LuxaToken_bot" target="_blank" rel="noopener" class="nav-link"><i class="fab fa-telegram"></i> Launch App</a>
       </nav>
     </header>
 
-    <section class="node-hero" aria-label="Stato del nodo">
+    <section class="node-hero" aria-label="Node status">
       <div class="node-status-ring">
         <div class="node-status-inner">
           <i class="fas fa-server"></i>
@@ -330,40 +357,40 @@
           <span class="node-info-value accent">luxa-1</span>
         </div>
         <div class="node-info-card">
-          <span class="node-info-label">Ultimo blocco</span>
-          <span class="node-info-value accent" id="latestBlockValue">caricamento...</span>
-        </div>
-        <div class="node-info-card">
-          <span class="node-info-label">Protocollo</span>
-          <span class="node-info-value">CometBFT / Cosmos SDK</span>
-        </div>
-        <div class="node-info-card">
-          <span class="node-info-label">RPC endpoint</span>
-          <span class="node-info-value accent" style="font-size:12px;">rpc.luxaecosystem.xyz</span>
+          <span class="node-info-label">Latest Block</span>
+          <span class="node-info-value accent" id="latestBlockValue">loading...</span>
         </div>
       </div>
     </section>
 
-    <section class="search-section" aria-label="Ricerca">
-      <h2>Ricerca su ledger e asset sovereign</h2>
-      <p class="search-hint">Cerca per hash di transazione o numero di blocco.</p>
+    <section class="search-section" aria-label="Search">
+      <h2>Ledger &amp; sovereign asset search</h2>
+      <p class="search-hint">Search by transaction hash or block number.</p>
       <div class="search-bar">
-        <label for="explorerSearchInput" class="visually-hidden">Hash o numero di blocco</label>
-        <input type="text" id="explorerSearchInput" class="search-input" placeholder="Hash transazione o numero di blocco">
+        <label for="explorerSearchInput" class="visually-hidden">Transaction hash or block number</label>
+        <input type="text" id="explorerSearchInput" class="search-input" placeholder="Transaction hash or block number">
         <button type="button" class="search-btn" id="explorerSearchButton">
-          <i class="fas fa-search"></i> CERCA
+          <i class="fas fa-search"></i> SEARCH
         </button>
       </div>
       <div id="explorerSearchResult" role="status" aria-live="polite"></div>
     </section>
 
-    <section class="activity-note" aria-label="Attività recente">
-      <strong style="color:#fff;">Attività recente in tempo reale</strong>
-      <p style="margin-top:8px;">
-        Questa sezione richiede un endpoint backend dedicato (es. <code>GET /api/ecosystem/chain/recent-tx</code>
-        che legge le ultime voci di <code>luxa_ledger</code>) per mostrare transazioni vere invece di dati di esempio.
-        Nel frattempo puoi cercare qualunque hash o blocco qui sopra.
-      </p>
+    <section class="activity-section" aria-label="Recent activity">
+      <div class="activity-section__header">
+        <h2>Recent on-chain activity</h2>
+        <button type="button" class="nav-link" id="refreshActivityButton"><i class="fas fa-sync"></i> Refresh</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="activity-table">
+          <thead>
+            <tr><th>Hash</th><th>Type</th><th>Amount</th><th>Block</th><th>Status</th></tr>
+          </thead>
+          <tbody id="activityTableBody">
+            <tr><td colspan="5" class="explorer-status explorer-status--loading">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
   </div>
 
