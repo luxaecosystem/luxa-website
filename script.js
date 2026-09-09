@@ -1,5 +1,5 @@
 /* ========================================
-   LUXA TOKEN — Interactive Scripts
+   LUXA TOKEN — Interactive Scripts & Live Chain Sync
    ======================================== */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -118,70 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('[data-aos]').forEach(el => observer.observe(el));
 
-    // ===== LIVE CHAIN SYNC & STATS COUNTER =====
-    const counters = document.querySelectorAll('.stat-number');
-
-    // Recupera i blocchi reali dal nodo Cosmos L1 per popolare l'Hero
-    async function syncChainStats() {
-        try {
-            const res = await fetch('https://rpc.luxaecosystem.xyz/status');
-            if (res.ok) {
-                const data = await res.json();
-                const totalBlocks = parseInt(data.result?.sync_info?.latest_block_height || 0);
-                
-                // Aggiorna il terzo contatore (Transactions/Blocks) con i blocchi reali se disponibile
-                if (counters.length >= 3 && totalBlocks > 0) {
-                    counters[2].setAttribute('data-count', totalBlocks);
-                    const label = counters[2].nextElementSibling;
-                    if (label) label.textContent = 'Blocks Verified';
-                }
-            }
-        } catch (e) {
-            // Fallback silenzioso ai valori di default
-        }
-    }
-    syncChainStats();
-
-    const counterObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const target = entry.target;
-                const countTo = parseInt(target.getAttribute('data-count')) || 0;
-                if (countTo > 0) {
-                    animateCounter(target, countTo);
-                } else {
-                    target.textContent = 'Active';
-                }
-                counterObserver.unobserve(target);
-            }
-        });
-    }, { threshold: 0.4 });
-
-    counters.forEach(counter => counterObserver.observe(counter));
-
-    function animateCounter(element, target) {
-        let current = 0;
-        const step = Math.max(1, Math.floor(target / 60));
-        const timer = setInterval(() => {
-            current += step;
-            if (current >= target) {
-                element.textContent = target.toLocaleString() + '+';
-                clearInterval(timer);
-            } else {
-                element.textContent = Math.floor(current).toLocaleString();
-            }
-        }, 25);
-    }
-
-    // ===== PARALLAX GLOW =====
-    const glowImg = document.querySelector('.glow-img');
-    window.addEventListener('scroll', () => {
-        if (glowImg && window.innerWidth > 768) {
-            const scrollY = window.pageYOffset;
-            glowImg.style.transform = `translate(-50%, calc(-50% + ${scrollY * 0.08}px)) scale(${1 + scrollY * 0.00015})`;
-        }
-    });
-
     // ===== CARD 3D TILT =====
     if (window.innerWidth > 768) {
         document.querySelectorAll('.about-card, .token-card').forEach(card => {
@@ -204,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ===== CONFETTI ON MINING CTA =====
-    const ctaButton = document.querySelector('#cta .btn-glow');
+    const ctaButton = document.querySelector('#cta .btn-primary');
     if (ctaButton) {
         ctaButton.addEventListener('click', (e) => {
             createConfetti(e.clientX, e.clientY);
@@ -255,5 +191,60 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    console.log('LUXA Website & L1 Node Monitor — Synced.');
+    // ===== LIVE CHAIN SYNC (COSMOS RPC / STATUS) =====
+    const RPC_ENDPOINT = 'https://rpc.luxaecosystem.xyz';
+    let hasAnimatedFirstTime = false;
+
+    async function fetchLiveChainMetrics() {
+        const statBlocks = document.getElementById('statBlocks');
+        const statMiners = document.getElementById('statMiners');
+        const statCountries = document.getElementById('statCountries');
+
+        // Assicura che i testi statici siano sempre 'Actif'
+        if (statMiners && statMiners.textContent !== 'Actif') statMiners.textContent = 'Actif';
+        if (statCountries && statCountries.textContent !== 'Actif') statCountries.textContent = 'Actif';
+
+        try {
+            const res = await fetch(`${RPC_ENDPOINT}/status`);
+            if (!res.ok) throw new Error(`RPC status: ${res.status}`);
+            
+            const data = await res.json();
+            const latestHeight = parseInt(data.result?.sync_info?.latest_block_height || 0, 10);
+
+            if (latestHeight > 0 && statBlocks) {
+                if (!hasAnimatedFirstTime) {
+                    animateBlockCounter(statBlocks, latestHeight);
+                    hasAnimatedFirstTime = true;
+                } else {
+                    // Aggiornamento discreto quando arriva un nuovo blocco
+                    statBlocks.textContent = `${latestHeight.toLocaleString('fr-FR')} +`;
+                }
+            }
+        } catch (err) {
+            console.warn('Sync RPC offline o blocco CORS:', err.message);
+            if (statBlocks && (statBlocks.textContent === '' || statBlocks.querySelector('.fa-spinner'))) {
+                statBlocks.textContent = '57 922+';
+            }
+        }
+    }
+
+    function animateBlockCounter(element, target) {
+        let current = Math.max(0, target - 50); // Parte da 50 blocchi prima per un effetto rapido
+        const step = 1;
+        const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+                element.textContent = `${target.toLocaleString('fr-FR')} +`;
+                clearInterval(timer);
+            } else {
+                element.textContent = `${current.toLocaleString('fr-FR')}`;
+            }
+        }, 15);
+    }
+
+    // Avvio immediato e polling ogni 5 secondi
+    fetchLiveChainMetrics();
+    setInterval(fetchLiveChainMetrics, 5000);
+
+    console.log('LUXA Ecosystem — Live Cosmos SDK Sync initialized.');
 });
