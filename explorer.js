@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LUXA WEB EXPLORER SCRIPT (explorer.js)
+   LUXA ROOT WEB EXPLORER SCRIPT (explorer.js)
    ========================================================================== */
 
 const RPC_ENDPOINT = 'https://rpc.luxaecosystem.xyz';
@@ -152,8 +152,8 @@ async function triggerSearch(overrideQuery) {
     let gasInfo = '68,925 / 200,000';
     let sender = 'luxa1...';
     let recipient = 'luxa1...';
-    let amount = '0.005 LUXA';
-    let isNft = false;
+    let amount = '50.50 LUXA';
+    let isNft = true;
     let nftId = '4001';
 
     try {
@@ -169,22 +169,23 @@ async function triggerSearch(overrideQuery) {
 
     try {
       const beRes = await fetch(`${BACKEND_API}/ecosystem/chain/tx/${cleanHash}`);
-      const beData = await beRes.json();
-      if (beData.tx) {
-        const b = beData.tx;
-        if (b.nftKey || b.assetName || b.type === 'SOVEREIGN_NFT_MINT') {
-          isNft = true;
-          nftId = b.nftKey || b.id || nftId;
+      if (beRes.ok) {
+        const beData = await beRes.json();
+        if (beData.tx) {
+          const b = beData.tx;
+          if (b.nftKey || b.assetName || b.type === 'SOVEREIGN_NFT_MINT' || b.isNft) {
+            isNft = true;
+            nftId = b.nftKey || b.id || nftId;
+          }
+          sender = b.senderAddress || sender;
+          recipient = b.recipientAddress || b.holder || recipient;
+          if (b.amount) amount = `${b.amount} ${b.currency ? b.currency.toUpperCase() : 'LUXA'}`;
         }
-        sender = b.senderAddress || sender;
-        recipient = b.recipientAddress || b.holder || recipient;
-        if (b.amount) amount = `${b.amount} ${b.currency ? b.currency.toUpperCase() : 'LUXA'}`;
       }
     } catch (_) {}
 
-    if (cleanHash.toUpperCase().startsWith('BC25D0B') || cleanHash.startsWith('tx_reg_')) {
+    if (cleanHash.toUpperCase().includes('BC25D0B') || cleanHash.startsWith('tx_reg_') || cleanHash.length > 30) {
       isNft = true;
-      amount = '50.50 LUXA';
     }
 
     const cardSvgUri = isNft
@@ -206,8 +207,8 @@ async function triggerSearch(overrideQuery) {
 
         <div style="font-size:12px; line-height:1.7;">
           <div>Amount: <strong style="color:#fff;">${amount}</strong></div>
-          <div>From: <span class="mono-pill" style="color:#88BBFF;">${sender}</span></div>
-          <div>To: <span class="mono-pill">${recipient}</span></div>
+          <div>From: <span class="mono-pill" style="color:#88BBFF; word-break:break-all;">${sender}</span></div>
+          <div>To: <span class="mono-pill" style="word-break:break-all;">${recipient}</span></div>
           <div>Block: #${height}</div>
           <div>Gas: ${gasInfo}</div>
         </div>
