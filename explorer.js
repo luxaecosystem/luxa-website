@@ -1,85 +1,155 @@
 /* ==========================================================================
-   LUXA TELEGRAM MINI-APP EXPLORER ENGINE (frontend/ecosystem/browser.js)
-   Target: In-App Explorer Tab & Modals (Chain ID: luxa-1)
+   LUXA ON-CHAIN EXPLORER ENGINE (explorer.js)
+   Universal Asset Classification: Coin Transfer vs Sovereign NFT License
    ========================================================================== */
 
 const RPC_ENDPOINT = 'https://rpc.luxaecosystem.xyz';
+const BACKEND_API = (window.API_BASE && window.API_BASE.replace(/\/api$/, '')) 
+  ? `${window.API_BASE.replace(/\/$/, '')}/api` 
+  : 'https://luxaecosystem.alwaysdata.net/api';
 
-// 1. PROCEDURAL SOVEREIGN NFT SVG
+const NFT_METADATA = {
+  '4001': {
+    name: 'Grandmaster of Servers',
+    tier: '0.01% Standard',
+    utility: 'Node Operator License (Ujrah - computational service reward)',
+    allocation: 'Dedicated Node Slot / Consensus Key',
+    color: '#00FFCC'
+  },
+  '4002': {
+    name: 'Neon Data Valkyrie',
+    tier: '0.05% High-Throughput',
+    utility: 'Institutional DEX AMM Fee Rebate (Takhfid - trade discount)',
+    allocation: 'Zero Arbitrage Fee Channel',
+    color: '#a855f7'
+  },
+  '4003': {
+    name: 'Chrono-Key Master',
+    tier: '0.01% Low-Latency',
+    utility: 'Cryptographic Priority Bandwidth Lane',
+    allocation: 'Sub-Second Mempool Propagation',
+    color: '#FFD700'
+  },
+  '4004': {
+    name: 'Cyber-Shadow Node',
+    tier: '0.01% Distributed',
+    utility: "Decentralized Encrypted Storage (Manfa'ah - tangible disk space)",
+    allocation: '50 GB Encrypted Storage Space',
+    color: '#38bdf8'
+  }
+};
+
+function escapeXml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;'
+  })[char]);
+}
+
+// 1. HD SOVEREIGN NFT VECTOR GENERATOR
 function generateSovereignNftSvg(name, id, wallet, txHash) {
-  const displayWallet = wallet || 'luxa1...';
-  const shortTx = txHash ? (txHash.slice(0, 14) + '...' + txHash.slice(-8)) : '0x...';
-  const displayName = (name || 'SOVEREIGN LICENSE').toUpperCase();
-  const displayId = id || '4001';
+  const displayId = String(id || '4001');
+  const meta = NFT_METADATA[displayId] || {
+    name: name || 'Grandmaster of Servers',
+    tier: '0.01% Standard',
+    utility: 'Node Operator License (Ujrah - computational service reward)',
+    allocation: 'Dedicated Node Slot / Consensus Key',
+    color: '#00FFCC'
+  };
+
+  const displayName = escapeXml(name || meta.name);
+  const displayWallet = escapeXml(wallet || 'luxa1...');
+  const shortHolder = displayWallet.length > 28 ? (displayWallet.slice(0, 16) + '...' + displayWallet.slice(-8)) : displayWallet;
+  const primaryColor = meta.color || '#00FFCC';
+  const marquee = ` • HOLDER: ${shortHolder} • LEDGER: LUXA-1 • ASSET: ${displayName.toUpperCase()} • STATUS: ANCHORED • `;
 
   const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 540" width="100%" height="100%">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 980" width="100%" height="100%">
     <defs>
-      <linearGradient id="appBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#070913"/>
-        <stop offset="50%" stop-color="#0f172a"/>
-        <stop offset="100%" stop-color="#020617"/>
+      <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#040812"/>
+        <stop offset="50%" stop-color="#071b16"/>
+        <stop offset="100%" stop-color="#020509"/>
       </linearGradient>
-      <linearGradient id="appCyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#00FFCC"/>
-        <stop offset="100%" stop-color="#0099FF"/>
+      <linearGradient id="heroArtGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#08231c"/>
+        <stop offset="50%" stop-color="#0e372d"/>
+        <stop offset="100%" stop-color="#04120e"/>
       </linearGradient>
-      <linearGradient id="appGoldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#FFD700"/>
-        <stop offset="100%" stop-color="#FF8C00"/>
+      <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="rgba(16, 185, 129, 0.14)"/>
+        <stop offset="100%" stop-color="rgba(6, 78, 59, 0.08)"/>
       </linearGradient>
-      <filter id="appNeonGlow" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur stdDeviation="5" result="blur"/>
-        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+      <filter id="cardGlow" x="-10%" y="-10%" width="120%" height="120%">
+        <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="${primaryColor}" flood-opacity="0.3"/>
       </filter>
+      <path id="marqueeTrack" d="M 50 60 H 670 Q 690 60 690 80 V 900 Q 690 920 670 920 H 50 Q 30 920 30 900 V 80 Q 30 60 50 60 Z" fill="none"/>
     </defs>
 
-    <rect x="8" y="8" width="404" height="524" rx="20" fill="url(#appBgGrad)" stroke="#00FFCC" stroke-width="2" filter="url(#appNeonGlow)"/>
-    <rect x="14" y="14" width="392" height="512" rx="16" fill="none" stroke="rgba(0,255,204,0.25)" stroke-width="1"/>
+    <rect width="720" height="980" rx="34" fill="url(#bgGrad)" stroke="${primaryColor}" stroke-width="2.5" filter="url(#cardGlow)"/>
+    <rect x="18" y="18" width="684" height="944" rx="28" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
 
-    <rect x="30" y="28" width="360" height="36" rx="8" fill="rgba(0,255,204,0.06)" stroke="rgba(0,255,204,0.3)"/>
-    <text x="45" y="51" font-family="'Orbitron', monospace, sans-serif" font-size="11" font-weight="900" fill="#00FFCC" letter-spacing="2">LUXA SOVEREIGN CARD</text>
-    <rect x="310" y="36" width="65" height="20" rx="4" fill="#00FFCC"/>
-    <text x="342" y="50" font-family="monospace" font-size="10" font-weight="bold" fill="#000" text-anchor="middle">luxa-1</text>
+    <use href="#marqueeTrack" stroke="${primaryColor}" stroke-opacity="0.2" stroke-width="1.2"/>
+    <text font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="${primaryColor}" letter-spacing="2">
+      <textPath href="#marqueeTrack" startOffset="0%">
+        ${marquee.repeat(3)}
+        <animate attributeName="startOffset" from="0%" to="-100%" dur="30s" repeatCount="indefinite"/>
+      </textPath>
+    </text>
 
-    <g transform="translate(40, 80)">
-      <rect width="340" height="210" rx="14" fill="#030712" stroke="rgba(255,215,0,0.3)" stroke-width="1.5"/>
-      <circle cx="170" cy="105" r="75" fill="none" stroke="url(#appCyanGrad)" stroke-width="2" stroke-dasharray="8 6">
-        <animateTransform attributeName="transform" type="rotate" from="0 170 105" to="360 170 105" dur="18s" repeatCount="indefinite"/>
+    <text x="75" y="118" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#6ee7b7" letter-spacing="1.5">LUXA SOVEREIGN INFRASTRUCTURE KEY</text>
+    <text x="75" y="158" font-family="'Space Grotesk', sans-serif" font-size="32" font-weight="800" fill="#ffffff">${displayName}</text>
+    <text x="75" y="188" font-family="'Inter', sans-serif" font-size="14" font-weight="500" fill="#a7f3d0">Validator Protocol License — ${escapeXml(meta.tier)}</text>
+
+    <g transform="translate(80, 215)">
+      <rect width="560" height="300" rx="18" fill="url(#heroArtGrad)" stroke="${primaryColor}" stroke-opacity="0.5" stroke-width="1.8"/>
+      <path d="M 0 75 H 560 M 0 150 H 560 M 0 225 H 560 M 140 0 V 300 M 280 0 V 300 M 420 0 V 300" stroke="rgba(0,255,204,0.08)" stroke-width="1"/>
+      
+      <circle cx="280" cy="130" r="72" fill="#030c09" stroke="${primaryColor}" stroke-width="2"/>
+      <circle cx="280" cy="130" r="54" fill="none" stroke="#FFD700" stroke-width="1.5" stroke-dasharray="6 4">
+        <animateTransform attributeName="transform" type="rotate" from="0 280 130" to="360 280 130" dur="14s" repeatCount="indefinite"/>
       </circle>
-      <circle cx="170" cy="105" r="54" fill="none" stroke="url(#appGoldGrad)" stroke-width="1.5" stroke-dasharray="4 4">
-        <animateTransform attributeName="transform" type="rotate" from="360 170 105" to="0 170 105" dur="10s" repeatCount="indefinite"/>
-      </circle>
-      <text x="170" y="100" font-family="'Orbitron', sans-serif" font-size="28" font-weight="900" fill="#FFD700" text-anchor="middle">#${displayId}</text>
-      <text x="170" y="122" font-family="'Space Grotesk', sans-serif" font-size="10" font-weight="bold" fill="#00FFCC" text-anchor="middle" letter-spacing="2">SOVEREIGN PROTOCOL</text>
+      
+      <path d="M 280 95 L 315 110 V 138 C 315 160 280 175 280 175 C 280 175 245 160 245 138 V 110 Z" fill="rgba(0,255,204,0.15)" stroke="${primaryColor}" stroke-width="2"/>
+      <circle cx="280" cy="125" r="10" fill="#FFD700"/>
+      <rect x="274" y="142" width="12" height="15" rx="2" fill="${primaryColor}"/>
+
+      <text x="280" y="245" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="22" font-weight="900" fill="#ffffff" letter-spacing="3">#${displayId}</text>
+      <text x="280" y="270" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#6ee7b7" letter-spacing="2">ACTIVE CONSENSUS NODE</text>
     </g>
 
-    <text x="210" y="320" font-family="'Orbitron', sans-serif" font-size="15" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">${displayName}</text>
+    <text x="360" y="555" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#6ee7b7" letter-spacing="1.5">UTILITY ROLE</text>
+    <text x="360" y="586" text-anchor="middle" font-family="'Inter', sans-serif" font-size="15" font-weight="600" fill="#f0fdf4">${escapeXml(meta.utility)}</text>
 
-    <g transform="translate(30, 345)">
-      <rect width="360" height="70" rx="10" fill="rgba(0,0,0,0.7)" stroke="#00FFCC" stroke-width="1.2"/>
-      <text x="16" y="22" font-family="monospace" font-size="9.5" font-weight="bold" fill="#94a3b8" letter-spacing="1">AUTHENTICATED WALLET VAULT</text>
-      <text x="16" y="44" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="bold" fill="#00FFCC">
-        ${displayWallet.length > 34 ? displayWallet.slice(0, 18) + '...' + displayWallet.slice(-12) : displayWallet}
-        <animate attributeName="opacity" values="1;0.5;1" dur="2.5s" repeatCount="indefinite"/>
-      </text>
-      <text x="16" y="58" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#64748b">${displayWallet}</text>
-      <circle cx="335" cy="35" r="5" fill="#22c55e">
-        <animate attributeName="opacity" values="1;0.2;1" dur="1.2s" repeatCount="indefinite"/>
-      </circle>
+    <g transform="translate(80, 625)">
+      <rect width="265" height="85" rx="14" fill="url(#boxGrad)" stroke="rgba(52,211,153,0.3)" stroke-width="1.2"/>
+      <text x="20" y="32" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#6ee7b7">TOKEN ID</text>
+      <text x="20" y="64" font-family="'Space Grotesk', sans-serif" font-size="22" font-weight="800" fill="#ffffff">${displayId}</text>
     </g>
 
-    <g transform="translate(30, 435)">
-      <rect width="360" height="50" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/>
-      <text x="16" y="20" font-family="monospace" font-size="8.5" fill="#64748b">LEDGER ANCHOR HASH</text>
-      <text x="16" y="36" font-family="'JetBrains Mono', monospace" font-size="9" fill="#FFD700">${shortTx}</text>
-      <text x="340" y="30" font-family="'Orbitron', sans-serif" font-size="9" font-weight="bold" fill="#22c55e" text-anchor="end">CONFIRMED</text>
+    <g transform="translate(375, 625)">
+      <rect width="265" height="85" rx="14" fill="url(#boxGrad)" stroke="rgba(52,211,153,0.3)" stroke-width="1.2"/>
+      <text x="20" y="32" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#6ee7b7">PROTOCOL TIER</text>
+      <text x="20" y="64" font-family="'Space Grotesk', sans-serif" font-size="17" font-weight="700" fill="#ffffff">${escapeXml(meta.tier)}</text>
+    </g>
+
+    <g transform="translate(80, 730)">
+      <rect width="560" height="88" rx="14" fill="url(#boxGrad)" stroke="rgba(52,211,153,0.3)" stroke-width="1.2"/>
+      <text x="20" y="32" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#6ee7b7">TECHNICAL ALLOCATION</text>
+      <text x="20" y="64" font-family="'Space Grotesk', sans-serif" font-size="16" font-weight="700" fill="#ffffff">${escapeXml(meta.allocation)}</text>
+    </g>
+
+    <text x="80" y="870" font-family="'Inter', sans-serif" font-size="13" font-weight="500" fill="#a7f3d0">HOLDER: ${shortHolder}</text>
+    
+    <g transform="translate(600, 860)">
+      <circle r="30" fill="#042017" stroke="${primaryColor}" stroke-width="1.8"/>
+      <text y="8" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="18" font-weight="900" fill="#ffffff">LX</text>
     </g>
   </svg>`;
+
   return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
 }
 
-// 2. PROCEDURAL COIN TRANSFER SVG
+// 2. PROCEDURAL COIN TRANSFER CARD
 function generateCoinTransferSvg(amount, sender, recipient, txHash) {
   const shortSender = sender.length > 20 ? (sender.slice(0, 12) + '...' + sender.slice(-6)) : sender;
   const shortRecv = recipient.length > 20 ? (recipient.slice(0, 12) + '...' + recipient.slice(-6)) : recipient;
@@ -88,12 +158,12 @@ function generateCoinTransferSvg(amount, sender, recipient, txHash) {
   const svg = `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 340" width="100%" height="100%">
     <defs>
-      <linearGradient id="appCoinBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <linearGradient id="coinBg" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#080c1f"/>
         <stop offset="100%" stop-color="#02040c"/>
       </linearGradient>
     </defs>
-    <rect x="6" y="6" width="408" height="328" rx="16" fill="url(#appCoinBg)" stroke="#00C878" stroke-width="1.8"/>
+    <rect x="6" y="6" width="408" height="328" rx="16" fill="url(#coinBg)" stroke="#00C878" stroke-width="1.8"/>
     
     <g transform="translate(30, 24)">
       <text x="0" y="16" font-family="'Orbitron', sans-serif" font-size="12" font-weight="900" fill="#00FFCC">🪙 NATIVE COIN SETTLEMENT</text>
@@ -102,21 +172,21 @@ function generateCoinTransferSvg(amount, sender, recipient, txHash) {
 
     <g transform="translate(30, 65)">
       <rect width="360" height="95" rx="12" fill="rgba(0,0,0,0.5)" stroke="rgba(0,255,204,0.2)"/>
-      <text x="180" y="40" font-family="'Orbitron', sans-serif" font-size="24" font-weight="900" fill="#FFD700" text-anchor="middle">${amount}</text>
+      <text x="180" y="40" font-family="'Orbitron', sans-serif" font-size="24" font-weight="900" fill="#FFD700" text-anchor="middle">${escapeXml(amount)}</text>
       <text x="180" y="65" font-family="'Inter', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">On-Chain Cosmos SDK Transfer (luxa-1)</text>
     </g>
 
     <g transform="translate(30, 180)">
       <text x="0" y="15" font-family="'JetBrains Mono', monospace" font-size="10" fill="#64748b">FROM:</text>
-      <text x="50" y="15" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#88BBFF">${shortSender}</text>
+      <text x="50" y="15" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#88BBFF">${escapeXml(shortSender)}</text>
       <text x="0" y="42" font-family="'JetBrains Mono', monospace" font-size="10" fill="#64748b">TO:</text>
-      <text x="50" y="42" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#00FFCC">${shortRecv}</text>
+      <text x="50" y="42" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#00FFCC">${escapeXml(shortRecv)}</text>
     </g>
 
     <g transform="translate(30, 260)">
       <rect width="360" height="50" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/>
       <text x="14" y="20" font-family="monospace" font-size="8.5" fill="#64748b">HASH ANCHOR</text>
-      <text x="14" y="36" font-family="'JetBrains Mono', monospace" font-size="9" fill="#FFD700">${shortTx}</text>
+      <text x="14" y="36" font-family="'JetBrains Mono', monospace" font-size="9" fill="#FFD700">${escapeXml(shortTx)}</text>
       <circle cx="340" cy="25" r="4" fill="#22c55e">
         <animate attributeName="opacity" values="1;0.2;1" dur="1.5s" repeatCount="indefinite"/>
       </circle>
@@ -125,14 +195,14 @@ function generateCoinTransferSvg(amount, sender, recipient, txHash) {
   return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
 }
 
-// 3. IN-APP ATTACHED FUNCTION
-window.searchTransactionHash = async function(inputId = 'explorerHashInput', resultId = 'explorerResult') {
-  const inputEl = document.getElementById(inputId) || document.getElementById('txExplorerHashInput') || document.getElementById('explorerSearchInput');
-  const resultEl = document.getElementById(resultId) || document.getElementById('txExplorerResult') || document.getElementById('explorerSearchResult');
+// 3. UNIFIED QUERY DISPATCHER
+window.searchTransactionHash = async function(inputId = 'explorerSearchInput', resultId = 'explorerSearchResult') {
+  const inputEl = document.getElementById(inputId) || document.getElementById('txExplorerHashInput');
+  const resultEl = document.getElementById(resultId) || document.getElementById('txExplorerResult');
 
   const rawQuery = (inputEl?.value || '').trim();
   if (!rawQuery) {
-    if (resultEl) resultEl.innerHTML = '<div style="color:#FF6666; font-size:12px; margin-top:8px;">Please enter a transaction hash, 0x hex, or block height.</div>';
+    if (resultEl) resultEl.innerHTML = '<div style="color:#ef4444; font-size:12px; margin-top:8px;">Enter a transaction hash, block height, or wallet address.</div>';
     return;
   }
 
@@ -144,7 +214,6 @@ window.searchTransactionHash = async function(inputId = 'explorerHashInput', res
   const cleanHash = rawQuery.startsWith('0x') ? rawQuery.slice(2) : rawQuery;
 
   try {
-    // A. BLOCK QUERY
     if (isNumericBlock) {
       const blockHeight = parseInt(rawQuery, 10);
       const res = await fetch(`${RPC_ENDPOINT}/block?height=${blockHeight}`);
@@ -173,7 +242,6 @@ window.searchTransactionHash = async function(inputId = 'explorerHashInput', res
       return;
     }
 
-    // B. TRANSACTION QUERY
     let isSuccess = true;
     let height = 'luxa-1';
     let gasInfo = '68,925 / 200,000';
@@ -196,7 +264,7 @@ window.searchTransactionHash = async function(inputId = 'explorerHashInput', res
     } catch (_) {}
 
     try {
-      const backendRes = await fetch(`${window.API_BASE}/ecosystem/chain/tx/${cleanHash}`);
+      const backendRes = await fetch(`${BACKEND_API}/ecosystem/chain/tx/${cleanHash}`);
       const backendData = await backendRes.json();
       if (backendData.tx) {
         const t = backendData.tx;
@@ -243,7 +311,7 @@ window.searchTransactionHash = async function(inputId = 'explorerHashInput', res
         </div>
 
         <div style="text-align:center; margin:10px 0 16px;">
-          <img src="${cardSvg}" alt="Asset Card" style="width:100%; max-width:${isNft ? '260px' : '320px'}; border-radius:14px; border:2px solid ${isNft ? '#FFD700' : '#00FFCC'}; box-shadow:0 0 20px rgba(0,0,0,0.6); display:inline-block;">
+          <img src="${cardSvg}" alt="Asset Card" style="width:100%; max-width:${isNft ? '320px' : '320px'}; aspect-ratio:${isNft ? '720/980' : '420/340'}; border-radius:14px; border:2px solid ${isNft ? '#FFD700' : '#00FFCC'}; box-shadow:0 0 20px rgba(0,0,0,0.6); display:inline-block; object-fit:contain;">
         </div>
 
         <div style="font-size:11.5px; line-height:1.7; color:#cbd5e1;">
@@ -261,7 +329,7 @@ window.searchTransactionHash = async function(inputId = 'explorerHashInput', res
           <div><strong style="color:#94a3b8;">Gas Used / Wanted:</strong> ${gasInfo}</div>
         </div>
 
-        <button type="button" class="action-btn-sm" style="width:100%; margin-top:14px; font-size:11px;" onclick="navigator.clipboard.writeText('${rawQuery}'); if (window.showToast) window.showToast('Hash copied to clipboard!'); else alert('Copied!');">
+        <button type="button" class="action-btn-sm" style="width:100%; margin-top:14px; font-size:11px; padding:10px; background:transparent; border:1px solid ${isNft ? '#FFD700' : '#00FFCC'}; color:${isNft ? '#FFD700' : '#00FFCC'}; border-radius:8px; cursor:pointer; font-weight:bold;" onclick="navigator.clipboard.writeText('${rawQuery}'); alert('Hash copied!');">
           📋 Copy Transaction Hash
         </button>
       </div>
