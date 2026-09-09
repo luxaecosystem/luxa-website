@@ -43,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Chiude il menu mobile al clic sui link
         mobileMenu.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 mobileMenu.classList.remove('open');
@@ -55,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ===== SAFE SMOOTH SCROLL (solo per ancore interne #id) =====
+    // ===== SAFE SMOOTH SCROLL =====
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const targetId = this.getAttribute('href');
@@ -200,7 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const statMiners = document.getElementById('statMiners');
         const statCountries = document.getElementById('statCountries');
 
-        // Assicura che i testi statici siano sempre 'Actif'
         if (statMiners && statMiners.textContent !== 'Actif') statMiners.textContent = 'Actif';
         if (statCountries && statCountries.textContent !== 'Actif') statCountries.textContent = 'Actif';
 
@@ -216,12 +214,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     animateBlockCounter(statBlocks, latestHeight);
                     hasAnimatedFirstTime = true;
                 } else {
-                    // Aggiornamento discreto quando arriva un nuovo blocco
                     statBlocks.textContent = `${latestHeight.toLocaleString('fr-FR')} +`;
                 }
             }
         } catch (err) {
-            console.warn('Sync RPC offline o blocco CORS:', err.message);
+            console.warn('Sync RPC status:', err.message);
             if (statBlocks && (statBlocks.textContent === '' || statBlocks.querySelector('.fa-spinner'))) {
                 statBlocks.textContent = '57 922+';
             }
@@ -229,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function animateBlockCounter(element, target) {
-        let current = Math.max(0, target - 50); // Parte da 50 blocchi prima per un effetto rapido
+        let current = Math.max(0, target - 50);
         const step = 1;
         const timer = setInterval(() => {
             current += step;
@@ -242,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 15);
     }
 
-    // Avvio immediato e polling ogni 5 secondi
+    // Avvio e aggiornamento continuo ogni 5 secondi
     fetchLiveChainMetrics();
     setInterval(fetchLiveChainMetrics, 5000);
 
