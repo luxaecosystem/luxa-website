@@ -237,8 +237,14 @@
   }
 
   async function fetchRecentActivity(limit = 10) {
-    const { ok, data } = await fetchJson(`${CONFIG.api}/ecosystem/chain/recent-tx?limit=${limit}`);
-    if (!ok || !Array.isArray(data?.activity)) throw new Error('Activity feed unavailable.');
+    const { ok, status, data } = await fetchJson(`${CONFIG.api}/ecosystem/chain/recent-tx?limit=${limit}`);
+    if (!ok) {
+      const detail = data?.error ? `: ${data.error}` : ` (HTTP ${status})`;
+      throw new Error(`Activity feed unavailable${detail}`);
+    }
+    if (!Array.isArray(data?.activity)) {
+      throw new Error('Activity feed returned an unexpected response format.');
+    }
     return data.activity;
   }
 
