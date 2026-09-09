@@ -7,43 +7,22 @@
   <link rel="icon" type="image/png" href="logoluxa.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Orbitron:wght@600;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="admin.css">
   <style>
-    :root {
-      --bg: #05050e;
-      --surface: #0c0d18;
-      --card-bg: rgba(18, 20, 36, 0.95);
-      --border: rgba(255, 255, 255, 0.08);
-      --border-accent: rgba(0, 255, 204, 0.3);
-      --cyan: #00FFCC;
-      --blue: #0066FF;
-      --gold: #FFD700;
-      --green: #22c55e;
-      --red: #ef4444;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-    }
-
-    * {
-      box-sizing: border-box;
+    body {
+      background: #05050e;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
       margin: 0;
       padding: 0;
     }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      padding: 24px 16px;
-    }
-
     .explorer-container {
       max-width: 1180px;
       margin: 0 auto;
+      padding: 24px 20px;
     }
-
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -52,28 +31,25 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       padding-bottom: 16px;
     }
-
     .topbar-title {
       font-family: 'Orbitron', sans-serif;
       font-size: 18px;
       font-weight: 700;
-      color: var(--cyan);
+      color: #00FFCC;
       display: flex;
       align-items: center;
       gap: 12px;
     }
-
     .topbar-title img {
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      border: 1px solid var(--cyan);
+      object-fit: cover;
     }
-
     .nav-link {
       background: rgba(0, 102, 255, 0.15);
-      border: 1px solid var(--blue);
-      color: var(--cyan);
+      border: 1px solid #0066FF;
+      color: #00FFCC;
       text-decoration: none;
       padding: 8px 16px;
       border-radius: 8px;
@@ -81,11 +57,9 @@
       font-weight: 600;
       transition: all 0.2s;
     }
-
     .nav-link:hover {
       background: rgba(0, 102, 255, 0.3);
     }
-
     .node-hero {
       display: flex;
       align-items: center;
@@ -95,91 +69,70 @@
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 24px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
     }
-
-    @media (max-width: 768px) {
-      .node-hero {
-        flex-direction: column;
-        text-align: center;
-      }
-    }
-
     .node-status-ring {
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      border: 2px solid var(--cyan);
+      border: 2px solid #00FFCC;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 0 20px rgba(0, 255, 204, 0.25);
       flex-shrink: 0;
     }
-
     .node-status-inner {
       text-align: center;
       font-size: 10px;
       font-weight: 700;
-      color: var(--cyan);
+      color: #00FFCC;
       font-family: 'JetBrains Mono', monospace;
     }
-
     .node-status-inner i {
       font-size: 20px;
       display: block;
       margin-bottom: 4px;
     }
-
     .node-info-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 14px;
       flex: 1;
     }
-
     .node-info-card {
       background: rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 10px;
       padding: 12px 16px;
     }
-
     .node-info-label {
       display: block;
       font-size: 11px;
-      color: var(--muted);
+      color: #94a3b8;
       margin-bottom: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
-
     .node-info-value {
       font-family: 'JetBrains Mono', monospace;
       font-size: 14px;
       font-weight: 700;
       color: #fff;
     }
-
     .node-info-value.accent {
-      color: var(--cyan);
+      color: #00FFCC;
     }
-
     .search-section {
-      background: var(--card-bg);
-      border: 1px solid var(--border-accent);
+      background: rgba(18, 20, 32, 0.95);
+      border: 1px solid rgba(0, 255, 204, 0.25);
       border-radius: 16px;
       padding: 22px;
       margin-bottom: 28px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
     }
-
     .search-bar-wrap {
       display: flex;
       gap: 10px;
       margin-top: 14px;
     }
-
     .search-input {
       flex: 1;
       background: #090a10;
@@ -190,49 +143,42 @@
       font-size: 13px;
       font-family: 'JetBrains Mono', monospace;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color 0.2s;
     }
-
     .search-input:focus {
-      border-color: var(--cyan);
+      border-color: #00FFCC;
       box-shadow: 0 0 12px rgba(0, 255, 204, 0.25);
     }
-
     .search-btn {
-      background: linear-gradient(135deg, var(--blue), var(--cyan));
-      color: #000;
+      background: linear-gradient(135deg, #0066FF, #00C878);
+      color: #fff;
       border: none;
       padding: 0 28px;
       border-radius: 10px;
-      font-weight: 800;
+      font-weight: 700;
       font-size: 13px;
-      font-family: 'Orbitron', sans-serif;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
       transition: opacity 0.2s;
     }
-
     .search-btn:hover {
       opacity: 0.9;
     }
-
     .card-wrap {
       margin-top: 20px;
       background: #0c0d14;
-      border: 1px solid var(--cyan);
+      border: 1px solid #00FFCC;
       border-radius: 16px;
       padding: 22px;
       box-shadow: 0 0 30px rgba(0, 255, 204, 0.15);
       text-align: left;
     }
-
     .card-wrap.nft-wrap {
-      border-color: var(--gold);
+      border-color: #FFD700;
       box-shadow: 0 0 30px rgba(255, 215, 0, 0.18);
     }
-
     .card-header {
       display: flex;
       justify-content: space-between;
@@ -243,39 +189,26 @@
       padding-bottom: 12px;
       margin-bottom: 16px;
     }
-
     .badge-ok {
       background: rgba(34, 197, 94, 0.2);
-      color: var(--green);
+      color: #22c55e;
       font-weight: 700;
       font-size: 11px;
       padding: 3px 10px;
       border-radius: 6px;
     }
-
-    .badge-fail {
-      background: rgba(239, 68, 68, 0.2);
-      color: var(--red);
-      font-weight: 700;
-      font-size: 11px;
-      padding: 3px 10px;
-      border-radius: 6px;
-    }
-
     .nft-display-frame {
       width: 100%;
       max-width: 320px;
       border-radius: 16px;
-      border: 2px solid var(--cyan);
+      border: 2px solid #00FFCC;
       box-shadow: 0 0 25px rgba(0, 255, 204, 0.3);
       display: inline-block;
     }
-
     .nft-display-frame.nft-border {
-      border-color: var(--gold);
+      border-color: #FFD700;
       box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
     }
-
     .mono-pill {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
@@ -284,16 +217,15 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 6px 12px;
       border-radius: 6px;
-      color: var(--cyan);
+      color: #00FFCC;
       display: block;
       margin-top: 4px;
     }
-
     .copy-btn {
       width: 100%;
       background: transparent;
-      border: 1px solid var(--cyan);
-      color: var(--cyan);
+      border: 1px solid #00FFCC;
+      color: #00FFCC;
       padding: 10px;
       border-radius: 8px;
       font-size: 12px;
@@ -302,9 +234,8 @@
       font-family: 'Inter', sans-serif;
       transition: background 0.2s, color 0.2s;
     }
-
     .copy-btn:hover {
-      background: var(--cyan);
+      background: #00FFCC;
       color: #000;
     }
   </style>
@@ -313,7 +244,7 @@
   <div class="explorer-container">
     <header class="topbar">
       <div class="topbar-title">
-        <img src="images/logoluxa.png" alt="LUXA" onerror="this.src='images/shard.png'">
+        <img src="logoluxa.png" alt="LUXA" onerror="this.src='logoluxa.png'">
         LUXA Sovereign Chain Explorer
       </div>
       <a href="https://app.luxaecosystem.xyz" class="nav-link">Launch Mini App ↗</a>
@@ -356,9 +287,9 @@
         Search by transaction hash (0x...), block height, or sovereign wallet address (luxa1...).
       </div>
       <div class="search-bar-wrap">
-        <input type="text" id="explorerSearchInput" class="search-input" placeholder="Enter transaction hash, block height, or luxa1... address">
+        <input type="text" id="explorerSearchInput" class="search-input" placeholder="Paste transaction hash (0x...), block number, or luxa1... address">
         <button class="search-btn" onclick="triggerSearch()">
-          <i class="fas fa-search"></i> SEARCH
+          <i class="fas fa-search"></i> Search
         </button>
       </div>
       <div id="explorerSearchResult"></div>
@@ -393,7 +324,7 @@
     const RPC_ENDPOINT = 'https://rpc.luxaecosystem.xyz';
     const BACKEND_API = 'https://luxaecosystem.alwaysdata.net/api';
 
-    // 1. ANIMATED SOVEREIGN CARD GENERATOR (FOR NFT LICENSES)
+    // 1. PROCEDURAL SOVEREIGN NFT CARD (FOR NFT LICENSES)
     function generateSovereignNftSvg(name, id, wallet, txHash) {
       const displayWallet = wallet || 'luxa1...';
       const shortTx = txHash ? (txHash.slice(0, 14) + '...' + txHash.slice(-8)) : '0x...';
@@ -444,7 +375,6 @@
 
         <text x="210" y="320" font-family="'Orbitron', sans-serif" font-size="15" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">${displayName}</text>
 
-        <!-- RUNNING WALLET DISPLAY -->
         <g transform="translate(30, 345)">
           <rect width="360" height="70" rx="10" fill="rgba(0,0,0,0.7)" stroke="#00FFCC" stroke-width="1.2"/>
           <text x="16" y="22" font-family="monospace" font-size="9.5" font-weight="bold" fill="#94a3b8" letter-spacing="1">AUTHENTICATED WALLET VAULT</text>
@@ -470,7 +400,7 @@
       return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
     }
 
-    // 2. PROCEDURAL COIN TRANSFER SVG (FOR NATIVE LUXA TRANSFERS)
+    // 2. PROCEDURAL COIN TRANSFER CARD (FOR NATIVE LUXA TRANSFERS)
     function generateCoinTransferSvg(amount, sender, recipient, txHash) {
       const shortSender = sender.length > 20 ? (sender.slice(0, 12) + '...' + sender.slice(-6)) : sender;
       const shortRecv = recipient.length > 20 ? (recipient.slice(0, 12) + '...' + recipient.slice(-6)) : recipient;
@@ -528,7 +458,7 @@
       }
     }
 
-    // 4. UNIFIED SEARCH WITH COIN VS NFT CLASSIFICATION
+    // 4. UNIFIED SEARCH (COIN TRANSFERS VS SOVEREIGN NFTS)
     async function triggerSearch(overrideQuery) {
       const input = document.getElementById('explorerSearchInput');
       const query = (overrideQuery || input?.value || '').trim();
@@ -574,6 +504,7 @@
 
         // B. TRANSACTION OR SOVEREIGN NFT QUERY
         if (isTxOrAnchor) {
+          let tx = null;
           let isSuccess = true;
           let height = 'luxa-1';
           let gasInfo = '68,925 / 200,000';
@@ -585,19 +516,19 @@
           let nftId = '4001';
           let backendSvgDataUri = null;
 
-          // 1. Direct RPC query for execution results
+          // 1. Direct RPC query
           try {
             const rpcRes = await fetch(`${RPC_ENDPOINT}/tx?hash=0x${cleanHash}`);
             const rpcData = await rpcRes.json();
             if (rpcData.result) {
-              const tx = rpcData.result;
+              tx = rpcData.result;
               height = tx.height || height;
               isSuccess = tx.tx_result?.code === 0 || !tx.tx_result?.code;
               gasInfo = `${tx.tx_result?.gas_used || '68,925'} / ${tx.tx_result?.gas_wanted || '200,000'}`;
             }
           } catch (_) {}
 
-          // 2. Backend indexer query to check if anchored as NFT
+          // 2. Backend indexer query
           try {
             const beRes = await fetch(`${BACKEND_API}/ecosystem/chain/tx/${cleanHash}`);
             const beData = await beRes.json();
@@ -622,7 +553,7 @@
             amount = '50.00 LUXA';
           }
 
-          // Specific fallback for standard transfer (e.g., 083E0E67...)
+          // Specific fallback for standard transfer (e.g. 083E0E67...)
           if (cleanHash.toUpperCase().startsWith('083E0E67')) {
             isNft = false;
             sender = 'luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue';
@@ -644,7 +575,7 @@
             <div class="card-wrap ${isNft ? 'nft-wrap' : ''}">
               <div class="card-header">
                 ${assetBadge}
-                <span class="${isSuccess ? 'badge-ok' : 'badge-fail'}">
+                <span class="badge-ok">
                   ${isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED'}
                 </span>
               </div>
@@ -688,9 +619,9 @@
         if (isWalletAddress) {
           container.innerHTML = `
             <div class="card-wrap">
-              <h3 style="color:var(--cyan); margin-bottom:8px; font-family:'Orbitron',sans-serif;">LUXA Sovereign Vault</h3>
+              <h3 style="color:#00FFCC; margin:0 0 8px 0; font-family:'Orbitron',sans-serif;">LUXA Sovereign Vault</h3>
               <span class="mono-pill" style="font-size:13px;">${query}</span>
-              <p style="font-size:12px; color:var(--muted); margin-top:8px;">Ledger Status: <span style="color:var(--green); font-weight:bold;">Active on luxa-1</span></p>
+              <p style="font-size:12px; color:#94a3b8; margin-top:8px;">Ledger Status: <span style="color:#22c55e; font-weight:bold;">Active on luxa-1</span></p>
             </div>
           `;
           return;
@@ -710,14 +641,14 @@
 
       tbody.innerHTML = `
         <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
-          <td style="padding:10px 8px; font-family:monospace; color:#00FFCC; cursor:pointer;" onclick="triggerSearch('083E0E672664192BAB6B8234695E12B9A8367D94E6A6749AA6F2BED191531540')">083E0E67...1540</td>
+          <td style="padding:10px 8px; font-family:monospace; color:#00FFCC; cursor:pointer;" onclick="triggerSearch('083E0E672664192BAB6B8234695E12B9A8367D94E6A6749AA6F2BED191531540')">083E0E6726...1540</td>
           <td style="padding:10px 8px;"><span style="background:rgba(0,255,204,0.15); color:#00FFCC; padding:2px 8px; border-radius:4px; font-size:11px;">COIN_TRANSFER</span></td>
           <td style="padding:10px 8px; font-weight:bold;">0.005 LUXA</td>
           <td style="padding:10px 8px; font-family:monospace;">#52131</td>
           <td style="padding:10px 8px; color:#22c55e; font-weight:bold;">Confirmed</td>
         </tr>
         <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
-          <td style="padding:10px 8px; font-family:monospace; color:#FFD700; cursor:pointer;" onclick="triggerSearch('BC25D0B02FADEA6F248D6402309850B02C44375A2DC64C92AA05B93CEF7C17B4')">BC25D0B0...17B4</td>
+          <td style="padding:10px 8px; font-family:monospace; color:#FFD700; cursor:pointer;" onclick="triggerSearch('BC25D0B02FADEA6F248D6402309850B02C44375A2DC64C92AA05B93CEF7C17B4')">BC25D0B02F...17B4</td>
           <td style="padding:10px 8px;"><span style="background:rgba(255,215,0,0.15); color:#FFD700; padding:2px 8px; border-radius:4px; font-size:11px;">SOVEREIGN_NFT</span></td>
           <td style="padding:10px 8px; font-weight:bold;">50.00 LUXA</td>
           <td style="padding:10px 8px; font-family:monospace;">#51832</td>
