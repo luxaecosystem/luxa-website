@@ -158,7 +158,7 @@
   async function fetchBlock(height) {
     const { ok, data } = await fetchJson(`${CONFIG.rpc}/block?height=${height}`);
     if (!ok || !data?.result?.block) {
-      throw new Error(`Blocco #${height} non trovato sulla chain.`);
+      throw new Error(`Block #${height} not found on the chain.`);
     }
     return data.result.block;
   }
@@ -181,12 +181,12 @@
     } catch (_) { /* RPC unreachable */ }
 
     if (!backendRecord && !rpcRecord) {
-      throw new Error('Nessuna transazione trovata con questo hash, né nel ledger né on-chain.');
+      throw new Error('No transaction found for this hash, neither in the ledger nor on-chain.');
     }
 
     const record = {
       hash: cleanHash,
-      height: rpcRecord?.height || backendRecord?.height || 'sconosciuto',
+      height: rpcRecord?.height || backendRecord?.height || 'unknown',
       success: rpcRecord ? (rpcRecord.tx_result?.code === 0 || !rpcRecord.tx_result?.code) : true,
       gasUsed: rpcRecord?.tx_result?.gas_used ?? null,
       gasWanted: rpcRecord?.tx_result?.gas_wanted ?? null,
@@ -232,8 +232,14 @@
 
   async function fetchLatestBlockSummary() {
     const { ok, data } = await fetchJson(`${CONFIG.api}/ecosystem/chain/latest-block`);
-    if (!ok || !data?.block) throw new Error('Nodo non raggiungibile');
+    if (!ok || !data?.block) throw new Error('Node unreachable');
     return data.block;
+  }
+
+  async function fetchRecentActivity(limit = 10) {
+    const { ok, data } = await fetchJson(`${CONFIG.api}/ecosystem/chain/recent-tx?limit=${limit}`);
+    if (!ok || !Array.isArray(data?.activity)) throw new Error('Activity feed unavailable.');
+    return data.activity;
   }
 
   // ---------------------------------------------------------------------
@@ -248,19 +254,19 @@
   }
 
   function renderBlock(container, block, height) {
-    const proposer = block.header?.proposer_address || 'sconosciuto';
+    const proposer = block.header?.proposer_address || 'unknown';
     const txCount = block.data?.txs?.length ?? 0;
-    const time = block.header?.time ? new Date(block.header.time).toLocaleString() : 'sconosciuto';
+    const time = block.header?.time ? new Date(block.header.time).toLocaleString() : 'unknown';
 
     container.innerHTML = `
       <div class="result-card">
         <div class="result-card__header">
-          <span class="badge badge--info">BLOCCO #${escapeHtml(height)}</span>
-          <span class="badge badge--ok">CONFERMATO</span>
+          <span class="badge badge--info">BLOCK #${escapeHtml(height)}</span>
+          <span class="badge badge--ok">CONFIRMED</span>
         </div>
         <dl class="result-card__facts">
-          <div><dt>Orario</dt><dd>${escapeHtml(time)}</dd></div>
-          <div><dt>Transazioni</dt><dd>${escapeHtml(txCount)}</dd></div>
+          <div><dt>Time</dt><dd>${escapeHtml(time)}</dd></div>
+          <div><dt>Transactions</dt><dd>${escapeHtml(txCount)}</dd></div>
           <div><dt>Proposer</dt><dd class="mono">${escapeHtml(proposer)}</dd></div>
         </dl>
       </div>`;
@@ -270,39 +276,80 @@
     const accent = record.isNft ? '#FFD700' : '#00FFCC';
     const cardSvg = record.isNft
       ? buildNftCardSvg({ name: record.assetName || 'Sovereign License', id: record.nftId, holder: record.recipient || record.sender })
-      : buildCoinCardSvg({ amount: record.amount || 'importo non disponibile', sender: record.sender || 'sconosciuto', recipient: record.recipient || 'sconosciuto', txHash: rawQuery });
+      : buildCoinCardSvg({ amount: record.amount || 'amount unavailable', sender: record.sender || 'unknown', recipient: record.recipient || 'unknown', txHash: rawQuery });
 
     const badgeLabel = record.isNft
-      ? `LICENZA NFT SOVEREIGN${record.nftId ? ` (#${escapeHtml(record.nftId)})` : ''}`
-      : 'TRASFERIMENTO NATIVO (LUXA)';
+      ? `SOVEREIGN NFT LICENSE${record.nftId ? ` (#${escapeHtml(record.nftId)})` : ''}`
+      : 'NATIVE TRANSFER (LUXA)';
 
     container.innerHTML = `
       <div class="result-card" style="--accent: ${accent}">
         <div class="result-card__header">
           <span class="badge" style="color:${accent}; border-color:${accent};">${badgeLabel}</span>
-          <span class="badge ${record.success ? 'badge--ok' : 'badge--fail'}">${record.success ? 'CONFERMATA ON-CHAIN' : 'FALLITA'}</span>
+          <span class="badge ${record.success ? 'badge--ok' : 'badge--fail'}">${record.success ? 'CONFIRMED ON-CHAIN' : 'FAILED'}</span>
         </div>
         <div class="result-card__visual">
-          <img src="${cardSvg}" alt="Card della transazione" style="border-color:${accent};">
+          <img src="${cardSvg}" alt="Transaction card" style="border-color:${accent};">
         </div>
         <dl class="result-card__facts">
-          <div><dt>Importo</dt><dd>${escapeHtml(record.amount || 'non disponibile')}</dd></div>
-          <div><dt>Mittente</dt><dd class="mono">${escapeHtml(record.sender || 'non disponibile')}</dd></div>
-          <div><dt>Destinatario</dt><dd class="mono">${escapeHtml(record.recipient || 'non disponibile')}</dd></div>
-          <div><dt>Blocco</dt><dd>#${escapeHtml(record.height)}</dd></div>
+          <div><dt>Amount</dt><dd>${escapeHtml(record.amount || 'unavailable')}</dd></div>
+          <div><dt>Sender</dt><dd class="mono">${escapeHtml(record.sender || 'unavailable')}</dd></div>
+          <div><dt>Recipient</dt><dd class="mono">${escapeHtml(record.recipient || 'unavailable')}</dd></div>
+          <div><dt>Block</dt><dd>#${escapeHtml(record.height)}</dd></div>
           ${record.gasUsed != null ? `<div><dt>Gas</dt><dd>${escapeHtml(record.gasUsed)} / ${escapeHtml(record.gasWanted)}</dd></div>` : ''}
         </dl>
         <button type="button" class="copy-btn" style="border-color:${accent}; color:${accent};" data-copy="${escapeHtml(rawQuery)}">
-          Copia hash transazione
+          Copy transaction hash
         </button>
       </div>`;
 
     container.querySelector('.copy-btn')?.addEventListener('click', (e) => {
       const value = e.currentTarget.getAttribute('data-copy');
       navigator.clipboard?.writeText(value);
-      e.currentTarget.textContent = 'Copiato!';
-      setTimeout(() => { e.currentTarget.textContent = 'Copia hash transazione'; }, 1500);
+      e.currentTarget.textContent = 'Copied!';
+      setTimeout(() => { e.currentTarget.textContent = 'Copy transaction hash'; }, 1500);
     });
+  }
+
+  function renderActivityRows(tbody, activity) {
+    if (!activity.length) {
+      tbody.innerHTML = `<tr><td colspan="5" class="explorer-status">No activity recorded yet.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = activity.map((item) => {
+      const isNft = item.type === 'SOVEREIGN_NFT';
+      const accent = isNft ? 'var(--gold)' : 'var(--cyan)';
+      const amountLabel = item.amount != null ? `${item.amount} ${(item.currency || 'LUXA').toUpperCase()}` : '—';
+      return `
+        <tr data-hash="${escapeHtml(item.hash)}">
+          <td class="hash-cell" style="color:${accent};">${escapeHtml(shorten(item.hash, 8, 4))}</td>
+          <td><span class="badge" style="color:${accent}; border-color:${accent}; font-size:10px;">${isNft ? 'SOVEREIGN NFT' : 'TRANSFER'}</span></td>
+          <td>${escapeHtml(amountLabel)}</td>
+          <td>${item.height ? '#' + escapeHtml(item.height) : '—'}</td>
+          <td style="color:var(--green); font-weight:bold;">${escapeHtml(item.status || 'CONFIRMED')}</td>
+        </tr>`;
+    }).join('');
+
+    tbody.querySelectorAll('tr[data-hash]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const input = document.getElementById('explorerSearchInput');
+        if (input) input.value = row.getAttribute('data-hash');
+        search('explorerSearchInput', 'explorerSearchResult');
+        document.getElementById('explorerSearchResult')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+  }
+
+  async function refreshActivity() {
+    const tbody = document.getElementById('activityTableBody');
+    if (!tbody) return;
+    try {
+      const activity = await fetchRecentActivity();
+      renderActivityRows(tbody, activity);
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="5" class="explorer-status explorer-status--error">${escapeHtml(err.message)}</td></tr>`;
+    }
   }
 
   // ---------------------------------------------------------------------
@@ -315,11 +362,11 @@
     if (!container) return;
 
     if (!query) {
-      renderError(container, 'Inserisci un hash di transazione o un numero di blocco.');
+      renderError(container, 'Enter a transaction hash or a block number.');
       return;
     }
 
-    renderLoading(container, 'Interrogazione del ledger luxa-1...');
+    renderLoading(container, 'Querying the luxa-1 ledger...');
 
     try {
       if (isBlockHeightQuery(query)) {
@@ -332,9 +379,9 @@
         renderTx(container, record, query);
         return;
       }
-      renderError(container, 'Formato non riconosciuto: usa un hash di transazione o un numero di blocco.');
+      renderError(container, 'Unrecognized format: use a transaction hash or a block number.');
     } catch (err) {
-      renderError(container, err.message || 'Ricerca non riuscita.');
+      renderError(container, err.message || 'Search failed.');
     }
   }
 
@@ -345,14 +392,14 @@
       const block = await fetchLatestBlockSummary();
       el.textContent = `#${Number(block.height).toLocaleString('it-IT')}`;
     } catch (_) {
-      el.textContent = 'non disponibile';
+      el.textContent = 'unavailable';
     }
   }
 
   // ---------------------------------------------------------------------
   // Wiring
   // ---------------------------------------------------------------------
-  window.LuxaExplorer = { search, refreshLatestBlock };
+  window.LuxaExplorer = { search, refreshLatestBlock, refreshActivity };
 
   document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('explorerSearchInput');
@@ -364,8 +411,13 @@
       if (e.key === 'Enter') search('explorerSearchInput', resultId);
     });
 
+    document.getElementById('refreshActivityButton')?.addEventListener('click', refreshActivity);
+
     refreshLatestBlock('latestBlockValue');
     setInterval(() => refreshLatestBlock('latestBlockValue'), 15000);
+
+    refreshActivity();
+    setInterval(refreshActivity, 20000);
 
     const params = new URLSearchParams(window.location.search);
     const prefill = params.get('q') || params.get('tx');
