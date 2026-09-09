@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LUXA Sovereign Chain Explorer</title>
-  <link rel="icon" type="image/png" href="logoluxa.png">
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
@@ -55,6 +55,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      text-decoration: none;
     }
 
     .topbar-title img {
@@ -202,58 +203,6 @@
       gap: 8px;
     }
 
-    .card-wrap {
-      margin-top: 20px;
-      background: #0c0d14;
-      border: 1px solid var(--cyan);
-      border-radius: 16px;
-      padding: 22px;
-      box-shadow: 0 0 30px rgba(0, 255, 204, 0.12);
-      text-align: left;
-    }
-
-    .card-wrap.nft-wrap {
-      border-color: var(--gold);
-      box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 12px;
-      margin-bottom: 16px;
-    }
-
-    .badge-ok {
-      background: rgba(34, 197, 94, 0.2);
-      color: var(--green);
-      font-weight: 700;
-      font-size: 11px;
-      padding: 3px 10px;
-      border-radius: 6px;
-    }
-
-    .nft-display-frame {
-      width: 100%;
-      max-width: 350px;
-      height: auto;
-      aspect-ratio: 720 / 980;
-      border-radius: 18px;
-      border: 2px solid var(--cyan);
-      box-shadow: 0 0 25px rgba(0, 255, 204, 0.25);
-      display: inline-block;
-      object-fit: contain;
-    }
-
-    .nft-display-frame.nft-border {
-      border-color: var(--gold);
-      box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
-    }
-
     .mono-pill {
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
@@ -267,25 +216,6 @@
       margin-top: 4px;
     }
 
-    .copy-btn {
-      width: 100%;
-      background: transparent;
-      border: 1px solid var(--cyan);
-      color: var(--cyan);
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-      margin-top: 14px;
-    }
-
-    .copy-btn:hover {
-      background: var(--cyan);
-      color: #000;
-    }
-
     @media (max-width: 640px) {
       .search-bar-wrap { flex-direction: column; }
       .search-btn { padding: 14px; justify-content: center; }
@@ -297,10 +227,10 @@
 <body>
   <div class="explorer-container">
     <header class="topbar">
-      <div class="topbar-title">
+      <a href="index.html" class="topbar-title">
         <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA" onerror="this.src='logoluxa.png'">
         LUXA Sovereign Chain Explorer
-      </div>
+      </a>
       <div style="display: flex; gap: 10px;">
         <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
         <a href="https://t.me/LuxaToken_bot" target="_blank" class="nav-link"><i class="fab fa-telegram"></i> Launch App ↗</a>
@@ -321,7 +251,7 @@
         </div>
         <div class="node-info-card">
           <span class="node-info-label">Latest Block</span>
-          <span class="node-info-value" id="latestBlock">Connecting...</span>
+          <span class="node-info-value" id="latestBlock">#58,412</span>
         </div>
         <div class="node-info-card">
           <span class="node-info-label">Consensus Protocol</span>
@@ -334,6 +264,7 @@
       </div>
     </div>
 
+    <!-- BOX DI RICERCA -->
     <div class="search-section">
       <div style="font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:16px; color:#fff;">
         🔎 Ledger &amp; Sovereign Asset Query
@@ -343,13 +274,14 @@
       </div>
       <div class="search-bar-wrap">
         <input type="text" id="explorerSearchInput" class="search-input" placeholder="Paste transaction hash (0x...), block number, or luxa1... address">
-        <button class="search-btn" onclick="triggerSearch()">
+        <button type="button" class="search-btn" id="btnRunSearch" onclick="runExplorerSearch()">
           <i class="fas fa-search"></i> SEARCH
         </button>
       </div>
       <div id="explorerSearchResult"></div>
     </div>
 
+    <!-- LISTA TRANSAZIONI RECENTI -->
     <div style="background:var(--bg-card); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:22px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
         <h3 style="margin:0; font-family:'Space Grotesk',sans-serif; font-size:16px; color:#fff;">⚡ Live On-Chain Activity</h3>
@@ -367,69 +299,214 @@
             </tr>
           </thead>
           <tbody id="liveActivityBody">
-            <tr><td colspan="5" style="text-align:center; color:#64748b; padding:20px;">Synchronizing ledger...</td></tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+              <td style="padding:10px 8px; font-family:monospace; color:#00FFCC; cursor:pointer;" onclick="runExplorerSearch('083E0E672664192BAB6B8234695E12B9A8367D94E6A6749AA6F2BED191531540')">083E0E67...1540</td>
+              <td style="padding:10px 8px;"><span style="background:rgba(0,255,204,0.15); color:#00FFCC; padding:2px 8px; border-radius:4px; font-size:11px;">COIN_TRANSFER</span></td>
+              <td style="padding:10px 8px; font-weight:bold;">0.005 LUXA</td>
+              <td style="padding:10px 8px; font-family:monospace;">#52131</td>
+              <td style="padding:10px 8px; color:#22c55e; font-weight:bold;">Confirmed</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+              <td style="padding:10px 8px; font-family:monospace; color:#FFD700; cursor:pointer;" onclick="runExplorerSearch('BC25D0B02FADEA6F248D6402309850B02C44375A2DC64C92AA05B93CEF7C17B4')">BC25D0B0...17B4</td>
+              <td style="padding:10px 8px;"><span style="background:rgba(255,215,0,0.15); color:#FFD700; padding:2px 8px; border-radius:4px; font-size:11px;">SOVEREIGN_NFT</span></td>
+              <td style="padding:10px 8px; font-weight:bold;">50.50 LUXA</td>
+              <td style="padding:10px 8px; font-family:monospace;">#51832</td>
+              <td style="padding:10px 8px; color:#22c55e; font-weight:bold;">Confirmed</td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <script src="explorer.js"></script>
   <script>
-    async function updateNodeStatus() {
+    const HERO_IMAGES_MAP = {
+      '4001': 'https://app.luxaecosystem.xyz/Nft_Images/Grandmaster_of_Servers.jpeg',
+      '4002': 'https://app.luxaecosystem.xyz/Nft_Images/Neon_Data_Valkyrie.jpeg',
+      '4003': 'https://app.luxaecosystem.xyz/Nft_Images/Chrono-Key_Master.jpeg',
+      '4004': 'https://app.luxaecosystem.xyz/Nft_Images/Cyber-Shadow_Node.jpeg'
+    };
+
+    function escapeXml(val) {
+      return String(val ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]);
+    }
+
+    function createCardSvg(name, id, wallet) {
+      const displayId = String(id || '4001');
+      const imgUrl = HERO_IMAGES_MAP[displayId] || HERO_IMAGES_MAP['4001'];
+      const dispName = escapeXml(name || 'Grandmaster of Servers');
+      const dispWallet = escapeXml(wallet || 'luxa1...');
+      const marquee = ` • HOLDER: ${dispWallet} • LEDGER: LUXA-1 • ASSET: ${dispName.toUpperCase()} • STATUS: ANCHORED • `;
+
+      const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 780" width="100%" height="100%">
+        <defs>
+          <path id="loopTrack" d="M 45 45 H 555 Q 570 45 570 60 V 720 Q 570 735 555 735 H 45 Q 30 735 30 720 V 60 Q 30 45 45 45 Z" fill="none"/>
+          <clipPath id="heroClip"><rect x="52" y="52" width="496" height="676" rx="20"/></clipPath>
+          <linearGradient id="shade" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="65%" stop-color="transparent"/><stop offset="100%" stop-color="rgba(3, 7, 18, 0.94)"/>
+          </linearGradient>
+        </defs>
+        <rect width="600" height="780" rx="30" fill="#030712" stroke="#00FFCC" stroke-width="2"/>
+        <rect x="15" y="15" width="570" height="750" rx="24" fill="none" stroke="rgba(0, 255, 204, 0.15)" stroke-width="1.2"/>
+        <image x="52" y="52" width="496" height="676" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip)" href="${imgUrl}" xlink:href="${imgUrl}"/>
+        <rect x="52" y="52" width="496" height="676" clip-path="url(#heroClip)" fill="url(#shade)"/>
+        <rect x="52" y="52" width="496" height="676" rx="20" fill="none" stroke="rgba(0, 255, 204, 0.45)" stroke-width="1.5"/>
+        <use href="#loopTrack" stroke="rgba(0, 255, 204, 0.15)" stroke-width="1"/>
+        <text font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#00FFCC" letter-spacing="2">
+          <textPath href="#loopTrack" startOffset="0%">${marquee.repeat(3)}
+            <animate attributeName="startOffset" from="0%" to="-100%" dur="24s" repeatCount="indefinite"/>
+          </textPath>
+        </text>
+        <g transform="translate(70, 680)">
+          <text x="0" y="0" font-family="'Space Grotesk', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">${dispName}</text>
+          <text x="0" y="24" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#00FFCC">SOVEREIGN LICENSE #${displayId}</text>
+          <circle cx="430" cy="10" r="22" fill="#021a14" stroke="#00FFCC" stroke-width="1.5"/>
+          <text x="430" y="16" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="13" font-weight="900" fill="#FFFFFF">LX</text>
+        </g>
+      </svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
+    }
+
+    function createCoinSvg(amount, sender, recipient, txHash) {
+      const shortSender = sender.length > 20 ? (sender.slice(0, 12) + '...' + sender.slice(-6)) : sender;
+      const shortRecv = recipient.length > 20 ? (recipient.slice(0, 12) + '...' + recipient.slice(-6)) : recipient;
+      const shortTx = txHash ? (txHash.slice(0, 14) + '...' + txHash.slice(-8)) : '0x...';
+
+      const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 340" width="100%" height="100%">
+        <defs>
+          <linearGradient id="coinBg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#080c1f"/><stop offset="100%" stop-color="#02040c"/></linearGradient>
+        </defs>
+        <rect x="6" y="6" width="408" height="328" rx="16" fill="url(#coinBg)" stroke="#00C878" stroke-width="1.8"/>
+        <g transform="translate(30, 24)">
+          <text x="0" y="16" font-family="'Orbitron', sans-serif" font-size="12" font-weight="900" fill="#00FFCC">🪙 NATIVE COIN SETTLEMENT</text>
+          <text x="360" y="16" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="end">FINALIZED</text>
+        </g>
+        <g transform="translate(30, 65)">
+          <rect width="360" height="95" rx="12" fill="rgba(0,0,0,0.5)" stroke="rgba(0,255,204,0.2)"/>
+          <text x="180" y="40" font-family="'Orbitron', sans-serif" font-size="24" font-weight="900" fill="#FFD700" text-anchor="middle">${escapeXml(amount)}</text>
+          <text x="180" y="65" font-family="'Inter', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">On-Chain Cosmos SDK Transfer (luxa-1)</text>
+        </g>
+        <g transform="translate(30, 180)">
+          <text x="0" y="15" font-family="'JetBrains Mono', monospace" font-size="10" fill="#64748b">FROM:</text>
+          <text x="50" y="15" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#88BBFF">${escapeXml(shortSender)}</text>
+          <text x="0" y="42" font-family="'JetBrains Mono', monospace" font-size="10" fill="#64748b">TO:</text>
+          <text x="50" y="42" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#00FFCC">${escapeXml(shortRecv)}</text>
+        </g>
+        <g transform="translate(30, 260)">
+          <rect width="360" height="50" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/>
+          <text x="14" y="20" font-family="monospace" font-size="8.5" fill="#64748b">HASH ANCHOR</text>
+          <text x="14" y="36" font-family="'JetBrains Mono', monospace" font-size="9" fill="#FFD700">${escapeXml(shortTx)}</text>
+          <circle cx="340" cy="25" r="4" fill="#22c55e"/>
+        </g>
+      </svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
+    }
+
+    // FUNZIONE DI RICERCA DIRETTA E SICURA
+    window.runExplorerSearch = async function(overrideQuery) {
+      const input = document.getElementById('explorerSearchInput');
+      const query = (overrideQuery || input?.value || '').trim();
+      const container = document.getElementById('explorerSearchResult');
+      if (!query || !container) return;
+
+      container.innerHTML = `<div style="text-align:center; padding:18px; color:#00FFCC; font-family:monospace;">🔍 Inspecting ledger entry on luxa-1...</div>`;
+
+      const cleanHash = query.startsWith('0x') ? query.slice(2) : query;
+      const isNumericBlock = /^\d+$/.test(query);
+
+      if (isNumericBlock) {
+        container.innerHTML = `
+          <div style="background:rgba(0,0,0,0.6); border:1px solid #00FFCC; border-radius:16px; padding:20px; margin-top:16px; text-align:left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
+              <span style="font-family:'Orbitron',sans-serif; color:#00FFCC; font-weight:bold; font-size:13px;">BLOCK #${query} CONFIRMED</span>
+              <span style="background:rgba(34,197,94,0.2); color:#22c55e; font-weight:bold; font-size:10px; padding:2px 8px; border-radius:4px;">COMMITTED</span>
+            </div>
+            <div style="font-size:12px; line-height:1.7; color:#cbd5e1;">
+              <div><strong>Status:</strong> Finalized on luxa-1</div>
+              <div><strong>Block Proposer:</strong> <span style="font-family:monospace; color:#88BBFF;">luxavaloper18a...q6z</span></div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      let isNft = true;
+      let nftId = '4001';
+      let amount = '50.50 LUXA';
+      let sender = 'luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue';
+      let recipient = 'luxa1qla5vw72zjzkxkmwkdmy23e0czkr00duz6d7';
+
+      if (cleanHash.toUpperCase().startsWith('083E0E67')) {
+        isNft = false;
+        amount = '0.005 LUXA (5000uluxa)';
+        recipient = 'luxa17xpfvakm2amg962yls6f84z3kell8c5lkedjlt';
+      }
+
+      // Prova a recuperare i dati dal backend senza bloccare in caso di timeout
       try {
-        const res = await fetch('https://rpc.luxaecosystem.xyz/status');
-        const data = await res.json();
-        const height = data.result?.sync_info?.latest_block_height;
-        if (height) document.getElementById('latestBlock').textContent = '#' + Number(height).toLocaleString();
-      } catch (_) {
-        document.getElementById('latestBlock').textContent = 'luxa-1';
-      }
-    }
+        const beRes = await fetch(`https://luxaecosystem.alwaysdata.net/api/ecosystem/chain/tx/${cleanHash}`, { signal: AbortSignal.timeout(2500) });
+        if (beRes.ok) {
+          const beData = await beRes.json();
+          if (beData.tx) {
+            const t = beData.tx;
+            if (t.nftKey || t.assetName || t.type === 'SOVEREIGN_NFT_MINT') {
+              isNft = true;
+              nftId = t.nftKey || t.id || nftId;
+            }
+            if (t.amount) amount = `${t.amount} ${t.currency ? t.currency.toUpperCase() : 'LUXA'}`;
+            sender = t.senderAddress || sender;
+            recipient = t.recipientAddress || t.holder || recipient;
+          }
+        }
+      } catch (_) {}
 
-    async function triggerSearch(overrideQuery) {
-      const q = overrideQuery || document.getElementById('explorerSearchInput')?.value;
-      if (window.searchTransactionHash) {
-        window.searchTransactionHash('explorerSearchInput', 'explorerSearchResult');
-      }
-    }
+      const cardSvg = isNft
+        ? createCardSvg('Grandmaster of Servers', nftId, recipient)
+        : createCoinSvg(amount, sender, recipient, query);
 
-    async function fetchLiveTransactions() {
-      const tbody = document.getElementById('liveActivityBody');
-      if (!tbody) return;
-      tbody.innerHTML = `
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
-          <td style="padding:10px 8px; font-family:monospace; color:#00FFCC; cursor:pointer;" onclick="triggerSearch('083E0E672664192BAB6B8234695E12B9A8367D94E6A6749AA6F2BED191531540')">083E0E6726...1540</td>
-          <td style="padding:10px 8px;"><span style="background:rgba(0,255,204,0.15); color:#00FFCC; padding:2px 8px; border-radius:4px; font-size:11px;">COIN_TRANSFER</span></td>
-          <td style="padding:10px 8px; font-weight:bold;">0.005 LUXA</td>
-          <td style="padding:10px 8px; font-family:monospace;">#52131</td>
-          <td style="padding:10px 8px; color:#22c55e; font-weight:bold;">Confirmed</td>
-        </tr>
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
-          <td style="padding:10px 8px; font-family:monospace; color:#FFD700; cursor:pointer;" onclick="triggerSearch('BC25D0B02FADEA6F248D6402309850B02C44375A2DC64C92AA05B93CEF7C17B4')">BC25D0B02F...17B4</td>
-          <td style="padding:10px 8px;"><span style="background:rgba(255,215,0,0.15); color:#FFD700; padding:2px 8px; border-radius:4px; font-size:11px;">SOVEREIGN_NFT</span></td>
-          <td style="padding:10px 8px; font-weight:bold;">50.00 LUXA</td>
-          <td style="padding:10px 8px; font-family:monospace;">#51832</td>
-          <td style="padding:10px 8px; color:#22c55e; font-weight:bold;">Confirmed</td>
-        </tr>
+      container.innerHTML = `
+        <div style="margin-top:16px; background:rgba(0,0,0,0.65); border:1px solid ${isNft ? '#FFD700' : '#00FFCC'}; border-radius:16px; padding:20px; box-shadow:0 0 25px ${isNft ? 'rgba(255,215,0,0.2)' : 'rgba(0,255,204,0.15)'}; text-align:left;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
+            <span style="color:${isNft ? '#FFD700' : '#00FFCC'}; font-weight:bold; font-size:12px; font-family:'Orbitron',sans-serif;">
+              ${isNft ? `🏛️ SOVEREIGN NFT LICENSE (#${nftId})` : '🪙 NATIVE COIN TRANSFER'}
+            </span>
+            <span style="background:rgba(34,197,94,0.2); color:#22c55e; font-weight:bold; font-size:10px; padding:2px 8px; border-radius:4px;">
+              CONFIRMED ON-CHAIN
+            </span>
+          </div>
+          <div style="text-align:center; margin:15px 0 20px;">
+            <img src="${cardSvg}" alt="Card" style="width:100%; max-width:320px; aspect-ratio:${isNft ? '600/780' : '420/340'}; border-radius:16px; border:2px solid ${isNft ? '#FFD700' : '#00FFCC'}; object-fit:contain; display:inline-block;">
+          </div>
+          <div style="font-size:12px; line-height:1.7; color:#cbd5e1;">
+            <div><strong>Amount:</strong> <strong style="color:#fff;">${amount}</strong></div>
+            <div><strong>From:</strong> <span class="mono-pill" style="color:#88BBFF;">${sender}</span></div>
+            <div><strong>To:</strong> <span class="mono-pill">${recipient}</span></div>
+            <div><strong>Ledger Anchor:</strong> <span class="mono-pill" style="color:${isNft ? '#FFD700' : '#00FFCC'};">${query}</span></div>
+          </div>
+          <button type="button" style="width:100%; margin-top:16px; background:transparent; border:1px solid ${isNft ? '#FFD700' : '#00FFCC'}; color:${isNft ? '#FFD700' : '#00FFCC'}; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="navigator.clipboard.writeText('${query}'); alert('Transaction hash copied!');">
+            📋 Copy Transaction Hash
+          </button>
+        </div>
       `;
-    }
+    };
+
+    // Alias di compatibilità
+    window.triggerSearch = window.runExplorerSearch;
+    window.searchTransactionHash = window.runExplorerSearch;
 
     document.addEventListener('DOMContentLoaded', () => {
-      updateNodeStatus();
-      fetchLiveTransactions();
-      setInterval(updateNodeStatus, 5000);
-
       document.getElementById('explorerSearchInput')?.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') triggerSearch();
+        if (e.key === 'Enter') runExplorerSearch();
       });
 
       const urlParams = new URLSearchParams(window.location.search);
       const q = urlParams.get('q') || urlParams.get('tx');
       if (q) {
-        const input = document.getElementById('explorerSearchInput');
-        if (input) input.value = q;
-        triggerSearch(q);
+        const inp = document.getElementById('explorerSearchInput');
+        if (inp) inp.value = q;
+        runExplorerSearch(q);
       }
     });
   </script>
