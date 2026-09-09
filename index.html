@@ -1,554 +1,337 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUXA Token — A Coin for Everyone</title>
-    <meta name="description" content="LUXA Ecosystem - Free mining, community-driven, zero barriers. Join the revolution.">
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUXA Sovereign Chain Explorer</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg: #05050e;
+      --bg-card: rgba(18, 20, 36, 0.95);
+      --border: rgba(255, 255, 255, 0.08);
+      --cyan: #00FFCC;
+      --blue: #0066FF;
+      --gold: #FFD700;
+      --green: #22c55e;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .explorer-container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+
+    .topbar-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .topbar-title img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--cyan);
+      object-fit: cover;
+    }
+
+    .nav-link {
+      background: rgba(0, 102, 255, 0.15);
+      border: 1px solid var(--blue);
+      color: var(--cyan);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-link:hover {
+      background: rgba(0, 102, 255, 0.3);
+      color: #fff;
+    }
+
+    .node-hero {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(0, 255, 204, 0.2);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+    }
+
+    .node-status-ring {
+      width: 75px;
+      height: 75px;
+      border-radius: 50%;
+      border: 2px solid var(--cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.25);
+      flex-shrink: 0;
+    }
+
+    .node-status-inner {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cyan);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .node-status-inner i {
+      font-size: 18px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .node-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      flex: 1;
+    }
+
+    .node-info-card {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .node-info-label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .node-info-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .node-info-value.accent {
+      color: var(--cyan);
+    }
+
+    .search-section {
+      background: var(--bg-card);
+      border: 1px solid rgba(0, 255, 204, 0.25);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 28px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .search-bar-wrap {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .search-input {
+      flex: 1;
+      background: #090a10;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0, 255, 204, 0.25);
+    }
+
+    .search-btn {
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #000;
+      border: none;
+      padding: 0 26px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 13px;
+      font-family: 'Orbitron', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-ok {
+      background: rgba(34, 197, 94, 0.2);
+      color: var(--green);
+      font-weight: 700;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .mono-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      word-break: break-all;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: var(--cyan);
+      display: block;
+      margin-top: 4px;
+    }
+
+    .copy-btn {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      margin-top: 14px;
+    }
+
+    .copy-btn:hover {
+      background: var(--cyan);
+      color: #000;
+    }
+
+    @media (max-width: 640px) {
+      .search-bar-wrap { flex-direction: column; }
+      .search-btn { padding: 14px; justify-content: center; }
+      .node-hero { flex-direction: column; text-align: center; }
+      .topbar { flex-direction: column; gap: 12px; align-items: flex-start; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="preloader-content">
-            <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA" class="preloader-logo">
-            <div class="preloader-bar"><div class="preloader-progress"></div></div>
+  <div class="explorer-container">
+    <header class="topbar">
+      <a href="index.html" class="topbar-title">
+        <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA">
+        LUXA Sovereign Chain Explorer
+      </a>
+      <div style="display: flex; gap: 10px;">
+        <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+        <a href="https://t.me/LuxaToken_bot" target="_blank" class="nav-link"><i class="fab fa-telegram"></i> Launch App ↗</a>
+      </div>
+    </header>
+
+    <div class="node-hero">
+      <div class="node-status-ring">
+        <div class="node-status-inner">
+          <i class="fas fa-server"></i>
+          <span>ONLINE</span>
         </div>
+      </div>
+      <div class="node-info-grid">
+        <div class="node-info-card">
+          <span class="node-info-label">Chain ID</span>
+          <span class="node-info-value accent">luxa-1</span>
+        </div>
+        <div class="node-info-card">
+          <span class="node-info-label">Latest Block</span>
+          <span class="node-info-value" id="latestBlock">Connecting...</span>
+        </div>
+        <div class="node-info-card">
+          <span class="node-info-label">Consensus Protocol</span>
+          <span class="node-info-value">CometBFT / Cosmos</span>
+        </div>
+        <div class="node-info-card">
+          <span class="node-info-label">RPC Endpoint</span>
+          <span class="node-info-value accent" style="font-size:12px;">rpc.luxaecosystem.xyz</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-container">
-            <a href="#" target="_self" class="nav-logo">
-                <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA">
-                <span>LUXA</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="#about" target="_self">About</a></li>
-                <li><a href="#features" target="_self">Features</a></li>
-                <li><a href="#tokenomics" target="_self">Tokenomics</a></li>
-                <li><a href="#roadmap" target="_self">Roadmap</a></li>
-                <li><a href="#whitepaper" target="_self">White Paper</a></li>
-            </ul>
-            <div class="nav-actions">
-                <a href="explorer.html" target="_self" class="btn btn-outline" style="padding: 8px 16px;">
-                    <i class="fas fa-network-wired"></i> <span>Explorer</span>
-                </a>
-                <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">
-                    <i class="fab fa-telegram"></i> <span>Launch App</span>
-                </a>
-                <button class="mobile-menu-toggle" aria-label="Menu">
-                    <span></span><span></span><span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu">
-        <ul>
-            <li><a href="#about" target="_self">About</a></li>
-            <li><a href="#features" target="_self">Features</a></li>
-            <li><a href="#tokenomics" target="_self">Tokenomics</a></li>
-            <li><a href="#roadmap" target="_self">Roadmap</a></li>
-            <li><a href="#whitepaper" target="_self">White Paper</a></li>
-            <li><a href="explorer.html" target="_self" style="color: #00f5d4;"><i class="fas fa-cube"></i> L1 Explorer</a></li>
-            <li><a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">Launch App</a></li>
-        </ul>
+    <!-- SEZIONE DI RICERCA CON INPUT E PULSANTE CORRETTI -->
+    <div class="search-section">
+      <div style="font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:16px; color:#fff;">
+        🔎 Ledger &amp; Sovereign Asset Query
+      </div>
+      <div style="font-size:12px; color:#94a3b8; margin-top:4px;">
+        Search by transaction hash (0x...), block height, or sovereign wallet address.
+      </div>
+      <div class="search-bar-wrap">
+        <input type="text" id="explorerSearchInput" class="search-input" placeholder="Paste transaction hash (0x...), block number, or address">
+        <button class="search-btn" onclick="triggerSearch()">
+          <i class="fas fa-search"></i> SEARCH
+        </button>
+      </div>
+      <div id="explorerSearchResult"></div>
     </div>
+  </div>
 
-    <!-- Hero Section -->
-    <section id="hero">
-        <div class="hero-bg">
-            <div class="particles" id="particles"></div>
-        </div>
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="pulse-dot"></span>
-                Mining is Live on Telegram
-            </div>
-            <h1 class="hero-title">
-                LUXA Token — <span class="gradient-text">A Coin for Everyone</span>
-            </h1>
-            <p class="hero-desc">
-                No entry barriers. No upfront capital. No technical skills required.<br>
-                Join the LUXA ecosystem and start mining for free, directly inside Telegram.
-            </p>
-            <div class="hero-buttons">
-                <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary btn-large">
-                    <i class="fab fa-telegram"></i> <span>Start Mining Free</span>
-                </a>
-                <a href="explorer.html" target="_self" class="btn btn-outline btn-large">
-                    <i class="fas fa-cubes"></i> <span>Live Explorer</span>
-                </a>
-            </div>
+  <!-- Script Explorer collegato -->
+  <script src="explorer.js"></script>
+  <script>
+    async function updateNodeStatus() {
+      try {
+        const res = await fetch('https://rpc.luxaecosystem.xyz/status');
+        const data = await res.json();
+        const height = data.result?.sync_info?.latest_block_height;
+        if (height) document.getElementById('latestBlock').textContent = '#' + Number(height).toLocaleString();
+      } catch (_) {
+        document.getElementById('latestBlock').textContent = 'luxa-1';
+      }
+    }
 
-            <!-- Hero Channels -->
-            <div class="hero-social-bar">
-                <span>Connect with our channels:</span>
-                <div class="social-row">
-                    <a href="https://t.me/luxatokenofficial" target="_blank" class="social-btn" aria-label="Telegram Channel" title="Channel">
-                        <i class="fab fa-telegram-plane"></i>
-                    </a>
-                    <a href="https://t.me/LuxaTokenCommunity" target="_blank" class="social-btn" aria-label="Telegram Community" title="Community Group">
-                        <i class="fas fa-users"></i>
-                    </a>
-                    <a href="https://t.me/LuxaToken_bot" target="_blank" class="social-btn" aria-label="Telegram Bot" title="Mining Bot">
-                        <i class="fas fa-robot"></i>
-                    </a>
-                    <a href="https://github.com/luxatokenofficial" target="_blank" class="social-btn" aria-label="GitHub" title="GitHub">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="https://x.com/luxatoken" target="_blank" class="social-btn" aria-label="X / Twitter" title="X / Twitter">
-                        <i class="fab fa-x-twitter"></i>
-                    </a>
-                </div>
-            </div>
+    document.addEventListener('DOMContentLoaded', () => {
+      updateNodeStatus();
+      setInterval(updateNodeStatus, 5000);
 
-            <!-- Live Stats -->
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-number live-stat" id="statMiners">Actif</span>
-                    <span class="stat-label">Mineurs actifs</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number live-stat" id="statCountries">Actif</span>
-                    <span class="stat-label">Pays</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number live-stat" id="statBlocks"><i class="fas fa-spinner fa-spin" style="font-size:0.9rem;"></i></span>
-                    <span class="stat-label">Blocs vérifiés</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">The Vision</span>
-                <h2>Built for the People,<br>Not the Privileged</h2>
-                <p>LUXA was born from a simple idea: anyone with a smartphone and a Telegram account should be able to take part in the crypto world.</p>
-            </div>
-            <div class="about-grid">
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-mobile-alt"></i></div>
-                    <h3>Zero Barriers</h3>
-                    <p>No KYC, no gas fees, no complex wallets. Just open Telegram and start mining instantly.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-users"></i></div>
-                    <h3>Community First</h3>
-                    <p>The value comes from the size and commitment of our community, not artificial scarcity.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3>True Ownership</h3>
-                    <p>Non-custodial wallet with BIP-39 seed phrase. Your keys, your coins. Always.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-chart-line"></i></div>
-                    <h3>Transparent Economy</h3>
-                    <p>All parameters are visible and adjustable to keep the ecosystem sustainable long-term.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Features</span>
-                <h2>Everything You Need<br>in One Mini App</h2>
-            </div>
-            <div class="features-wrapper">
-                <div class="feature-row">
-                    <div class="feature-content">
-                        <div class="feature-number">01</div>
-                        <h3>Free Mining Engine</h3>
-                        <p>Start 24-hour mining sessions that passively generate LUXA. Activate boosts, collect NFT Heroes, and watch your balance grow — all without spending a dime.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> 24h passive mining sessions</li>
-                            <li><i class="fas fa-check"></i> Boostable yield with NFTs</li>
-                            <li><i class="fas fa-check"></i> Daily bonuses & reward wheel</li>
-                        </ul>
-                    </div>
-                    <div class="feature-visual">
-                        <div class="feature-card-visual mining-card">
-                            <div class="mining-animation">
-                                <div class="coin-float"></div>
-                                <div class="coin-float"></div>
-                                <div class="coin-float"></div>
-                                <i class="fas fa-coins"></i>
-                            </div>
-                            <span>Mining Active</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="feature-row reverse">
-                    <div class="feature-visual">
-                        <div class="feature-card-visual wallet-card">
-                            <div class="wallet-visual">
-                                <div class="wallet-chip"></div>
-                                <i class="fas fa-wallet"></i>
-                            </div>
-                            <span>Non-Custodial Vault</span>
-                        </div>
-                    </div>
-                    <div class="feature-content">
-                        <div class="feature-number">02</div>
-                        <h3>Secure Non-Custodial Wallet</h3>
-                        <p>Your 12-word seed phrase is generated and encrypted on your device with AES-256-GCM. The server never sees it. True zero-knowledge security.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> BIP-39 standard seed phrase</li>
-                            <li><i class="fas fa-check"></i> AES-256-GCM encryption</li>
-                            <li><i class="fas fa-check"></i> PIN protection with PBKDF2</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="feature-row">
-                    <div class="feature-content">
-                        <div class="feature-number">03</div>
-                        <h3>P2P NFT Marketplace</h3>
-                        <p>Collect unique "Hero" NFTs with different rarities that boost your mining rate. Trade them directly with other users — no intermediaries, zero fees.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Collectible Hero NFTs</li>
-                            <li><i class="fas fa-check"></i> Direct user-to-user trading</li>
-                            <li><i class="fas fa-check"></i> Rarity-based mining boosts</li>
-                        </ul>
-                    </div>
-                    <div class="feature-visual">
-                        <div class="feature-card-visual nft-card">
-                            <div class="nft-grid">
-                                <div class="nft-item rare"><i class="fas fa-star"></i></div>
-                                <div class="nft-item epic"><i class="fas fa-gem"></i></div>
-                                <div class="nft-item legendary"><i class="fas fa-crown"></i></div>
-                            </div>
-                            <span>NFT Collection</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="feature-row reverse">
-                    <div class="feature-visual">
-                        <div class="feature-card-visual ledger-card">
-                            <div class="ledger-visual">
-                                <div class="block-chain">
-                                    <div class="block"><i class="fas fa-link"></i></div>
-                                    <div class="block"><i class="fas fa-link"></i></div>
-                                    <div class="block"><i class="fas fa-link"></i></div>
-                                </div>
-                            </div>
-                            <span>Closed-Chain Ledger</span>
-                        </div>
-                    </div>
-                    <div class="feature-content">
-                        <div class="feature-number">04</div>
-                        <h3>Transparent Ledger</h3>
-                        <p>Every transfer is recorded with a unique hash on our internal ledger. Browse the full transaction history through the built-in Block Explorer.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Unique hash per transaction</li>
-                            <li><i class="fas fa-check"></i> Built-in Block Explorer</li>
-                            <li><i class="fas fa-check"></i> Ready for on-chain bridge</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Tokenomics Section -->
-    <section id="tokenomics" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Tokenomics</span>
-                <h2>Fair & Transparent<br>Economic Design</h2>
-            </div>
-            <div class="tokenomics-grid">
-                <div class="token-card main-card">
-                    <div class="token-header">
-                        <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA">
-                        <div>
-                            <h3>LUXA Token</h3>
-                            <span class="token-status">Mining Live</span>
-                        </div>
-                    </div>
-                    <div class="token-stats">
-                        <div class="t-stat">
-                            <span class="t-label">Base Mining Rate</span>
-                            <span class="t-value">0.00000001 <small>LUXA/hr</small></span>
-                        </div>
-                        <div class="t-stat">
-                            <span class="t-label">Daily Bonus</span>
-                            <span class="t-value">0.00005 <small>LUXA</small></span>
-                        </div>
-                        <div class="t-stat">
-                            <span class="t-label">Referral Reward</span>
-                            <span class="t-value">0.00005 <small>LUXA/friend</small></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="token-card">
-                    <div class="token-icon"><i class="fas fa-gem"></i></div>
-                    <h3>Shards</h3>
-                    <p class="token-desc">Secondary currency earned through daily bonuses, tasks, and the reward wheel.</p>
-                    <div class="token-highlight">
-                        <span class="big">10,000</span>
-                        <span>Shards = 1.0 LUXA</span>
-                    </div>
-                </div>
-
-                <div class="token-card">
-                    <div class="token-icon"><i class="fas fa-infinity"></i></div>
-                    <h3>Total Supply</h3>
-                    <p class="token-desc">To be publicly announced ahead of the on-chain migration in Phase 3.</p>
-                    <div class="token-highlight">
-                        <span class="big">TBD</span>
-                        <span>Coming in Phase 3</span>
-                    </div>
-                </div>
-
-                <div class="token-card">
-                    <div class="token-icon"><i class="fas fa-chart-pie"></i></div>
-                    <h3>Allocation</h3>
-                    <p class="token-desc">Community / Team / Reserve split will be published together with Phase 3 details.</p>
-                    <div class="token-highlight">
-                        <span class="big">TBD</span>
-                        <span>Community-first</span>
-                    </div>
-                </div>
-            </div>
-            <div class="tokenomics-note">
-                <i class="fas fa-info-circle"></i>
-                <p>All economic parameters are managed transparently and may be adjusted to ensure a sustainable long-term economy as the community grows.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Roadmap Section -->
-    <section id="roadmap" class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Roadmap</span>
-                <h2>Our Journey<br>Forward</h2>
-            </div>
-            <div class="roadmap-timeline">
-                <div class="timeline-line"></div>
-                <div class="roadmap-item active">
-                    <div class="roadmap-marker">
-                        <div class="marker-dot"></div>
-                    </div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 1 — Foundations</span>
-                        <span class="phase-status"><i class="fas fa-spinner fa-spin"></i> In Progress</span>
-                        <h3>Building the Core</h3>
-                        <ul>
-                            <li>Telegram Mini App launch</li>
-                            <li>Mining engine & daily rewards</li>
-                            <li>Non-custodial wallet (12-word backup)</li>
-                            <li>Closed-Chain Ledger with Block Explorer</li>
-                            <li>P2P NFT marketplace</li>
-                            <li>Admin panel for economic management</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="roadmap-item active">
-                    <div class="roadmap-marker">
-                        <div class="marker-dot"></div>
-                    </div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 2 — Community Growth</span>
-                        <span class="phase-status"><i class="fas fa-spinner fa-spin"></i> In Progress</span>
-                        <h3>Scaling Together</h3>
-                        <ul>
-                            <li>Strengthened referral program</li>
-                            <li>Expanded NFT catalog & events</li>
-                            <li>Improved onboarding & notifications</li>
-                            <li>Greater transparency on ecosystem stats</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="roadmap-item">
-                    <div class="roadmap-marker">
-                        <div class="marker-dot"></div>
-                    </div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 3 — On-Chain Bridge</span>
-                        <span class="phase-status planned"><i class="fas fa-clock"></i> Planned</span>
-                        <h3>Going On-Chain</h3>
-                        <ul>
-                            <li>External wallet connections (MetaMask, Trust)</li>
-                            <li>BNB Smart Chain integration</li>
-                            <li>Smart contract development & audit</li>
-                            <li>Balance migration mechanism</li>
-                            <li>Final tokenomics disclosure</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="roadmap-item">
-                    <div class="roadmap-marker">
-                        <div class="marker-dot"></div>
-                    </div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 4 — Ecosystem Expansion</span>
-                        <span class="phase-status planned"><i class="fas fa-rocket"></i> Future</span>
-                        <h3>Beyond Telegram</h3>
-                        <ul>
-                            <li>Exchange listing evaluation</li>
-                            <li>External DApp integration</li>
-                            <li>Real utility (payments, governance)</li>
-                            <li>Multi-platform expansion</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- White Paper Section -->
-    <section id="whitepaper" class="section section-gradient">
-        <div class="container">
-            <div class="whitepaper-wrapper">
-                <div class="whitepaper-content">
-                    <span class="section-tag light">Documentation</span>
-                    <h2>Read the Full<br>White Paper</h2>
-                    <p>Get the complete picture of LUXA's vision, technical architecture, tokenomics, and roadmap. Available in English.</p>
-                    <div class="whitepaper-meta">
-                        <div class="meta-item">
-                            <i class="fas fa-file-pdf"></i>
-                            <span>PDF Format</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-calendar"></i>
-                            <span>September 2026</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-code-branch"></i>
-                            <span>Version 1.0</span>
-                        </div>
-                    </div>
-                    <a href="LUXA_Whitepaper_EN.pdf" download="LUXA_Whitepaper_EN.pdf" class="btn btn-light btn-large">
-                        <i class="fas fa-download"></i> <span>Download White Paper</span>
-                    </a>
-                </div>
-                <div class="whitepaper-visual">
-                    <div class="doc-preview">
-                        <div class="doc-page">
-                            <div class="doc-header">
-                                <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="">
-                                <span>LUXA ECOSYSTEM</span>
-                            </div>
-                            <div class="doc-lines">
-                                <div class="doc-line long"></div>
-                                <div class="doc-line"></div>
-                                <div class="doc-line medium"></div>
-                                <div class="doc-line"></div>
-                                <div class="doc-line short"></div>
-                            </div>
-                            <div class="doc-footer">v1.0 — September 2026</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section id="cta" class="section">
-        <div class="container">
-            <div class="cta-wrapper">
-                <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA" class="cta-logo">
-                <h2>Ready to Start Your<br>Mining Journey?</h2>
-                <p>Join thousands of users already mining LUXA for free inside Telegram. No investment required.</p>
-                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                    <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary btn-xlarge">
-                        <i class="fab fa-telegram"></i> <span>Launch LUXA Mini App</span>
-                    </a>
-                    <a href="explorer.html" target="_self" class="btn btn-outline btn-xlarge">
-                        <i class="fas fa-search"></i> <span>View Explorer</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="footer">
-        <div class="footer-top">
-            <div class="container">
-                <div class="footer-grid">
-                    <div class="footer-brand">
-                        <a href="#" target="_self" class="footer-logo">
-                            <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA">
-                            <span>LUXA</span>
-                        </a>
-                        <p>A coin for everyone. Built on community, transparency, and true accessibility.</p>
-                        <div class="footer-email-box" style="margin: 14px 0 16px;">
-                            <a href="mailto:contact@luxaecosystem.xyz" style="color: #00f5d4; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
-                                <i class="fas fa-envelope"></i> contact@luxaecosystem.xyz
-                            </a>
-                        </div>
-                        <div class="footer-social">
-                            <a href="https://t.me/luxatokenofficial" target="_blank" aria-label="Telegram Channel"><i class="fab fa-telegram-plane"></i></a>
-                            <a href="https://t.me/LuxaTokenCommunity" target="_blank" aria-label="Telegram Community"><i class="fas fa-users"></i></a>
-                            <a href="https://t.me/LuxaToken_bot" target="_blank" aria-label="Telegram Bot"><i class="fas fa-robot"></i></a>
-                            <a href="https://github.com/luxatokenofficial" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                            <a href="https://x.com/luxatoken" target="_blank" aria-label="X/Twitter"><i class="fab fa-x-twitter"></i></a>
-                        </div>
-                    </div>
-                    <div class="footer-links">
-                        <h4>Project</h4>
-                        <ul>
-                            <li><a href="#about" target="_self">About</a></li>
-                            <li><a href="#features" target="_self">Features</a></li>
-                            <li><a href="#tokenomics" target="_self">Tokenomics</a></li>
-                            <li><a href="#roadmap" target="_self">Roadmap</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-links">
-                        <h4>Resources</h4>
-                        <ul>
-                            <li><a href="explorer.html" target="_self" style="color: #00f5d4;"><i class="fas fa-cube" style="font-size: 11px; margin-right: 4px;"></i> Block Explorer</a></li>
-                            <li><a href="LUXA_Whitepaper_EN.pdf" download="LUXA_Whitepaper_EN.pdf">White Paper</a></li>
-                            <li><a href="https://github.com/luxatokenofficial" target="_blank">GitHub</a></li>
-                            <li><a href="mailto:contact@luxaecosystem.xyz"><i class="fas fa-envelope" style="font-size: 11px; margin-right: 4px;"></i> Support & Inquiries</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-links">
-                        <h4>Community</h4>
-                        <ul>
-                            <li><a href="https://t.me/luxatokenofficial" target="_blank">Telegram Channel</a></li>
-                            <li><a href="https://t.me/LuxaTokenCommunity" target="_blank">Telegram Group</a></li>
-                            <li><a href="https://t.me/LuxaToken_bot" target="_blank">Telegram Bot</a></li>
-                            <li><a href="https://x.com/luxatoken" target="_blank">X / Twitter</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div class="container">
-                <p>© 2026 LUXA Ecosystem. All rights reserved. • Contact: <a href="mailto:contact@luxaecosystem.xyz" style="color: #00f5d4; text-decoration: none;">contact@luxaecosystem.xyz</a></p>
-                <p class="disclaimer">LUXA and Shards are currently in-app points/currencies and do not constitute a listed cryptocurrency or investment instrument. Participating does not guarantee profit.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Back to Top -->
-    <button id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
-
-    <script src="script.js"></script>
+      // Permette di avviare la ricerca premendo Invio da tastiera
+      document.getElementById('explorerSearchInput')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') triggerSearch();
+      });
+    });
+  </script>
 </body>
 </html>
