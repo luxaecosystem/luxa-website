@@ -1,342 +1,377 @@
 /* ==========================================================================
-   LUXA ROOT WEB EXPLORER SCRIPT (explorer.js)
-   Connected to /api/nft-catalog & Real-Time CometBFT Ledger
+   LUXA SOVEREIGN CHAIN EXPLORER — explorer.js
+   Single source of truth for the public explorer page (explorer.html).
+
+   Design goals of this rewrite:
+   - ONE copy of the SVG-card / search logic (it used to be duplicated,
+     slightly differently, across browser.js x2, explorer.js and script.js —
+     that's why fixes in one place never reached the others).
+   - No hardcoded per-hash fake data. If a hash/block/address can't be
+     resolved, the UI says so honestly instead of showing a placeholder
+     "50.50 LUXA / luxa1..." card as if it were real.
+   - Every value interpolated into HTML or SVG is escaped.
+   - Config (RPC + backend URLs) lives in one place, overridable via
+     window.LUXA_CONFIG before this script loads, e.g.:
+       <script>window.LUXA_CONFIG = { rpc: '...', api: '...' };</script>
    ========================================================================== */
 
-const RPC_ENDPOINT = 'https://rpc.luxaecosystem.xyz';
-const BACKEND_API = 'https://luxaecosystem.alwaysdata.net/api';
+(function () {
+  'use strict';
 
-// Catalogo dinamico sincronizzato con l'Admin di server.js
-let NFT_DYNAMIC_CATALOG = {
-  '4001': { name: 'Grandmaster of Servers', luxaPrice: 50.0, role: 'Validator Protocol License - 0.01% Standard', img: 'Nft_Images/Grandmaster_of_Servers.jpeg' },
-  '4002': { name: 'Neon Data Valkyrie', luxaPrice: 25.0, role: 'Liquidity Operator Pass - Priority Tier', img: 'Nft_Images/Neon_Data_Valkyrie.jpeg' },
-  '4003': { name: 'Chrono-Key Master', luxaPrice: 10.0, role: 'Fast-Settlement License - Finality Tier', img: 'Nft_Images/Chrono-Key_Master.jpeg' },
-  '4004': { name: 'Cyber-Shadow Node', luxaPrice: 5.0, role: 'Encrypted Storage Unit - Vault Tier', img: 'Nft_Images/Cyber-Shadow_Node.jpeg' }
-};
+  // ---------------------------------------------------------------------
+  // Config
+  // ---------------------------------------------------------------------
+  const CONFIG = Object.assign(
+    {
+      rpc: 'https://rpc.luxaecosystem.xyz',
+      api: 'https://luxaecosystem.alwaysdata.net/api',
+      fetchTimeoutMs: 4000
+    },
+    window.LUXA_CONFIG || {}
+  );
 
-// 1. CARICAMENTO PREZZI REALI DALL'ADMIN DI server.js
-async function loadAdminCatalog() {
-  try {
-    const res = await fetch(`${BACKEND_API}/nft-catalog`);
-    if (res.ok) {
-      const data = await res.json();
-      if (data.success && data.catalog) {
-        for (const [key, item] of Object.entries(data.catalog)) {
-          if (!NFT_DYNAMIC_CATALOG[key]) NFT_DYNAMIC_CATALOG[key] = {};
-          NFT_DYNAMIC_CATALOG[key].luxaPrice = Number(item.luxaPrice);
-          if (item.name) NFT_DYNAMIC_CATALOG[key].name = item.name;
-        }
-      }
-    }
-  } catch (_) {}
-}
-
-// 2. GENERATORE DINAMICO SOVEREIGN NFT SVG (HD, CENTRATO, TESTI VETTORIALI)
-function generateSovereignNftSvg(name, id, wallet, livePrice, customImg) {
-  const displayId = String(id || '4001');
-  const meta = NFT_DYNAMIC_CATALOG[displayId] || {
-    name: name || 'Grandmaster of Servers',
-    luxaPrice: 50.0,
-    role: 'Validator Protocol License - 0.01% Standard',
-    img: 'Nft_Images/Grandmaster_of_Servers.jpeg'
+  const NFT_HERO_IMAGES = {
+    '4001': 'https://app.luxaecosystem.xyz/Nft_Images/Grandmaster_of_Servers.jpeg',
+    '4002': 'https://app.luxaecosystem.xyz/Nft_Images/Neon_Data_Valkyrie.jpeg',
+    '4003': 'https://app.luxaecosystem.xyz/Nft_Images/Chrono-Key_Master.jpeg',
+    '4004': 'https://app.luxaecosystem.xyz/Nft_Images/Cyber-Shadow_Node.jpeg'
   };
 
-  const heroImg = customImg || meta.img || 'Nft_Images/Grandmaster_of_Servers.jpeg';
-  const displayWallet = wallet && wallet !== 'Unknown' ? wallet : 'luxa1...';
-  const shortWallet = displayWallet.length > 24 
-    ? (displayWallet.slice(0, 10) + '...' + displayWallet.slice(-8)) 
-    : displayWallet;
-  
-  const priceDisplay = livePrice && livePrice !== 'N/A' 
-    ? livePrice 
-    : `${meta.luxaPrice.toFixed(2)} LUXA`;
+  // ---------------------------------------------------------------------
+  // Small helpers
+  // ---------------------------------------------------------------------
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;'
+    })[c]);
+  }
 
-  const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 750" width="100%" height="100%">
-    <defs>
-      <linearGradient id="cardBg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#050d0a"/>
-        <stop offset="40%" stop-color="#030806"/>
-        <stop offset="100%" stop-color="#020403"/>
-      </linearGradient>
-      <linearGradient id="neonBorder" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#00FFCC"/>
-        <stop offset="50%" stop-color="#00C878"/>
-        <stop offset="100%" stop-color="#0066FF"/>
-      </linearGradient>
-      <filter id="emeraldGlow" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur stdDeviation="6" result="blur"/>
-        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-      </filter>
-      <clipPath id="heroClip">
-        <rect x="35" y="115" width="430" height="340" rx="16" ry="16" />
-      </clipPath>
-    </defs>
+  function shorten(address, front = 12, back = 6) {
+    const value = String(address || '');
+    return value.length > front + back + 3
+      ? `${value.slice(0, front)}...${value.slice(-back)}`
+      : value;
+  }
 
-    <rect x="8" y="8" width="484" height="734" rx="24" fill="url(#cardBg)" stroke="url(#neonBorder)" stroke-width="2.5" filter="url(#emeraldGlow)"/>
-    <rect x="14" y="14" width="472" height="722" rx="20" fill="none" stroke="rgba(0, 255, 204, 0.2)" stroke-width="1"/>
+  function isBlockHeightQuery(query) {
+    return /^\d+$/.test(query);
+  }
 
-    <g transform="translate(35, 38)">
-      <text x="0" y="0" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#00FFCC" letter-spacing="1.5">
-        SET: ${(meta.name || name).toUpperCase()} • STATUS: ANCHORED
+  function isTxHashQuery(query) {
+    return /^(0x)?[0-9a-fA-F]{16,}$/.test(query);
+  }
+
+  async function fetchJson(url) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), CONFIG.fetchTimeoutMs);
+    try {
+      const res = await fetch(url, { signal: controller.signal });
+      const data = await res.json().catch(() => null);
+      return { ok: res.ok, status: res.status, data };
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // SVG card generators
+  // ---------------------------------------------------------------------
+  function buildNftCardSvg({ name, id, holder }) {
+    const displayId = escapeHtml(id || '4001');
+    const displayName = escapeHtml(name || 'Sovereign License');
+    const displayHolder = escapeHtml(holder || 'luxa1...');
+    const imageUrl = NFT_HERO_IMAGES[id] || NFT_HERO_IMAGES['4001'];
+    const marquee = ` • HOLDER: ${displayHolder} • LEDGER: LUXA-1 • ASSET: ${displayName.toUpperCase()} • STATUS: ANCHORED • `;
+
+    const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 780" width="100%" height="100%">
+      <defs>
+        <path id="loopTrack-${displayId}" d="M 45 45 H 555 Q 570 45 570 60 V 720 Q 570 735 555 735 H 45 Q 30 735 30 720 V 60 Q 30 45 45 45 Z" fill="none"/>
+        <clipPath id="heroClip-${displayId}"><rect x="52" y="52" width="496" height="676" rx="20"/></clipPath>
+        <linearGradient id="shade-${displayId}" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="65%" stop-color="transparent"/><stop offset="100%" stop-color="rgba(3,7,18,0.94)"/>
+        </linearGradient>
+      </defs>
+      <rect width="600" height="780" rx="30" fill="#030712" stroke="#00FFCC" stroke-width="2"/>
+      <rect x="15" y="15" width="570" height="750" rx="24" fill="none" stroke="rgba(0,255,204,0.15)" stroke-width="1.2"/>
+      <image x="52" y="52" width="496" height="676" preserveAspectRatio="xMidYMid slice" clip-path="url(#heroClip-${displayId})" href="${imageUrl}"/>
+      <rect x="52" y="52" width="496" height="676" clip-path="url(#heroClip-${displayId})" fill="url(#shade-${displayId})"/>
+      <rect x="52" y="52" width="496" height="676" rx="20" fill="none" stroke="rgba(0,255,204,0.45)" stroke-width="1.5"/>
+      <use href="#loopTrack-${displayId}" stroke="rgba(0,255,204,0.15)" stroke-width="1"/>
+      <text font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#00FFCC" letter-spacing="2">
+        <textPath href="#loopTrack-${displayId}" startOffset="0%">${marquee.repeat(3)}
+          <animate attributeName="startOffset" from="0%" to="-100%" dur="24s" repeatCount="indefinite"/>
+        </textPath>
       </text>
-      <circle cx="420" cy="-3" r="4" fill="#00FFCC">
-        <animate attributeName="opacity" values="1;0.2;1" dur="2s" repeatCount="indefinite"/>
-      </circle>
-    </g>
-
-    <g transform="translate(35, 72)">
-      <text x="0" y="0" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#88BBFF" letter-spacing="1.2">
-        LUXA SOVEREIGN INFRASTRUCTURE KEY
-      </text>
-      <text x="0" y="24" font-family="'Space Grotesk', 'Orbitron', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">
-        ${meta.name || name}
-      </text>
-      <text x="0" y="40" font-family="'Inter', sans-serif" font-size="11" font-weight="500" fill="#00FFCC">
-        ${meta.role || 'Protocol License'}
-      </text>
-    </g>
-
-    <!-- INQUADRATURA HD PROPORZIONATA -->
-    <rect x="33" y="113" width="434" height="344" rx="18" fill="#010302" stroke="rgba(0, 255, 204, 0.4)" stroke-width="1.5"/>
-    <image href="${heroImg}" 
-           x="35" y="115" width="430" height="340" 
-           preserveAspectRatio="xMidYMid slice" 
-           clip-path="url(#heroClip)"/>
-    <rect x="35" y="380" width="430" height="75" fill="url(#cardBg)" opacity="0.75" clip-path="url(#heroClip)"/>
-
-    <g transform="translate(50, 425)">
-      <rect width="110" height="24" rx="6" fill="rgba(0, 0, 0, 0.75)" stroke="#00FFCC" stroke-width="1"/>
-      <text x="55" y="16" font-family="'Orbitron', sans-serif" font-size="10" font-weight="800" fill="#00FFCC" text-anchor="middle">
-        ID #${displayId}
-      </text>
-    </g>
-
-    <g transform="translate(300, 425)">
-      <rect width="150" height="24" rx="6" fill="rgba(0, 0, 0, 0.75)" stroke="#FFD700" stroke-width="1"/>
-      <text x="75" y="16" font-family="'JetBrains Mono', monospace" font-size="9.5" font-weight="700" fill="#FFD700" text-anchor="middle">
-        ${priceDisplay}
-      </text>
-    </g>
-
-    <!-- METADATI TECNICI NITIDI -->
-    <g transform="translate(35, 480)">
-      <rect width="430" height="48" rx="10" fill="rgba(0, 255, 204, 0.03)" stroke="rgba(0, 255, 204, 0.2)" stroke-width="1"/>
-      <text x="16" y="18" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#6ee7b7" letter-spacing="1">
-        LIVE PROTOCOL VALUATION
-      </text>
-      <text x="16" y="36" font-family="'Space Grotesk', sans-serif" font-size="13" font-weight="700" fill="#FFD700">
-        ${priceDisplay}
-      </text>
-    </g>
-
-    <g transform="translate(35, 540)">
-      <rect x="0" y="0" width="205" height="56" rx="10" fill="rgba(0, 0, 0, 0.5)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
-      <text x="14" y="20" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#88BBFF">TOKEN ID</text>
-      <text x="14" y="42" font-family="'Orbitron', sans-serif" font-size="16" font-weight="800" fill="#00FFCC">#${displayId}</text>
-
-      <rect x="225" y="0" width="205" height="56" rx="10" fill="rgba(0, 0, 0, 0.5)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
-      <text x="240" y="20" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#88BBFF">PROTOCOL STATUS</text>
-      <text x="240" y="42" font-family="'Space Grotesk', sans-serif" font-size="13" font-weight="700" fill="#22c55e">ANCHORED</text>
-    </g>
-
-    <g transform="translate(35, 610)">
-      <rect width="430" height="52" rx="10" fill="rgba(0, 0, 0, 0.5)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1"/>
-      <text x="16" y="19" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#88BBFF">AUTHENTICATED HOLDER</text>
-      <text x="16" y="38" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600" fill="#00FFCC">${displayWallet}</text>
-    </g>
-
-    <g transform="translate(35, 685)">
-      <text x="0" y="22" font-family="'Inter', sans-serif" font-size="9" font-weight="600" fill="#64748b">
-        STANDARD: Sovereign Utility (Bay' / Ujrah)
-      </text>
-      <text x="0" y="36" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#475569">
-        HOLDER VAULT: ${shortWallet}
-      </text>
-
-      <g transform="translate(385, 0)">
-        <circle cx="20" cy="20" r="20" fill="rgba(0, 255, 204, 0.1)" stroke="#00FFCC" stroke-width="1.5"/>
-        <text x="20" y="25" font-family="'Orbitron', sans-serif" font-size="11" font-weight="900" fill="#00FFCC" text-anchor="middle">LX</text>
+      <g transform="translate(70, 680)">
+        <text x="0" y="0" font-family="'Space Grotesk', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">${displayName}</text>
+        <text x="0" y="24" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#00FFCC">SOVEREIGN LICENSE #${displayId}</text>
+        <circle cx="430" cy="10" r="22" fill="#021a14" stroke="#00FFCC" stroke-width="1.5"/>
+        <text x="430" y="16" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="13" font-weight="900" fill="#FFFFFF">LX</text>
       </g>
-    </g>
-  </svg>`;
+    </svg>`;
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
+  }
 
-  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
-}
+  function buildCoinCardSvg({ amount, sender, recipient, txHash }) {
+    const shortSender = escapeHtml(shorten(sender));
+    const shortRecv = escapeHtml(shorten(recipient));
+    const shortTx = escapeHtml(shorten(txHash, 14, 8));
+    const displayAmount = escapeHtml(amount);
 
-// 3. GENERATORE DINAMICO COIN TRANSFER SVG
-function generateCoinTransferSvg(amount, sender, recipient, txHash) {
-  const shortSender = sender.length > 20 ? (sender.slice(0, 12) + '...' + sender.slice(-6)) : sender;
-  const shortRecv = recipient.length > 20 ? (recipient.slice(0, 12) + '...' + recipient.slice(-6)) : recipient;
-  const shortTx = txHash ? (txHash.slice(0, 14) + '...' + txHash.slice(-8)) : '0x...';
+    const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 340" width="100%" height="100%">
+      <defs>
+        <linearGradient id="coinBg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#080c1f"/><stop offset="100%" stop-color="#02040c"/>
+        </linearGradient>
+      </defs>
+      <rect x="6" y="6" width="408" height="328" rx="16" fill="url(#coinBg)" stroke="#00C878" stroke-width="1.8"/>
+      <g transform="translate(30, 24)">
+        <text x="0" y="16" font-family="'Orbitron', sans-serif" font-size="12" font-weight="900" fill="#00FFCC">NATIVE COIN SETTLEMENT</text>
+        <text x="360" y="16" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="end">FINALIZED</text>
+      </g>
+      <g transform="translate(30, 65)">
+        <rect width="360" height="95" rx="12" fill="rgba(0,0,0,0.5)" stroke="rgba(0,255,204,0.2)"/>
+        <text x="180" y="40" font-family="'Orbitron', sans-serif" font-size="24" font-weight="900" fill="#FFD700" text-anchor="middle">${displayAmount}</text>
+        <text x="180" y="65" font-family="'Inter', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">On-Chain Cosmos SDK Transfer (luxa-1)</text>
+      </g>
+      <g transform="translate(30, 180)">
+        <text x="0" y="15" font-family="'JetBrains Mono', monospace" font-size="10" fill="#64748b">FROM:</text>
+        <text x="50" y="15" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#88BBFF">${shortSender}</text>
+        <text x="0" y="42" font-family="'JetBrains Mono', monospace" font-size="10" fill="#64748b">TO:</text>
+        <text x="50" y="42" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#00FFCC">${shortRecv}</text>
+      </g>
+      <g transform="translate(30, 260)">
+        <rect width="360" height="50" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/>
+        <text x="14" y="20" font-family="monospace" font-size="8.5" fill="#64748b">HASH ANCHOR</text>
+        <text x="14" y="36" font-family="'JetBrains Mono', monospace" font-size="9" fill="#FFD700">${shortTx}</text>
+        <circle cx="340" cy="25" r="4" fill="#22c55e"/>
+      </g>
+    </svg>`;
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
+  }
 
-  const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 340" width="100%" height="100%">
-    <defs>
-      <linearGradient id="coinBg" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#080c1f"/>
-        <stop offset="100%" stop-color="#02040c"/>
-      </linearGradient>
-    </defs>
-    <rect x="6" y="6" width="408" height="328" rx="16" fill="url(#coinBg)" stroke="#00C878" stroke-width="1.8"/>
-    
-    <g transform="translate(30, 24)">
-      <text x="0" y="16" font-family="'Orbitron', sans-serif" font-size="12" font-weight="900" fill="#00FFCC">🪙 NATIVE COIN SETTLEMENT</text>
-      <text x="360" y="16" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="end">FINALIZED</text>
-    </g>
+  // ---------------------------------------------------------------------
+  // Data fetching — no fallback to fake data. Missing data stays missing.
+  // ---------------------------------------------------------------------
+  async function fetchBlock(height) {
+    const { ok, data } = await fetchJson(`${CONFIG.rpc}/block?height=${height}`);
+    if (!ok || !data?.result?.block) {
+      throw new Error(`Blocco #${height} non trovato sulla chain.`);
+    }
+    return data.result.block;
+  }
 
-    <g transform="translate(30, 65)">
-      <rect width="360" height="95" rx="12" fill="rgba(0,0,0,0.5)" stroke="rgba(0,255,204,0.2)"/>
-      <text x="180" y="40" font-family="'Orbitron', sans-serif" font-size="24" font-weight="900" fill="#FFD700" text-anchor="middle">${amount}</text>
-      <text x="180" y="65" font-family="'Inter', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">On-Chain Cosmos SDK Transfer (luxa-1)</text>
-    </g>
+  async function fetchTxRecord(hash) {
+    const cleanHash = hash.replace(/^0x/i, '').toUpperCase();
+    let backendRecord = null;
+    let rpcRecord = null;
 
-    <g transform="translate(30, 180)">
-      <text x="0" y="15" font-family="'JetBrains Mono', monospace" font-size="10" fill="#64748b">FROM:</text>
-      <text x="50" y="15" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#88BBFF">${shortSender}</text>
-      <text x="0" y="42" font-family="'JetBrains Mono', monospace" font-size="10" fill="#64748b">TO:</text>
-      <text x="50" y="42" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#00FFCC">${shortRecv}</text>
-    </g>
-
-    <g transform="translate(30, 260)">
-      <rect width="360" height="50" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/>
-      <text x="14" y="20" font-family="monospace" font-size="8.5" fill="#64748b">HASH ANCHOR</text>
-      <text x="14" y="36" font-family="'JetBrains Mono', monospace" font-size="9" fill="#FFD700">${shortTx}</text>
-      <circle cx="340" cy="25" r="4" fill="#22c55e">
-        <animate attributeName="opacity" values="1;0.2;1" dur="1.5s" repeatCount="indefinite"/>
-      </circle>
-    </g>
-  </svg>`;
-  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
-}
-
-// 4. RICERCA E CLASSIFICAZIONE TRANSAZIONI
-async function triggerSearch(overrideQuery) {
-  const input = document.getElementById('explorerSearchInput');
-  const query = (overrideQuery || input?.value || '').trim();
-  const container = document.getElementById('explorerSearchResult');
-  if (!query || !container) return;
-
-  container.innerHTML = `<div style="text-align:center; padding:18px; color:#00FFCC; font-family:monospace;">🔍 Interrogazione registro dinamico...</div>`;
-
-  const cleanHash = query.startsWith('0x') ? query.slice(2) : query;
-
-  try {
-    let rpcTx = null;
-    let height = 'luxa-1';
-    let isSuccess = true;
-    let gasInfo = 'N/A';
-    let sender = 'luxa1...';
-    let recipient = 'luxa1...';
-    let amount = 'N/A';
-    let isNft = false;
-    let nftId = null;
-
-    // Lettura RPC reale CometBFT
+    // Backend indexer: knows about ledger-anchored NFTs, withdrawals, etc.
     try {
-      const resRpc = await fetch(`${RPC_ENDPOINT}/tx?hash=0x${cleanHash}`);
-      const dataRpc = await resRpc.json();
-      if (dataRpc.result) {
-        rpcTx = dataRpc.result;
-        height = rpcTx.height || height;
-        isSuccess = rpcTx.tx_result?.code === 0 || !rpcTx.tx_result?.code;
-        gasInfo = `${rpcTx.tx_result?.gas_used || '0'} / ${rpcTx.tx_result?.gas_wanted || '0'}`;
+      const { ok, data } = await fetchJson(`${CONFIG.api}/ecosystem/chain/tx/${cleanHash}`);
+      if (ok && data?.tx) backendRecord = data.tx;
+    } catch (_) { /* backend unreachable — fall through to RPC-only result */ }
 
-        const events = rpcTx.tx_result?.events || [];
-        for (const ev of events) {
-          if (ev.type === 'transfer' || ev.type === 'coin_received') {
-            for (const attr of ev.attributes) {
-              const k = atob(attr.key);
-              const v = atob(attr.value);
-              if (k === 'sender') sender = v;
-              if (k === 'recipient') recipient = v;
-              if (k === 'amount' && v.includes('uluxa')) {
-                const u = parseInt(v.replace('uluxa', ''), 10);
-                amount = `${(u / 1000000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })} LUXA`;
-              }
-            }
+    // Raw CometBFT RPC: authoritative on-chain confirmation + gas.
+    try {
+      const { ok, data } = await fetchJson(`${CONFIG.rpc}/tx?hash=0x${cleanHash}`);
+      if (ok && data?.result) rpcRecord = data.result;
+    } catch (_) { /* RPC unreachable */ }
+
+    if (!backendRecord && !rpcRecord) {
+      throw new Error('Nessuna transazione trovata con questo hash, né nel ledger né on-chain.');
+    }
+
+    const record = {
+      hash: cleanHash,
+      height: rpcRecord?.height || backendRecord?.height || 'sconosciuto',
+      success: rpcRecord ? (rpcRecord.tx_result?.code === 0 || !rpcRecord.tx_result?.code) : true,
+      gasUsed: rpcRecord?.tx_result?.gas_used ?? null,
+      gasWanted: rpcRecord?.tx_result?.gas_wanted ?? null,
+      isNft: false,
+      nftId: null,
+      amount: null,
+      sender: null,
+      recipient: null
+    };
+
+    // Prefer backend's richer classification when available.
+    if (backendRecord) {
+      record.isNft = Boolean(backendRecord.isNft || backendRecord.nftKey || backendRecord.type === 'SOVEREIGN_NFT_MINT');
+      record.nftId = backendRecord.nftKey || backendRecord.id || null;
+      record.amount = backendRecord.amount != null
+        ? `${backendRecord.amount} ${(backendRecord.currency || 'LUXA').toUpperCase()}`
+        : null;
+      record.sender = backendRecord.senderAddress || null;
+      record.recipient = backendRecord.recipientAddress || null;
+      record.assetName = backendRecord.assetName || null;
+    }
+
+    // Fill in anything still missing from raw chain events.
+    if (rpcRecord) {
+      const events = rpcRecord.tx_result?.events || [];
+      for (const ev of events) {
+        if (ev.type !== 'transfer' && ev.type !== 'coin_received') continue;
+        for (const attr of ev.attributes || []) {
+          const key = atob(attr.key);
+          const value = atob(attr.value);
+          if (key === 'sender' && !record.sender) record.sender = value;
+          if (key === 'recipient' && !record.recipient) record.recipient = value;
+          if (key === 'amount' && !record.amount && value.includes('uluxa')) {
+            const micro = parseInt(value.replace('uluxa', ''), 10);
+            record.amount = `${(micro / 1_000_000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })} LUXA`;
           }
         }
       }
-    } catch (_) {}
-
-    // Lettura Backend
-    try {
-      const beRes = await fetch(`${BACKEND_API}/ecosystem/chain/tx/${cleanHash}`);
-      if (beRes.ok) {
-        const beData = await beRes.json();
-        if (beData.tx) {
-          const t = beData.tx;
-          if (t.isNft || t.type === 'SOVEREIGN_NFT_MINT' || t.nftKey) {
-            isNft = true;
-            nftId = t.nftKey || t.id || '4001';
-          }
-          if (t.amount) amount = `${t.amount} ${t.currency || 'LUXA'}`;
-          if (t.senderAddress) sender = t.senderAddress;
-          if (t.recipientAddress) recipient = t.recipientAddress;
-        }
-      }
-    } catch (_) {}
-
-    // Riconoscimento anchor NFT
-    if (cleanHash.toUpperCase().startsWith('BC25D0B') || cleanHash.startsWith('tx_reg_')) {
-      isNft = true;
-      nftId = nftId || '4001';
-      const meta = NFT_DYNAMIC_CATALOG[nftId];
-      if (amount === 'N/A' && meta) amount = `${meta.luxaPrice.toFixed(2)} LUXA`;
     }
 
-    if (amount === 'N/A') {
-      amount = '0.005 LUXA (5000uluxa)';
-    }
+    return record;
+  }
 
-    const cardSvg = isNft
-      ? generateSovereignNftSvg('Grandmaster of Servers', nftId || '4001', recipient, amount, null)
-      : generateCoinTransferSvg(amount, sender, recipient, query);
+  async function fetchLatestBlockSummary() {
+    const { ok, data } = await fetchJson(`${CONFIG.api}/ecosystem/chain/latest-block`);
+    if (!ok || !data?.block) throw new Error('Nodo non raggiungibile');
+    return data.block;
+  }
 
-    const assetBadge = isNft
-      ? `<span style="background:rgba(255,215,0,0.15); color:#FFD700; border:1px solid rgba(255,215,0,0.4); font-weight:bold; font-size:11px; padding:3px 10px; border-radius:6px; font-family:'Orbitron',sans-serif;">🏛️ SOVEREIGN NFT LICENSE (#${nftId || '4001'})</span>`
-      : `<span style="background:rgba(0,255,204,0.15); color:#00FFCC; border:1px solid rgba(0,255,204,0.4); font-weight:bold; font-size:11px; padding:3px 10px; border-radius:6px; font-family:'Orbitron',sans-serif;">🪙 NATIVE COIN TRANSFER (LUXA)</span>`;
+  // ---------------------------------------------------------------------
+  // Rendering
+  // ---------------------------------------------------------------------
+  function renderLoading(container, message) {
+    container.innerHTML = `<div class="explorer-status explorer-status--loading">${escapeHtml(message)}</div>`;
+  }
+
+  function renderError(container, message) {
+    container.innerHTML = `<div class="explorer-status explorer-status--error">${escapeHtml(message)}</div>`;
+  }
+
+  function renderBlock(container, block, height) {
+    const proposer = block.header?.proposer_address || 'sconosciuto';
+    const txCount = block.data?.txs?.length ?? 0;
+    const time = block.header?.time ? new Date(block.header.time).toLocaleString() : 'sconosciuto';
 
     container.innerHTML = `
-      <div class="card-wrap ${isNft ? 'nft-wrap' : ''}">
-        <div class="card-header">
-          ${assetBadge}
-          <span class="${isSuccess ? 'badge-ok' : 'badge-fail'}">
-            ${isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED'}
-          </span>
+      <div class="result-card">
+        <div class="result-card__header">
+          <span class="badge badge--info">BLOCCO #${escapeHtml(height)}</span>
+          <span class="badge badge--ok">CONFERMATO</span>
         </div>
-
-        <div style="text-align:center; margin:15px 0 20px;">
-          <img src="${cardSvg}" alt="Card" class="nft-display-frame ${isNft ? 'nft-border' : ''}">
-        </div>
-
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; font-size:12.5px; margin-bottom:14px;">
-          <div><span class="node-info-label">Tipo Asset</span><strong style="color:${isNft ? '#FFD700' : '#00FFCC'};">${isNft ? 'Sovereign NFT License' : 'Native Coin (uluxa)'}</strong></div>
-          <div><span class="node-info-label">Blocco</span><strong>#${height}</strong></div>
-          <div><span class="node-info-label">Importo Dinamico</span><strong style="color:#FFD700;">${amount}</strong></div>
-          <div><span class="node-info-label">Gas</span><span>${gasInfo}</span></div>
-        </div>
-
-        <div style="margin-bottom:10px;"><span class="node-info-label">From:</span><span class="mono-pill" style="color:#88BBFF;">${sender}</span></div>
-        <div style="margin-bottom:10px;"><span class="node-info-label">To:</span><span class="mono-pill">${recipient}</span></div>
-        <div style="margin-bottom:16px;"><span class="node-info-label">Tx Hash:</span><span class="mono-pill" style="color:${isNft ? '#FFD700' : '#00FFCC'};">${query}</span></div>
-
-        <button class="copy-btn" onclick="navigator.clipboard.writeText('${query}'); alert('Hash copiato!');">📋 Copia Hash</button>
-      </div>
-    `;
-
-  } catch (err) {
-    container.innerHTML = `<div style="padding:16px; color:#ef4444; text-align:center;">Errore analisi: ${err.message}</div>`;
+        <dl class="result-card__facts">
+          <div><dt>Orario</dt><dd>${escapeHtml(time)}</dd></div>
+          <div><dt>Transazioni</dt><dd>${escapeHtml(txCount)}</dd></div>
+          <div><dt>Proposer</dt><dd class="mono">${escapeHtml(proposer)}</dd></div>
+        </dl>
+      </div>`;
   }
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadAdminCatalog();
-  const q = new URLSearchParams(window.location.search).get('q') || new URLSearchParams(window.location.search).get('tx');
-  if (q) {
-    const el = document.getElementById('explorerSearchInput');
-    if (el) el.value = q;
-    triggerSearch(q);
+  function renderTx(container, record, rawQuery) {
+    const accent = record.isNft ? '#FFD700' : '#00FFCC';
+    const cardSvg = record.isNft
+      ? buildNftCardSvg({ name: record.assetName || 'Sovereign License', id: record.nftId, holder: record.recipient || record.sender })
+      : buildCoinCardSvg({ amount: record.amount || 'importo non disponibile', sender: record.sender || 'sconosciuto', recipient: record.recipient || 'sconosciuto', txHash: rawQuery });
+
+    const badgeLabel = record.isNft
+      ? `LICENZA NFT SOVEREIGN${record.nftId ? ` (#${escapeHtml(record.nftId)})` : ''}`
+      : 'TRASFERIMENTO NATIVO (LUXA)';
+
+    container.innerHTML = `
+      <div class="result-card" style="--accent: ${accent}">
+        <div class="result-card__header">
+          <span class="badge" style="color:${accent}; border-color:${accent};">${badgeLabel}</span>
+          <span class="badge ${record.success ? 'badge--ok' : 'badge--fail'}">${record.success ? 'CONFERMATA ON-CHAIN' : 'FALLITA'}</span>
+        </div>
+        <div class="result-card__visual">
+          <img src="${cardSvg}" alt="Card della transazione" style="border-color:${accent};">
+        </div>
+        <dl class="result-card__facts">
+          <div><dt>Importo</dt><dd>${escapeHtml(record.amount || 'non disponibile')}</dd></div>
+          <div><dt>Mittente</dt><dd class="mono">${escapeHtml(record.sender || 'non disponibile')}</dd></div>
+          <div><dt>Destinatario</dt><dd class="mono">${escapeHtml(record.recipient || 'non disponibile')}</dd></div>
+          <div><dt>Blocco</dt><dd>#${escapeHtml(record.height)}</dd></div>
+          ${record.gasUsed != null ? `<div><dt>Gas</dt><dd>${escapeHtml(record.gasUsed)} / ${escapeHtml(record.gasWanted)}</dd></div>` : ''}
+        </dl>
+        <button type="button" class="copy-btn" style="border-color:${accent}; color:${accent};" data-copy="${escapeHtml(rawQuery)}">
+          Copia hash transazione
+        </button>
+      </div>`;
+
+    container.querySelector('.copy-btn')?.addEventListener('click', (e) => {
+      const value = e.currentTarget.getAttribute('data-copy');
+      navigator.clipboard?.writeText(value);
+      e.currentTarget.textContent = 'Copiato!';
+      setTimeout(() => { e.currentTarget.textContent = 'Copia hash transazione'; }, 1500);
+    });
   }
-});
+
+  // ---------------------------------------------------------------------
+  // Public search entry point
+  // ---------------------------------------------------------------------
+  async function search(inputId, resultId) {
+    const input = document.getElementById(inputId);
+    const container = document.getElementById(resultId);
+    const query = (input?.value || '').trim();
+    if (!container) return;
+
+    if (!query) {
+      renderError(container, 'Inserisci un hash di transazione o un numero di blocco.');
+      return;
+    }
+
+    renderLoading(container, 'Interrogazione del ledger luxa-1...');
+
+    try {
+      if (isBlockHeightQuery(query)) {
+        const block = await fetchBlock(query);
+        renderBlock(container, block, query);
+        return;
+      }
+      if (isTxHashQuery(query)) {
+        const record = await fetchTxRecord(query);
+        renderTx(container, record, query);
+        return;
+      }
+      renderError(container, 'Formato non riconosciuto: usa un hash di transazione o un numero di blocco.');
+    } catch (err) {
+      renderError(container, err.message || 'Ricerca non riuscita.');
+    }
+  }
+
+  async function refreshLatestBlock(targetId) {
+    const el = document.getElementById(targetId);
+    if (!el) return;
+    try {
+      const block = await fetchLatestBlockSummary();
+      el.textContent = `#${Number(block.height).toLocaleString('it-IT')}`;
+    } catch (_) {
+      el.textContent = 'non disponibile';
+    }
+  }
+
+  // ---------------------------------------------------------------------
+  // Wiring
+  // ---------------------------------------------------------------------
+  window.LuxaExplorer = { search, refreshLatestBlock };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('explorerSearchInput');
+    const button = document.getElementById('explorerSearchButton');
+    const resultId = 'explorerSearchResult';
+
+    button?.addEventListener('click', () => search('explorerSearchInput', resultId));
+    input?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') search('explorerSearchInput', resultId);
+    });
+
+    refreshLatestBlock('latestBlockValue');
+    setInterval(() => refreshLatestBlock('latestBlockValue'), 15000);
+
+    const params = new URLSearchParams(window.location.search);
+    const prefill = params.get('q') || params.get('tx');
+    if (prefill && input) {
+      input.value = prefill;
+      search('explorerSearchInput', resultId);
+    }
+  });
+})();
