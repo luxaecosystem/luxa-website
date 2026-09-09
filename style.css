@@ -152,7 +152,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
 .hero-desc { margin: 0 auto 30px; color: var(--text-muted); font-size: clamp(0.95rem, 2vw, 1.1rem); max-width: 650px; }
 .hero-buttons { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-bottom: 28px; }
 
-/* Nuova barra Social Media Hero */
+/* Social Bar Hero */
 .hero-social-bar {
     display: flex;
     flex-direction: column;
@@ -191,6 +191,16 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
 .hero-stats { display: flex; justify-content: center; gap: 45px; margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 25px; width: 100%; max-width: 650px; }
 .stat { display: grid; gap: 3px; }
 .stat-number { color: var(--text); font: 700 1.5rem var(--font-display); }
+.hero-stats .stat-number.live-stat {
+    font-size: clamp(1.1rem, 2.8vw, 1.45rem);
+    color: var(--secondary);
+    font-variant-numeric: tabular-nums;
+}
+#statMiners, #statCountries {
+    color: #4ade80;
+    letter-spacing: 0.05em;
+    font-size: 1.15rem;
+}
 .stat-label { color: var(--text-dim); font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; }
 
 /* Grid About */
