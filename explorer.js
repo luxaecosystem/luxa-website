@@ -1,6 +1,6 @@
 /* ==========================================================================
    LUXA SOVEREIGN CHAIN EXPLORER — explorer.js
-   Pure On-Chain CometBFT & Cosmos SDK Live Parser (Zero SVG for NFTs)
+   Live CometBFT Parser, Resilient JPEG Loaders & Synced Activity Feed
    ========================================================================== */
 
 (function () {
@@ -10,11 +10,12 @@
     {
       rpc: 'https://rpc.luxaecosystem.xyz',
       api: 'https://luxaecosystem.alwaysdata.net/api',
-      fetchTimeoutMs: 6000
+      fetchTimeoutMs: 7000
     },
     window.LUXA_CONFIG || {}
   );
 
+  // Mappatura con percorsi multipli per garantire il caricamento dell'immagine
   const NFT_HEROES = {
     '4001': { name: 'Grandmaster of Servers', file: 'Grandmaster_of_Servers.jpeg' },
     '4002': { name: 'Neon Data Valkyrie', file: 'Neon_Data_Valkyrie.jpeg' },
@@ -36,7 +37,7 @@
     }
   }
 
-  function shorten(address, front = 12, back = 6) {
+  function shorten(address, front = 10, back = 6) {
     const value = String(address || '');
     return value.length > front + back + 3
       ? `${value.slice(0, front)}...${value.slice(-back)}`
@@ -50,16 +51,17 @@
       const res = await fetch(url, { signal: controller.signal });
       const data = await res.json().catch(() => null);
       return { ok: res.ok, status: res.status, data };
+    } catch (e) {
+      return { ok: false, status: 0, data: null, error: e.message };
     } finally {
       clearTimeout(timeout);
     }
   }
 
-  // Card vettoriale usata esclusivamente per Coin Transfer
   function buildCoinCardSvg({ amount, sender, recipient, txHash }) {
     const shortSender = escapeHtml(shorten(sender));
     const shortRecv = escapeHtml(shorten(recipient));
-    const shortTx = escapeHtml(shorten(txHash, 14, 8));
+    const shortTx = escapeHtml(shorten(txHash, 12, 6));
     const displayAmount = escapeHtml(amount);
 
     const svg = `
@@ -95,30 +97,25 @@
     return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
   }
 
-  // Interrogazione On-Chain Reale
   async function fetchTxOnChain(hash) {
     const cleanHash = hash.replace(/^0x/i, '').toUpperCase();
     let rpcTx = null;
     let backendRecord = null;
 
-    // 1. Chiamata al nodo RPC CometBFT
+    // 1. Interroga nodo CometBFT
     try {
       const { ok, data } = await fetchJson(`${CONFIG.rpc}/tx?hash=0x${cleanHash}&prove=true`);
-      if (ok && data?.result) {
-        rpcTx = data.result;
-      }
+      if (ok && data?.result) rpcTx = data.result;
     } catch (_) {}
 
-    // 2. Chiamata di arricchimento al Backend
+    // 2. Interroga backend API
     try {
       const { ok, data } = await fetchJson(`${CONFIG.api}/ecosystem/chain/tx/${cleanHash}`);
-      if (ok && data?.tx) {
-        backendRecord = data.tx;
-      }
+      if (ok && data?.tx) backendRecord = data.tx;
     } catch (_) {}
 
     if (!rpcTx && !backendRecord) {
-      throw new Error(`Transaction ${cleanHash} not found on luxa-1 ledger.`);
+      throw new Error(`Transaction ${cleanHash} not found on-chain.`);
     }
 
     const isSuccess = rpcTx ? (rpcTx.tx_result?.code === 0 || !rpcTx.tx_result?.code) : true;
@@ -131,7 +128,6 @@
     let amount = backendRecord?.amount != null ? `${backendRecord.amount} LUXA` : null;
     let nftId = backendRecord?.nftKey || backendRecord?.nftId || backendRecord?.id || null;
 
-    // Parsing eventi nativi Cosmos SDK
     if (rpcTx?.tx_result?.events) {
       rpcTx.tx_result.events.forEach((ev) => {
         (ev.attributes || []).forEach((attr) => {
@@ -151,7 +147,6 @@
       });
     }
 
-    // Heuristics
     if (!nftId) {
       if (cleanHash.includes('4004')) nftId = '4004';
       else if (cleanHash.includes('4003')) nftId = '4003';
@@ -175,7 +170,6 @@
     };
   }
 
-  // Render dei risultati
   function renderTxResult(container, record, rawQuery) {
     const isNft = record.isNft;
     const accent = isNft ? 'var(--gold)' : 'var(--cyan)';
@@ -187,9 +181,16 @@
       const targetHolder = record.recipient !== 'luxa1...' ? record.recipient : record.sender;
       const highwayText = ` ⚡ HOLDER: ${targetHolder} • ON-CHAIN: LUXA-1 • ANCHORED ⚡ `.repeat(4);
 
+      // Risoluzione URL immagine con fallback progressivo
+      const primaryImg = `Nft_Images/${meta.file}`;
+      const fallbackImg = `https://app.luxaecosystem.xyz/Nft_Images/${meta.file}`;
+
       visualContent = `
         <div style="width:100%; max-width:320px; margin:14px auto; border-radius:16px; overflow:hidden; background:#070914; border:1.5px solid rgba(0,255,204,0.35);">
-          <img src="https://app.luxaecosystem.xyz/Nft_Images/${meta.file}" alt="${meta.name}" style="width:100%; height:270px; object-fit:cover; display:block;" onerror="this.src='logoluxa.png'">
+          <img src="${primaryImg}" 
+               alt="${meta.name}" 
+               style="width:100%; height:270px; object-fit:cover; display:block;" 
+               onerror="if(this.src !== '${fallbackImg}'){ this.src='${fallbackImg}'; } else { this.onerror=null; this.src='logoluxa.png'; }">
           <div class="sovereign-highway-ticker">
             <div class="highway-track">${escapeHtml(highwayText)}</div>
           </div>
@@ -204,7 +205,7 @@
       });
       visualContent = `
         <div class="result-card__visual">
-          <img src="${cardSvg}" alt="Coin Transfer Card">
+          <img src="${cardSvg}" alt="Coin Settlement Card">
         </div>
       `;
     }
@@ -252,7 +253,6 @@
     });
   }
 
-  // Block height rendering
   async function searchBlock(height, container) {
     const { ok, data } = await fetchJson(`${CONFIG.rpc}/block?height=${height}`);
     if (!ok || !data?.result?.block) {
@@ -287,7 +287,6 @@
     `;
   }
 
-  // Motore di Ricerca Principale
   async function search(inputId = 'explorerSearchInput', resultId = 'explorerSearchResult') {
     const input = document.getElementById(inputId);
     const container = document.getElementById(resultId);
@@ -323,7 +322,6 @@
     }
   }
 
-  // Feed Attività e Ultimo Blocco
   async function refreshLatestBlock() {
     const el = document.getElementById('latestBlockValue');
     if (!el) return;
@@ -347,16 +345,24 @@
     el.textContent = 'luxa-1';
   }
 
+  // Activity feed con fallback automatico per le due varianti di rotte backend
   async function refreshActivity() {
     const tbody = document.getElementById('activityTableBody');
     if (!tbody) return;
 
     try {
-      const { ok, data } = await fetchJson(`${CONFIG.api}/ecosystem/chain/txs/recent`);
-      const list = data?.txs || data?.activity || [];
+      // 1. Tenta la rotta principale dell'ecosistema
+      let res = await fetchJson(`${CONFIG.api}/ecosystem/chain/txs/recent`);
+      
+      // 2. Se 404, prova il percorso alternativo
+      if (!res.ok) {
+        res = await fetchJson(`${CONFIG.api}/ecosystem/chain/recent-tx`);
+      }
 
-      if (!ok || !list.length) {
-        tbody.innerHTML = `<tr><td colspan="5" class="explorer-status">No recent transactions recorded.</td></tr>`;
+      const list = res.data?.txs || res.data?.activity || [];
+
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="explorer-status" style="text-align:center; padding:18px;">No recent transactions recorded on ledger.</td></tr>`;
         return;
       }
 
@@ -364,12 +370,14 @@
         const isNft = Boolean(item.isNft || item.type === 'SOVEREIGN_NFT_MINT' || item.nftKey);
         const accent = isNft ? 'var(--gold)' : 'var(--cyan)';
         const displayHash = item.hash || item.txHash || '';
+        const amountDisplay = item.amount != null ? (typeof item.amount === 'number' ? `${item.amount} LUXA` : item.amount) : (item.costLuxa ? `${item.costLuxa} LUXA` : '—');
+
         return `
-          <tr data-hash="${escapeHtml(displayHash)}">
+          <tr data-hash="${escapeHtml(displayHash)}" style="cursor:pointer;">
             <td class="hash-cell" style="color:${accent};">${escapeHtml(shorten(displayHash, 8, 4))}</td>
             <td><span class="badge" style="color:${accent}; border-color:${accent}; font-size:10px;">${isNft ? 'SOVEREIGN NFT' : 'TRANSFER'}</span></td>
-            <td>${escapeHtml(item.amount || item.costLuxa || '—')}</td>
-            <td>${item.height ? '#' + escapeHtml(item.height) : '—'}</td>
+            <td style="color:#fff; font-weight:600;">${escapeHtml(amountDisplay)}</td>
+            <td style="color:var(--muted);">#${escapeHtml(item.height || '—')}</td>
             <td style="color:var(--green); font-weight:bold;">${escapeHtml(item.status || 'CONFIRMED')}</td>
           </tr>
         `;
@@ -384,7 +392,7 @@
         });
       });
     } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="5" class="explorer-status explorer-status--error">Failed to load recent activity.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" class="explorer-status explorer-status--error" style="text-align:center;">Failed to fetch activity feed.</td></tr>`;
     }
   }
 
