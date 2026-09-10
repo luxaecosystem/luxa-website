@@ -152,9 +152,15 @@
     return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
   }
 
-  // ---------------------------------------------------------------------
-  // Data fetching — no fallback to fake data. Missing data stays missing.
-  // ---------------------------------------------------------------------
+  function decodeEventValue(value) {
+    try {
+      return atob(value);
+    } catch (_) {
+      return value; // Node already returned plain text instead of base64.
+    }
+  }
+
+
   async function fetchBlock(height) {
     const { ok, data } = await fetchJson(`${CONFIG.rpc}/block?height=${height}`);
     if (!ok || !data?.result?.block) {
@@ -211,19 +217,23 @@
 
     // Fill in anything still missing from raw chain events.
     if (rpcRecord) {
-      const events = rpcRecord.tx_result?.events || [];
-      for (const ev of events) {
-        if (ev.type !== 'transfer' && ev.type !== 'coin_received') continue;
-        for (const attr of ev.attributes || []) {
-          const key = atob(attr.key);
-          const value = atob(attr.value);
-          if (key === 'sender' && !record.sender) record.sender = value;
-          if (key === 'recipient' && !record.recipient) record.recipient = value;
-          if (key === 'amount' && !record.amount && value.includes('uluxa')) {
-            const micro = parseInt(value.replace('uluxa', ''), 10);
-            record.amount = `${(micro / 1_000_000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })} LUXA`;
+      try {
+        const events = rpcRecord.tx_result?.events || [];
+        for (const ev of events) {
+          if (ev.type !== 'transfer' && ev.type !== 'coin_received') continue;
+          for (const attr of ev.attributes || []) {
+            const key = decodeEventValue(attr.key);
+            const value = decodeEventValue(attr.value);
+            if (key === 'sender' && !record.sender) record.sender = value;
+            if (key === 'recipient' && !record.recipient) record.recipient = value;
+            if (key === 'amount' && !record.amount && value.includes('uluxa')) {
+              const micro = parseInt(value.replace('uluxa', ''), 10);
+              record.amount = `${(micro / 1_000_000).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })} LUXA`;
+            }
           }
         }
+      } catch (_) {
+        // Event parsing is a best-effort enrichment — never let it break the whole result.
       }
     }
 
