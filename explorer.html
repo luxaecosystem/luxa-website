@@ -40,7 +40,7 @@
       padding: 24px 16px 60px;
     }
 
-    /* ---------- Header ---------- */
+    /* Topbar */
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -90,7 +90,7 @@
 
     .nav-link:hover { background: rgba(0, 102, 255, 0.3); color: #fff; }
 
-    /* ---------- Node status ---------- */
+    /* Node Status */
     .node-hero {
       display: grid;
       grid-template-columns: auto 1fr;
@@ -153,7 +153,7 @@
 
     .node-info-value.accent { color: var(--cyan); }
 
-    /* ---------- Search ---------- */
+    /* Search */
     .search-section {
       background: var(--bg-card);
       border: 1px solid rgba(0, 255, 204, 0.25);
@@ -213,7 +213,7 @@
       gap: 8px;
     }
 
-    /* ---------- Result states ---------- */
+    /* Statuses */
     #explorerSearchResult { margin-top: 14px; }
 
     .explorer-status {
@@ -225,12 +225,13 @@
     .explorer-status--loading { color: var(--cyan); }
     .explorer-status--error { color: var(--red); }
 
+    /* Results */
     .result-card {
       background: rgba(0, 0, 0, 0.65);
       border: 1px solid var(--accent, var(--cyan));
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 18px;
-      box-shadow: 0 0 25px color-mix(in srgb, var(--accent, var(--cyan)) 18%, transparent);
+      box-shadow: 0 0 25px rgba(0, 255, 204, 0.15);
     }
 
     .result-card__header {
@@ -251,25 +252,39 @@
       padding: 4px 10px;
       border-radius: 6px;
       border: 1px solid currentColor;
-      background: color-mix(in srgb, currentColor 15%, transparent);
     }
 
-    .badge--info { color: var(--cyan); }
-    .badge--ok { color: var(--green); }
-    .badge--fail { color: var(--red); }
+    .badge--info { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 204, 0.15); }
+    .badge--ok { color: var(--green); border-color: var(--green); background: rgba(34, 197, 94, 0.15); }
+    .badge--fail { color: var(--red); border-color: var(--red); background: rgba(239, 68, 68, 0.15); }
 
-    .result-card__visual { text-align: center; margin: 12px 0 18px; }
+    /* Sovereign Highway Ticker */
+    .sovereign-highway-ticker {
+      overflow: hidden;
+      white-space: nowrap;
+      background: #020617;
+      padding: 7px 0;
+      border-top: 1px solid rgba(0, 255, 204, 0.25);
+    }
 
-    .result-card__visual img {
-      width: 100%;
-      max-width: 300px;
-      border-radius: 14px;
-      border: 2px solid var(--accent, var(--cyan));
+    .highway-track {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 1px;
+      animation: tickerRun 16s linear infinite;
+    }
+
+    @keyframes tickerRun {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
     }
 
     .result-card__facts { font-size: 12px; line-height: 1.9; color: #cbd5e1; }
     .result-card__facts div { display: flex; gap: 8px; }
-    .result-card__facts dt { color: var(--muted); min-width: 110px; }
+    .result-card__facts dt { color: var(--muted); min-width: 120px; }
     .result-card__facts dd { word-break: break-all; }
     .mono { font-family: 'JetBrains Mono', monospace; }
 
@@ -277,16 +292,43 @@
       width: 100%;
       margin-top: 14px;
       background: transparent;
-      border: 1px solid var(--accent, var(--cyan));
+      border: 1.5px solid var(--accent, var(--cyan));
       color: var(--accent, var(--cyan));
       padding: 10px;
       border-radius: 8px;
       font-weight: 700;
       font-size: 12px;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
 
-    /* ---------- Activity table ---------- */
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .explorer-back-btn {
+      background: rgba(7, 9, 20, 0.75);
+      border: 1px solid rgba(0, 255, 204, 0.45);
+      color: var(--cyan);
+      padding: 7px 16px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(0, 255, 204, 0.12);
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+    }
+
+    .explorer-back-btn:hover {
+      background: rgba(0, 255, 204, 0.15);
+      color: #fff;
+    }
+
+    /* Activity */
     .activity-section {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -367,7 +409,6 @@
       <h2>Ledger &amp; sovereign asset search</h2>
       <p class="search-hint">Search by transaction hash or block number.</p>
       <div class="search-bar">
-        <label for="explorerSearchInput" class="visually-hidden">Transaction hash or block number</label>
         <input type="text" id="explorerSearchInput" class="search-input" placeholder="Transaction hash or block number">
         <button type="button" class="search-btn" id="explorerSearchButton">
           <i class="fas fa-search"></i> SEARCH
