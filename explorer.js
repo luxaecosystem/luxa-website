@@ -59,24 +59,42 @@
 
   // --- Parser Eventi Cosmos SDK ---
   //
-  // FIX: una tx può contenere PIÙ eventi "transfer" (uno per il pagamento
-  // della fee/gas, uno o più per i messaggi effettivi tipo MsgSend).
-  // Prima si prendeva il PRIMO amount trovato in assoluto (spesso quello
-  // della fee, es. 5000uluxa = 0.0050 LUXA), motivo per cui tutte le tx
-  // mostravano lo stesso importo. Ora:
-  //  - guardiamo solo eventi di tipo "transfer"
-  //  - diamo priorità al transfer che ha "msg_index" (= legato a un
-  //    messaggio reale come MsgSend), che è l'importo che l'utente vuole
-  //  - il transfer della fee (senza msg_index) resta come fallback, usato
-  //    solo se non troviamo nessun transfer "reale"
+  // FIX v2: affidarsi a "msg_index" per distinguere il transfer della fee
+  // da quello reale NON funziona in modo affidabile su questo nodo (non è
+  // sempre presente), quindi tutte le tx ricadevano sul primo transfer
+  // trovato (la fee, sempre 5000uluxa = 0,0050 LUXA).
+  //
+  // Approccio più robusto: leggiamo il valore ESATTO della fee dichiarata
+  // (evento "tx", chiave "fee", es. "5000uluxa") e chi la paga
+  // ("fee_payer"). Poi scartiamo qualunque evento "transfer" che coincide
+  // esattamente con quella fee (stesso importo e stesso sender). Il primo
+  // transfer "vero" rimasto è quello che mostriamo.
   function parseCosmosEvents(events) {
     events = events || [];
     let sender = 'luxa1...';
     let recipient = 'luxa1...';
     let amount = null;
-    let feeAmount = null;
+    let fallbackSender = null;
+    let fallbackRecipient = null;
     let nftId = null;
 
+    // Passo 1: recuperiamo l'importo esatto della fee e chi la paga,
+    // così possiamo escludere con precisione il transfer della fee.
+    let feeAmountStr = null;
+    let feePayer = null;
+    for (let i = 0; i < events.length; i++) {
+      const ev = events[i];
+      if (ev.type !== 'tx') continue;
+      const attrs = ev.attributes || [];
+      for (let j = 0; j < attrs.length; j++) {
+        const k = b64Decode(attrs[j].key);
+        const v = b64Decode(attrs[j].value);
+        if (k === 'fee') feeAmountStr = v;
+        if (k === 'fee_payer') feePayer = v;
+      }
+    }
+
+    // Passo 2: scansioniamo i transfer, escludendo quello della fee.
     for (let i = 0; i < events.length; i++) {
       const ev = events[i];
       const attrs = ev.attributes || [];
@@ -85,32 +103,30 @@
         let evSender = null;
         let evRecipient = null;
         let evAmount = null;
-        let hasMsgIndex = false;
 
         for (let j = 0; j < attrs.length; j++) {
           const k = b64Decode(attrs[j].key);
           const v = b64Decode(attrs[j].value);
-
           if (k === 'sender') evSender = v;
           if (k === 'recipient') evRecipient = v;
           if (k === 'amount' && typeof v === 'string' && v.indexOf('uluxa') !== -1) evAmount = v;
-          if (k === 'msg_index') hasMsgIndex = true;
         }
 
-        if (hasMsgIndex && !amount) {
-          // Transfer "reale", legato a un messaggio (es. MsgSend)
+        const isFeeTransfer = Boolean(
+          feeAmountStr && evAmount === feeAmountStr && (!feePayer || evSender === feePayer)
+        );
+
+        if (!isFeeTransfer && evAmount && !amount) {
+          // Transfer "vero" (es. MsgSend, reward tap-to-earn, ecc.)
           if (isCleanAddress(evSender)) sender = evSender;
           if (isCleanAddress(evRecipient)) recipient = evRecipient;
-          if (evAmount) {
-            const num = parseInt(evAmount.replace(/[^0-9]/g, ''), 10);
-            if (!isNaN(num)) amount = (num / 1000000).toFixed(4) + ' LUXA';
-          }
-        } else if (!hasMsgIndex && !feeAmount && evAmount) {
-          // Transfer della fee (fallback)
           const num = parseInt(evAmount.replace(/[^0-9]/g, ''), 10);
-          if (!isNaN(num)) feeAmount = (num / 1000000).toFixed(4) + ' LUXA';
-          if (sender === 'luxa1...' && isCleanAddress(evSender)) sender = evSender;
-          if (recipient === 'luxa1...' && isCleanAddress(evRecipient)) recipient = evRecipient;
+          if (!isNaN(num)) amount = (num / 1000000).toFixed(4) + ' LUXA';
+        } else if (isFeeTransfer && !fallbackSender) {
+          // Teniamo da parte sender/recipient della fee solo come
+          // ripiego, nel caso non esista nessun transfer "vero".
+          if (isCleanAddress(evSender)) fallbackSender = evSender;
+          if (isCleanAddress(evRecipient)) fallbackRecipient = evRecipient;
         }
       }
 
@@ -124,7 +140,10 @@
       }
     }
 
-    return { sender: sender, recipient: recipient, amount: amount || feeAmount, nftId: nftId };
+    if (sender === 'luxa1...' && fallbackSender) sender = fallbackSender;
+    if (recipient === 'luxa1...' && fallbackRecipient) recipient = fallbackRecipient;
+
+    return { sender: sender, recipient: recipient, amount: amount, nftId: nftId };
   }
 
   // --- 1. Ricerca Transazione (Hash) ---
