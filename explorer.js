@@ -23,8 +23,19 @@
   }
 
   function b64Decode(str) {
+    if (typeof str !== 'string' || str.length === 0) return str;
     try {
-      return atob(str);
+      const decoded = atob(str);
+      // Verifica REALE: se ri-codificando il risultato in base64 non
+      // ritorniamo alla stringa originale, allora la stringa NON era
+      // base64 per davvero — era testo in chiaro che per caso conteneva
+      // solo caratteri validi in base64 (es. "sender", "5000uluxa").
+      // Il nodo LUXA restituisce gli eventi già in chiaro, quindi questo
+      // controllo evita di corrompere silenziosamente i valori.
+      if (btoa(decoded) === str) {
+        return decoded;
+      }
+      return str;
     } catch (_) {
       return str;
     }
