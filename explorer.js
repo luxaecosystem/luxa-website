@@ -58,39 +58,73 @@
   }
 
   // --- Parser Eventi Cosmos SDK ---
+  //
+  // FIX: una tx può contenere PIÙ eventi "transfer" (uno per il pagamento
+  // della fee/gas, uno o più per i messaggi effettivi tipo MsgSend).
+  // Prima si prendeva il PRIMO amount trovato in assoluto (spesso quello
+  // della fee, es. 5000uluxa = 0.0050 LUXA), motivo per cui tutte le tx
+  // mostravano lo stesso importo. Ora:
+  //  - guardiamo solo eventi di tipo "transfer"
+  //  - diamo priorità al transfer che ha "msg_index" (= legato a un
+  //    messaggio reale come MsgSend), che è l'importo che l'utente vuole
+  //  - il transfer della fee (senza msg_index) resta come fallback, usato
+  //    solo se non troviamo nessun transfer "reale"
   function parseCosmosEvents(events) {
     events = events || [];
     let sender = 'luxa1...';
     let recipient = 'luxa1...';
     let amount = null;
+    let feeAmount = null;
     let nftId = null;
 
     for (let i = 0; i < events.length; i++) {
       const ev = events[i];
       const attrs = ev.attributes || [];
+
+      if (ev.type === 'transfer') {
+        let evSender = null;
+        let evRecipient = null;
+        let evAmount = null;
+        let hasMsgIndex = false;
+
+        for (let j = 0; j < attrs.length; j++) {
+          const k = b64Decode(attrs[j].key);
+          const v = b64Decode(attrs[j].value);
+
+          if (k === 'sender') evSender = v;
+          if (k === 'recipient') evRecipient = v;
+          if (k === 'amount' && typeof v === 'string' && v.indexOf('uluxa') !== -1) evAmount = v;
+          if (k === 'msg_index') hasMsgIndex = true;
+        }
+
+        if (hasMsgIndex && !amount) {
+          // Transfer "reale", legato a un messaggio (es. MsgSend)
+          if (isCleanAddress(evSender)) sender = evSender;
+          if (isCleanAddress(evRecipient)) recipient = evRecipient;
+          if (evAmount) {
+            const num = parseInt(evAmount.replace(/[^0-9]/g, ''), 10);
+            if (!isNaN(num)) amount = (num / 1000000).toFixed(4) + ' LUXA';
+          }
+        } else if (!hasMsgIndex && !feeAmount && evAmount) {
+          // Transfer della fee (fallback)
+          const num = parseInt(evAmount.replace(/[^0-9]/g, ''), 10);
+          if (!isNaN(num)) feeAmount = (num / 1000000).toFixed(4) + ' LUXA';
+          if (sender === 'luxa1...' && isCleanAddress(evSender)) sender = evSender;
+          if (recipient === 'luxa1...' && isCleanAddress(evRecipient)) recipient = evRecipient;
+        }
+      }
+
+      // nft_id può comparire in vari tipi di evento, quindi si cerca ovunque
       for (let j = 0; j < attrs.length; j++) {
         const k = b64Decode(attrs[j].key);
         const v = b64Decode(attrs[j].value);
-
-        // Accetta l'indirizzo solo se è pulito (niente caratteri corrotti)
-        if (k === 'sender' && sender === 'luxa1...') {
-          if (isCleanAddress(v)) sender = v;
-        }
-        if (k === 'recipient' && recipient === 'luxa1...') {
-          if (isCleanAddress(v)) recipient = v;
-        }
-        if (k === 'amount' && typeof v === 'string' && v.indexOf('uluxa') !== -1 && !amount) {
-          const num = parseInt(v.replace(/[^0-9]/g, ''), 10);
-          if (!isNaN(num)) {
-            amount = (num / 1000000).toFixed(4) + ' LUXA';
-          }
-        }
         if ((k === 'nft_id' || k === 'license_id' || k === 'nftKey') && !nftId) {
           nftId = String(v).trim();
         }
       }
     }
-    return { sender: sender, recipient: recipient, amount: amount, nftId: nftId };
+
+    return { sender: sender, recipient: recipient, amount: amount || feeAmount, nftId: nftId };
   }
 
   // --- 1. Ricerca Transazione (Hash) ---
