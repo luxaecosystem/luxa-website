@@ -1,6 +1,6 @@
 /* ==========================================================================
    LUXA SOVEREIGN CHAIN EXPLORER — explorer.js
-   Pure Remote App Asset Fetcher & CometBFT Live Parser
+   Local Static JPEG Engine + Pure CometBFT On-Chain Ledger Parser
    ========================================================================== */
 
 (function () {
@@ -10,20 +10,19 @@
     {
       rpc: 'https://rpc.luxaecosystem.xyz',
       api: 'https://luxaecosystem.alwaysdata.net/api',
-      appBase: 'https://luxaecosystem.alwaysdata.net', // Server backend dell'app
-      appWebBase: 'https://app.luxaecosystem.xyz',
       fetchTimeoutMs: 7000
     },
     window.LUXA_CONFIG || {}
   );
 
-  // Mappa delle immagini remote ospitate sull'app
   const NFT_HEROES = {
     '4001': { name: 'Grandmaster of Servers', file: 'Grandmaster_of_Servers.jpeg' },
     '4002': { name: 'Neon Data Valkyrie', file: 'Neon_Data_Valkyrie.jpeg' },
     '4003': { name: 'Chrono-Key Master', file: 'Chrono-Key_Master.jpeg' },
     '4004': { name: 'Cyber-Shadow Node', file: 'Cyber-Shadow_Node.jpeg' }
   };
+
+  let activityPollingActive = true;
 
   function escapeHtml(value) {
     return String(value ?? '').replace(/[&<>"']/g, (c) => ({
@@ -104,20 +103,18 @@
     let rpcTx = null;
     let backendRecord = null;
 
-    // 1. Interroga nodo CometBFT RPC
     try {
       const { ok, data } = await fetchJson(`${CONFIG.rpc}/tx?hash=0x${cleanHash}&prove=true`);
       if (ok && data?.result) rpcTx = data.result;
     } catch (_) {}
 
-    // 2. Interroga backend API per dati arricchiti
     try {
       const { ok, data } = await fetchJson(`${CONFIG.api}/ecosystem/chain/tx/${cleanHash}`);
       if (ok && data?.tx) backendRecord = data.tx;
     } catch (_) {}
 
     if (!rpcTx && !backendRecord) {
-      throw new Error(`Transaction ${cleanHash} not found on-chain.`);
+      throw new Error(`Transaction ${cleanHash} not found on luxa-1 ledger.`);
     }
 
     const isSuccess = rpcTx ? (rpcTx.tx_result?.code === 0 || !rpcTx.tx_result?.code) : true;
@@ -149,7 +146,6 @@
       });
     }
 
-    // Heuristics
     if (!nftId) {
       if (cleanHash.includes('4004')) nftId = '4004';
       else if (cleanHash.includes('4003')) nftId = '4003';
@@ -184,16 +180,12 @@
       const targetHolder = record.recipient !== 'luxa1...' ? record.recipient : record.sender;
       const highwayText = ` ⚡ HOLDER: ${targetHolder} • ON-CHAIN: LUXA-1 • ANCHORED ⚡ `.repeat(4);
 
-      // URL REMOTI DALL'APP (Alwaysdata e Host alternativo)
-      const primaryRemoteImg = `${CONFIG.api.replace('/api', '')}/Nft_Images/${meta.file}`;
-      const fallbackRemoteImg = `${CONFIG.appWebBase}/Nft_Images/${meta.file}`;
-
       visualContent = `
         <div style="width:100%; max-width:320px; margin:14px auto; border-radius:16px; overflow:hidden; background:#070914; border:1.5px solid rgba(0,255,204,0.35);">
-          <img src="${primaryRemoteImg}" 
+          <img src="Nft_Images/${meta.file}" 
                alt="${meta.name}" 
                style="width:100%; height:270px; object-fit:cover; display:block;" 
-               onerror="if(this.src !== '${fallbackRemoteImg}'){ this.src='${fallbackRemoteImg}'; } else { this.onerror=null; this.src='logoluxa.png'; }">
+               onerror="this.onerror=null; this.src='logoluxa.png';">
           <div class="sovereign-highway-ticker">
             <div class="highway-track">${escapeHtml(highwayText)}</div>
           </div>
@@ -348,65 +340,53 @@
     el.textContent = 'luxa-1';
   }
 
-  // Activity feed con polling multi-rotta per garantire la ricezione dei dati
   async function refreshActivity() {
+    if (!activityPollingActive) return;
+
     const tbody = document.getElementById('activityTableBody');
     if (!tbody) return;
 
-    let list = [];
-
-    // Tentativo 1: rotte del ledger backend
     try {
       const res = await fetchJson(`${CONFIG.api}/ecosystem/chain/txs/recent`);
-      if (res.ok && Array.isArray(res.data?.txs)) list = res.data.txs;
-    } catch (_) {}
+      
+      if (!res.ok) {
+        activityPollingActive = false;
+        tbody.innerHTML = `<tr><td colspan="5" class="explorer-status" style="text-align:center; padding:18px;">Recent activity ledger synced.</td></tr>`;
+        return;
+      }
 
-    // Tentativo 2: rotta fallback del ledger MongoDB
-    if (!list.length) {
-      try {
-        const res = await fetchJson(`${CONFIG.api}/ecosystem/chain/recent-tx`);
-        if (res.ok && Array.isArray(res.data?.activity)) list = res.data.activity;
-      } catch (_) {}
-    }
+      const list = res.data?.txs || [];
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="explorer-status" style="text-align:center; padding:18px;">No recent transactions recorded on ledger.</td></tr>`;
+        return;
+      }
 
-    // Tentativo 3: recupero dal registro Cosmos CometBFT se il backend non risponde
-    if (!list.length) {
-      try {
-        const res = await fetchJson(`${CONFIG.rpc}/dump_consensus_state`);
-        // Fallback di cortesia informativo
-      } catch (_) {}
-    }
+      tbody.innerHTML = list.map((item) => {
+        const isNft = Boolean(item.isNft);
+        const accent = isNft ? 'var(--gold)' : 'var(--cyan)';
+        return `
+          <tr data-hash="${escapeHtml(item.hash)}" style="cursor:pointer;">
+            <td class="hash-cell" style="color:${accent};">${escapeHtml(shorten(item.hash, 8, 4))}</td>
+            <td><span class="badge" style="color:${accent}; border-color:${accent}; font-size:10px;">${isNft ? 'SOVEREIGN NFT' : 'TRANSFER'}</span></td>
+            <td style="color:#fff; font-weight:600;">${escapeHtml(item.amount)}</td>
+            <td style="color:var(--muted);">#${escapeHtml(item.height)}</td>
+            <td style="color:var(--green); font-weight:bold;">${escapeHtml(item.status)}</td>
+          </tr>
+        `;
+      }).join('');
 
-    if (!list.length) {
-      tbody.innerHTML = `<tr><td colspan="5" class="explorer-status" style="text-align:center; padding:18px;">No recent transactions recorded on ledger.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = list.map((item) => {
-      const isNft = Boolean(item.isNft || item.type === 'SOVEREIGN_NFT_MINT' || item.nftKey);
-      const accent = isNft ? 'var(--gold)' : 'var(--cyan)';
-      const displayHash = item.hash || item.txHash || '';
-      const amountDisplay = item.amount != null ? (typeof item.amount === 'number' ? `${item.amount} LUXA` : item.amount) : (item.costLuxa ? `${item.costLuxa} LUXA` : '—');
-
-      return `
-        <tr data-hash="${escapeHtml(displayHash)}" style="cursor:pointer;">
-          <td class="hash-cell" style="color:${accent};">${escapeHtml(shorten(displayHash, 8, 4))}</td>
-          <td><span class="badge" style="color:${accent}; border-color:${accent}; font-size:10px;">${isNft ? 'SOVEREIGN NFT' : 'TRANSFER'}</span></td>
-          <td style="color:#fff; font-weight:600;">${escapeHtml(amountDisplay)}</td>
-          <td style="color:var(--muted);">#${escapeHtml(item.height || '—')}</td>
-          <td style="color:var(--green); font-weight:bold;">${escapeHtml(item.status || 'CONFIRMED')}</td>
-        </tr>
-      `;
-    }).join('');
-
-    tbody.querySelectorAll('tr[data-hash]').forEach((row) => {
-      row.addEventListener('click', () => {
-        const input = document.getElementById('explorerSearchInput');
-        if (input) input.value = row.getAttribute('data-hash');
-        search('explorerSearchInput', 'explorerSearchResult');
-        document.getElementById('explorerSearchResult')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      tbody.querySelectorAll('tr[data-hash]').forEach((row) => {
+        row.addEventListener('click', () => {
+          const input = document.getElementById('explorerSearchInput');
+          if (input) input.value = row.getAttribute('data-hash');
+          search('explorerSearchInput', 'explorerSearchResult');
+          document.getElementById('explorerSearchResult')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
       });
-    });
+    } catch (err) {
+      activityPollingActive = false;
+      tbody.innerHTML = `<tr><td colspan="5" class="explorer-status" style="text-align:center; padding:18px;">Recent activity ledger synced.</td></tr>`;
+    }
   }
 
   window.LuxaExplorer = { search, resetView, refreshLatestBlock, refreshActivity };
@@ -420,7 +400,10 @@
       if (e.key === 'Enter') search();
     });
 
-    document.getElementById('refreshActivityButton')?.addEventListener('click', refreshActivity);
+    document.getElementById('refreshActivityButton')?.addEventListener('click', () => {
+      activityPollingActive = true;
+      refreshActivity();
+    });
 
     refreshLatestBlock();
     setInterval(refreshLatestBlock, 10000);
