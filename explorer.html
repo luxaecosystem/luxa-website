@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LUXA Sovereign Explorer</title>
+  <title>LUXA Sovereign Explorer PRO</title>
+  <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
+
   <style>
     :root {
       --bg: #05050e;
@@ -21,6 +22,7 @@
       --blue: #0066FF;
       --green: #22c55e;
       --red: #ef4444;
+      --muted-badge: #64748b;
       --text: #f1f5f9;
       --text-muted: #94a3b8;
     }
@@ -35,326 +37,114 @@
       padding-bottom: 60px;
     }
 
-    .container {
-      max-width: 1050px;
-      margin: 0 auto;
-      padding: 24px 16px;
-    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
 
-    /* Top Navigation Header */
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 14px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 14px; padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-subtle); margin-bottom: 24px;
     }
 
     .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--cyan);
+      display: flex; align-items: center; gap: 12px; text-decoration: none;
+      font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 800; color: var(--cyan);
     }
-
-    .brand img {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: 1px solid var(--cyan);
-    }
-
-    .header-badges {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
+    .brand img { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--cyan); object-fit: cover; }
 
     .chain-pill {
-      background: rgba(0, 255, 204, 0.08);
-      border: 1px solid var(--cyan);
-      color: var(--cyan);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      background: rgba(0, 255, 204, 0.08); border: 1px solid var(--cyan); color: var(--cyan);
+      padding: 6px 14px; border-radius: 20px; font-size: 11px; font-family: 'JetBrains Mono', monospace;
+      font-weight: 700; display: flex; align-items: center; gap: 8px;
     }
+    .chain-pill::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
 
-    .chain-pill::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: var(--green);
-      border-radius: 50%;
-      box-shadow: 0 0 6px var(--green);
-    }
-
-    /* Search Section (BscScan Style) */
     .search-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-subtle);
-      border-radius: 20px;
-      padding: 24px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      margin-bottom: 28px;
+      background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: 20px;
+      padding: 24px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-bottom: 28px;
     }
-
-    .search-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .search-sub {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-    }
-
-    .search-box {
-      display: flex;
-      gap: 10px;
-      position: relative;
-    }
-
+    .search-title { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .search-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+    .search-box { display: flex; gap: 10px; }
     .search-box input {
-      flex: 1;
-      background: #080a14;
-      border: 1.5px solid rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
-      padding: 14px 18px;
-      color: #fff;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 13px;
-      outline: none;
+      flex: 1; background: #080a14; border: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 12px;
+      padding: 14px 18px; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 13px; outline: none;
       transition: all 0.2s ease;
     }
-
-    .search-box input:focus {
-      border-color: var(--cyan);
-      box-shadow: 0 0 15px var(--cyan-glow);
-    }
-
+    .search-box input:focus { border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan-glow); }
     .btn-search {
-      background: linear-gradient(135deg, var(--blue), var(--cyan));
-      color: #000;
-      border: none;
-      border-radius: 12px;
-      padding: 0 24px;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 12.5px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: transform 0.15s ease, filter 0.2s ease;
+      background: linear-gradient(135deg, var(--blue), var(--cyan)); color: #000; border: none; border-radius: 12px;
+      padding: 0 24px; font-family: 'Orbitron', sans-serif; font-size: 12.5px; font-weight: 800; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; transition: transform 0.15s ease, filter 0.2s ease;
     }
+    .btn-search:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
-    .btn-search:hover {
-      filter: brightness(1.1);
-      transform: translateY(-1px);
-    }
-
-    /* Result Stage */
-    #searchStage {
-      margin-bottom: 30px;
-    }
-
-    .status-msg {
-      padding: 14px;
-      border-radius: 12px;
-      font-size: 12.5px;
-      font-family: 'JetBrains Mono', monospace;
-      margin-top: 10px;
-    }
+    #searchStage { margin-bottom: 30px; }
+    .status-msg { padding: 14px; border-radius: 12px; font-size: 12.5px; font-family: 'JetBrains Mono', monospace; margin-top: 10px; }
     .status-loading { background: rgba(0, 255, 204, 0.08); color: var(--cyan); border: 1px solid var(--cyan); }
     .status-error { background: rgba(239, 68, 68, 0.08); color: var(--red); border: 1px solid var(--red); }
 
-    /* Result Cards */
     .result-card {
-      background: rgba(8, 10, 20, 0.9);
-      border-radius: 18px;
-      padding: 20px;
-      border: 1.5px solid var(--border-color, var(--cyan));
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      background: rgba(8, 10, 20, 0.95); border-radius: 18px; padding: 20px;
+      border: 1.5px solid var(--border-color, var(--cyan)); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
-
     .card-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 16px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+      padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 16px;
     }
-
     .badge {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 6px;
-      border: 1px solid currentColor;
+      font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 800; padding: 4px 10px;
+      border-radius: 6px; border: 1px solid currentColor;
     }
-
     .badge-ok { color: var(--green); border-color: var(--green); background: rgba(34, 197, 94, 0.12); }
     .badge-gold { color: var(--gold); border-color: var(--gold); background: rgba(255, 215, 0, 0.12); }
     .badge-cyan { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 204, 0.12); }
+    .badge-muted { color: var(--muted-badge); border-color: var(--muted-badge); background: rgba(100, 116, 139, 0.12); }
 
     .back-btn {
-      background: rgba(7, 9, 20, 0.8);
-      border: 1px solid rgba(0, 255, 204, 0.4);
-      color: var(--cyan);
-      padding: 6px 14px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'Space Grotesk', sans-serif;
+      background: rgba(7, 9, 20, 0.8); border: 1px solid rgba(0, 255, 204, 0.4); color: var(--cyan);
+      padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif;
+      transition: background 0.2s ease;
     }
+    .back-btn:hover { background: rgba(0, 255, 204, 0.15); color: #fff; }
 
-    /* Sovereign Highway Ticker */
     .highway-box {
-      width: 100%;
-      max-width: 320px;
-      margin: 14px auto 18px;
-      border-radius: 16px;
-      overflow: hidden;
-      background: #020617;
-      border: 1.5px solid rgba(0, 255, 204, 0.35);
+      width: 100%; max-width: 320px; margin: 14px auto 18px; border-radius: 16px; overflow: hidden;
+      background: #020617; border: 1.5px solid rgba(0, 255, 204, 0.35);
     }
-
-    .highway-box img {
-      width: 100%;
-      height: 270px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .sovereign-highway-ticker {
-      overflow: hidden;
-      white-space: nowrap;
-      background: #020617;
-      padding: 7px 0;
-      border-top: 1px solid rgba(0, 255, 204, 0.25);
-    }
-
+    .highway-box img { width: 100%; height: 270px; object-fit: cover; display: block; }
+    .sovereign-highway-ticker { overflow: hidden; white-space: nowrap; background: #020617; padding: 7px 0; border-top: 1px solid rgba(0, 255, 204, 0.25); }
     .highway-track {
-      display: inline-block;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--cyan);
-      letter-spacing: 1px;
-      animation: tickerRun 16s linear infinite;
+      display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
+      color: var(--cyan); letter-spacing: 1px; animation: tickerRun 16s linear infinite;
     }
+    @keyframes tickerRun { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
 
-    @keyframes tickerRun {
-      0% { transform: translateX(0%); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* Key-Value Details Grid */
-    .details-grid {
-      display: grid;
-      gap: 10px;
-      font-size: 12px;
-      line-height: 1.6;
-    }
-
-    .details-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .details-label {
-      color: var(--text-muted);
-      min-width: 120px;
-      font-weight: 500;
-    }
-
-    .details-val {
-      color: #fff;
-      word-break: break-all;
-    }
-
+    .details-grid { display: grid; gap: 10px; font-size: 12px; line-height: 1.6; }
+    .details-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+    .details-label { color: var(--text-muted); min-width: 130px; font-weight: 500; }
+    .details-val { color: #fff; word-break: break-all; }
     .mono { font-family: 'JetBrains Mono', monospace; }
+    .muted-note { color: var(--text-muted); font-size: 11px; }
+    .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 13px; margin: 18px 0 12px; color: #fff; }
 
-    /* Tables (Recent & Wallet Tx History) */
-    .table-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-subtle);
-      border-radius: 20px;
-      padding: 22px;
-    }
+    /* Griglia overview stile bscscan: blocchi + transazioni affiancati */
+    .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .overview-grid { grid-template-columns: 1fr; } }
 
-    .table-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
+    .table-card { background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: 20px; padding: 22px; }
+    .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .table-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; }
 
-    .table-header h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-    }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .data-table thead tr { border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted); text-align: left; }
+    .data-table th, .data-table td { padding: 10px 8px; }
+    .data-table tbody tr { border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.15s ease; }
+    .data-table tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+    .empty-cell { text-align: center; padding: 18px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
 
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-
-    .data-table thead tr {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--text-muted);
-      text-align: left;
-    }
-
-    .data-table th, .data-table td {
-      padding: 10px 8px;
-    }
-
-    .data-table tbody tr {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      transition: background 0.15s ease;
-    }
-
-    .data-table tbody tr:hover {
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .click-hash {
-      cursor: pointer;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--cyan);
-    }
-
-    .click-hash:hover {
-      text-decoration: underline;
-    }
+    .click-hash { cursor: pointer; font-family: 'JetBrains Mono', monospace; color: var(--cyan); }
+    .click-hash:hover { text-decoration: underline; }
 
     @media (max-width: 650px) {
       .search-box { flex-direction: column; }
@@ -366,57 +156,59 @@
 <body>
 
   <div class="container">
-    <!-- Topbar -->
     <header class="header">
       <a href="index.html" class="brand">
-        <img src="logoluxa.png" alt="LUXA Logo" onerror="this.src='logoluxa.png'">
-        LUXA SCAN
+        <img src="assets/images/logoluxa.png" alt="LUXA Logo" onerror="this.src='assets/images/logoluxa.png'">
+        LUXA SCAN <span style="color:var(--gold); font-size:12px; margin-left:4px;">PRO</span>
       </a>
       <div class="header-badges">
         <div class="chain-pill" id="chainBlockBadge">luxa-1 • syncing...</div>
       </div>
     </header>
 
-    <!-- Search Section -->
     <section class="search-card">
       <div class="search-title">LUXA Sovereign Ledger Explorer</div>
       <div class="search-sub">Search by Transaction Hash, Wallet Address (luxa1...), or Block Height.</div>
       <div class="search-box">
         <input type="text" id="searchInput" placeholder="Search by Tx Hash, Address (luxa1...), or Block Number" autocomplete="off" spellcheck="false">
-        <button type="button" class="btn-search" id="searchBtn">
-          <i class="fas fa-search"></i> SEARCH
-        </button>
+        <button type="button" class="btn-search" id="searchBtn"><i class="fas fa-search"></i> SEARCH</button>
       </div>
     </section>
 
-    <!-- Dynamic Result View (Tx, Wallet or Block) -->
     <div id="searchStage"></div>
 
-    <!-- Recent Activity Table -->
-    <section class="table-card">
-      <div class="table-header">
-        <h2>Latest Protocol Transactions</h2>
-        <button type="button" class="back-btn" id="refreshActivityBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+    <div class="table-header" style="margin-bottom:14px;">
+      <h2 style="font-size:16px;">Protocol Overview</h2>
+      <button type="button" class="back-btn" id="refreshActivityBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+    </div>
+
+    <section class="overview-grid">
+      <div class="table-card">
+        <div class="table-header"><h2>Latest Blocks</h2></div>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead><tr><th>Height</th><th>Age</th><th>Proposer</th><th>Txns</th></tr></thead>
+            <tbody id="latestBlocksBody">
+              <tr><td colspan="4" class="empty-cell">Syncing with luxa-1 node...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div style="overflow-x: auto;">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Tx Hash</th>
-              <th>Asset Type</th>
-              <th>Amount</th>
-              <th>Block</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="recentTxsBody">
-            <tr><td colspan="5" class="status-msg status-loading" style="text-align:center;">Listening to luxa-1 node...</td></tr>
-          </tbody>
-        </table>
+
+      <div class="table-card">
+        <div class="table-header"><h2>Latest Transactions</h2></div>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead><tr><th>Tx Hash</th><th>Type</th><th>Block</th><th>Age</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody id="latestTxsBody">
+              <tr><td colspan="6" class="empty-cell">Syncing with luxa-1 node...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   </div>
 
-  <script src="explorer.js"></script>
+  <script src="js/explorer-pro.js"></script>
 </body>
 </html>
