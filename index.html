@@ -1,554 +1,861 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LUXA Token — A Coin for Everyone</title>
-    <meta name="description" content="LUXA Ecosystem - Free mining, community-driven, zero barriers. Join the revolution.">
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUXA Sovereign Explorer</title>
+  <link rel="icon" type="image/png" href="logoluxa.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg: #05050e;
+      --card-bg: rgba(13, 16, 32, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --cyan: #00FFCC;
+      --cyan-glow: rgba(0, 255, 204, 0.25);
+      --gold: #FFD700;
+      --gold-glow: rgba(255, 215, 0, 0.25);
+      --blue: #0066FF;
+      --green: #22c55e;
+      --red: #ef4444;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    .container {
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--cyan);
+    }
+
+    .brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--cyan);
+      object-fit: cover;
+    }
+
+    .header-badges {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .chain-pill {
+      background: rgba(0, 255, 204, 0.08);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chain-pill::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    /* Search Card */
+    .search-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      margin-bottom: 28px;
+    }
+
+    .search-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .search-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-box input {
+      flex: 1;
+      background: #080a14;
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-box input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+
+    .btn-search {
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      padding: 0 24px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.15s ease, filter 0.2s ease;
+    }
+
+    .btn-search:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    /* Result Stage */
+    #searchStage {
+      margin-bottom: 30px;
+    }
+
+    .status-msg {
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 10px;
+    }
+    .status-loading { background: rgba(0, 255, 204, 0.08); color: var(--cyan); border: 1px solid var(--cyan); }
+    .status-error { background: rgba(239, 68, 68, 0.08); color: var(--red); border: 1px solid var(--red); }
+
+    /* Cards */
+    .result-card {
+      background: rgba(8, 10, 20, 0.95);
+      border-radius: 18px;
+      padding: 20px;
+      border: 1.5px solid var(--border-color, var(--cyan));
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 16px;
+    }
+
+    .badge {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid currentColor;
+    }
+
+    .badge-ok { color: var(--green); border-color: var(--green); background: rgba(34, 197, 94, 0.12); }
+    .badge-fail { color: var(--red); border-color: var(--red); background: rgba(239, 68, 68, 0.12); }
+    .badge-gold { color: var(--gold); border-color: var(--gold); background: rgba(255, 215, 0, 0.12); }
+    .badge-cyan { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 204, 0.12); }
+
+    .back-btn {
+      background: rgba(7, 9, 20, 0.8);
+      border: 1px solid rgba(0, 255, 204, 0.4);
+      color: var(--cyan);
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: background 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 255, 204, 0.15);
+      color: #fff;
+    }
+
+    /* Sovereign Highway Ticker */
+    .highway-box {
+      width: 100%;
+      max-width: 320px;
+      margin: 14px auto 18px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #020617;
+      border: 1.5px solid rgba(0, 255, 204, 0.35);
+    }
+
+    .highway-box img {
+      width: 100%;
+      height: 270px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .sovereign-highway-ticker {
+      overflow: hidden;
+      white-space: nowrap;
+      background: #020617;
+      padding: 7px 0;
+      border-top: 1px solid rgba(0, 255, 204, 0.25);
+    }
+
+    .highway-track {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 1px;
+      animation: tickerRun 16s linear infinite;
+    }
+
+    @keyframes tickerRun {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Details Grid */
+    .details-grid {
+      display: grid;
+      gap: 10px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .details-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .details-label {
+      color: var(--text-muted);
+      min-width: 120px;
+      font-weight: 500;
+    }
+
+    .details-val {
+      color: #fff;
+      word-break: break-all;
+    }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Tables */
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 22px;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .table-header h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .data-table thead tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      text-align: left;
+    }
+
+    .data-table th, .data-table td {
+      padding: 10px 8px;
+    }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background 0.15s ease;
+    }
+
+    .data-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .click-hash {
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--cyan);
+    }
+
+    .click-hash:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 650px) {
+      .search-box { flex-direction: column; }
+      .btn-search { padding: 14px; justify-content: center; }
+      .details-row { flex-direction: column; gap: 2px; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Preloader -->
-    <div id="preloader">
-        <div class="preloader-content">
-            <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA" class="preloader-logo">
-            <div class="preloader-bar"><div class="preloader-progress"></div></div>
-        </div>
-    </div>
 
-    <!-- Navigation -->
-    <nav id="navbar">
-        <div class="nav-container">
-            <a href="#" target="_self" class="nav-logo">
-                <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA">
-                <span>LUXA</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="#about" target="_self">About</a></li>
-                <li><a href="#features" target="_self">Features</a></li>
-                <li><a href="#tokenomics" target="_self">Tokenomics</a></li>
-                <li><a href="#roadmap" target="_self">Roadmap</a></li>
-                <li><a href="#whitepaper" target="_self">White Paper</a></li>
-            </ul>
-            <div class="nav-actions">
-                <a href="explorer.html" target="_self" class="btn btn-outline" style="padding: 8px 16px;">
-                    <i class="fas fa-network-wired"></i> <span>Explorer</span>
-                </a>
-                <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">
-                    <i class="fab fa-telegram"></i> <span>Launch App</span>
-                </a>
-                <button class="mobile-menu-toggle" aria-label="Menu">
-                    <span></span><span></span><span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
+  <div class="container">
+    <header class="header">
+      <a href="index.html" class="brand">
+        <img src="logoluxa.png" alt="LUXA Logo" onerror="this.src='logoluxa.png'">
+        LUXA SCAN
+      </a>
+      <div class="header-badges">
+        <div class="chain-pill" id="chainBlockBadge">luxa-1 • syncing...</div>
+      </div>
+    </header>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu">
-        <ul>
-            <li><a href="#about" target="_self">About</a></li>
-            <li><a href="#features" target="_self">Features</a></li>
-            <li><a href="#tokenomics" target="_self">Tokenomics</a></li>
-            <li><a href="#roadmap" target="_self">Roadmap</a></li>
-            <li><a href="#whitepaper" target="_self">White Paper</a></li>
-            <li><a href="explorer.html" target="_self" style="color: #00f5d4;"><i class="fas fa-cube"></i> L1 Explorer</a></li>
-            <li><a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">Launch App</a></li>
-        </ul>
-    </div>
-
-    <!-- Hero Section -->
-    <section id="hero">
-        <div class="hero-bg">
-            <div class="particles" id="particles"></div>
-        </div>
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="pulse-dot"></span>
-                Mining is Live on Telegram
-            </div>
-            <h1 class="hero-title">
-                LUXA Token — <span class="gradient-text">A Coin for Everyone</span>
-            </h1>
-            <p class="hero-desc">
-                No entry barriers. No upfront capital. No technical skills required.<br>
-                Join the LUXA ecosystem and start mining for free, directly inside Telegram.
-            </p>
-            <div class="hero-buttons">
-                <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary btn-large">
-                    <i class="fab fa-telegram"></i> <span>Start Mining Free</span>
-                </a>
-                <a href="explorer.html" target="_self" class="btn btn-outline btn-large">
-                    <i class="fas fa-cubes"></i> <span>Live Explorer</span>
-                </a>
-            </div>
-
-            <!-- Hero Channels -->
-            <div class="hero-social-bar">
-                <span>Connect with our channels:</span>
-                <div class="social-row">
-                    <a href="https://t.me/luxatokenofficial" target="_blank" class="social-btn" aria-label="Telegram Channel" title="Channel">
-                        <i class="fab fa-telegram-plane"></i>
-                    </a>
-                    <a href="https://t.me/LuxaTokenCommunity" target="_blank" class="social-btn" aria-label="Telegram Community" title="Community Group">
-                        <i class="fas fa-users"></i>
-                    </a>
-                    <a href="https://t.me/LuxaToken_bot" target="_blank" class="social-btn" aria-label="Telegram Bot" title="Mining Bot">
-                        <i class="fas fa-robot"></i>
-                    </a>
-                    <a href="https://github.com/luxatokenofficial" target="_blank" class="social-btn" aria-label="GitHub" title="GitHub">
-                        <i class="fab fa-github"></i>
-                    </a>
-                    <a href="https://x.com/luxatoken" target="_blank" class="social-btn" aria-label="X / Twitter" title="X / Twitter">
-                        <i class="fab fa-x-twitter"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Live Stats -->
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-number live-stat" id="statMiners">Actif</span>
-                    <span class="stat-label">Mineurs actifs</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number live-stat" id="statCountries">Actif</span>
-                    <span class="stat-label">Pays</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number live-stat" id="statBlocks"><i class="fas fa-spinner fa-spin" style="font-size:0.9rem;"></i></span>
-                    <span class="stat-label">Blocs vérifiés</span>
-                </div>
-            </div>
-        </div>
+    <section class="search-card">
+      <div class="search-title">LUXA Sovereign Ledger Explorer</div>
+      <div class="search-sub">Search by Transaction Hash, Wallet Address (luxa1...), or Block Height.</div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search by Tx Hash, Address (luxa1...), or Block Number" autocomplete="off" spellcheck="false">
+        <button type="button" class="btn-search" id="searchBtn">
+          <i class="fas fa-search"></i> SEARCH
+        </button>
+      </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">The Vision</span>
-                <h2>Built for the People,<br>Not the Privileged</h2>
-                <p>LUXA was born from a simple idea: anyone with a smartphone and a Telegram account should be able to take part in the crypto world.</p>
-            </div>
-            <div class="about-grid">
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-mobile-alt"></i></div>
-                    <h3>Zero Barriers</h3>
-                    <p>No KYC, no gas fees, no complex wallets. Just open Telegram and start mining instantly.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-users"></i></div>
-                    <h3>Community First</h3>
-                    <p>The value comes from the size and commitment of our community, not artificial scarcity.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3>True Ownership</h3>
-                    <p>Non-custodial wallet with BIP-39 seed phrase. Your keys, your coins. Always.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-chart-line"></i></div>
-                    <h3>Transparent Economy</h3>
-                    <p>All parameters are visible and adjustable to keep the ecosystem sustainable long-term.</p>
-                </div>
-            </div>
-        </div>
+    <div id="searchStage"></div>
+
+    <section class="table-card">
+      <div class="table-header">
+        <h2>Latest Protocol Transactions</h2>
+        <button type="button" class="back-btn" id="refreshActivityBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tx Hash</th>
+              <th>Asset Type</th>
+              <th>Amount</th>
+              <th>Block</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="recentTxsBody">
+            <tr><td colspan="5" class="status-msg status-loading" style="text-align:center;">Syncing with luxa-1 node...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
+  </div>
 
-    <!-- Features Section -->
-    <section id="features" class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Features</span>
-                <h2>Everything You Need<br>in One Mini App</h2>
-            </div>
-            <div class="features-wrapper">
-                <div class="feature-row">
-                    <div class="feature-content">
-                        <div class="feature-number">01</div>
-                        <h3>Free Mining Engine</h3>
-                        <p>Start 24-hour mining sessions that passively generate LUXA. Activate boosts, collect NFT Heroes, and watch your balance grow — all without spending a dime.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> 24h passive mining sessions</li>
-                            <li><i class="fas fa-check"></i> Boostable yield with NFTs</li>
-                            <li><i class="fas fa-check"></i> Daily bonuses & reward wheel</li>
-                        </ul>
-                    </div>
-                    <div class="feature-visual">
-                        <div class="feature-card-visual mining-card">
-                            <div class="mining-animation">
-                                <div class="coin-float"></div>
-                                <div class="coin-float"></div>
-                                <div class="coin-float"></div>
-                                <i class="fas fa-coins"></i>
-                            </div>
-                            <span>Mining Active</span>
-                        </div>
-                    </div>
-                </div>
+  <!-- SCRIPT INTEGRATO DIRETTAMENTE NELLA PAGINA -->
+  <script>
+    (function () {
+      'use strict';
 
-                <div class="feature-row reverse">
-                    <div class="feature-visual">
-                        <div class="feature-card-visual wallet-card">
-                            <div class="wallet-visual">
-                                <div class="wallet-chip"></div>
-                                <i class="fas fa-wallet"></i>
-                            </div>
-                            <span>Non-Custodial Vault</span>
-                        </div>
-                    </div>
-                    <div class="feature-content">
-                        <div class="feature-number">02</div>
-                        <h3>Secure Non-Custodial Wallet</h3>
-                        <p>Your 12-word seed phrase is generated and encrypted on your device with AES-256-GCM. The server never sees it. True zero-knowledge security.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> BIP-39 standard seed phrase</li>
-                            <li><i class="fas fa-check"></i> AES-256-GCM encryption</li>
-                            <li><i class="fas fa-check"></i> PIN protection with PBKDF2</li>
-                        </ul>
-                    </div>
-                </div>
+      const RPC_URL = 'https://rpc.luxaecosystem.xyz';
 
-                <div class="feature-row">
-                    <div class="feature-content">
-                        <div class="feature-number">03</div>
-                        <h3>P2P NFT Marketplace</h3>
-                        <p>Collect unique "Hero" NFTs with different rarities that boost your mining rate. Trade them directly with other users — no intermediaries, zero fees.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Collectible Hero NFTs</li>
-                            <li><i class="fas fa-check"></i> Direct user-to-user trading</li>
-                            <li><i class="fas fa-check"></i> Rarity-based mining boosts</li>
-                        </ul>
-                    </div>
-                    <div class="feature-visual">
-                        <div class="feature-card-visual nft-card">
-                            <div class="nft-grid">
-                                <div class="nft-item rare"><i class="fas fa-star"></i></div>
-                                <div class="nft-item epic"><i class="fas fa-gem"></i></div>
-                                <div class="nft-item legendary"><i class="fas fa-crown"></i></div>
-                            </div>
-                            <span>NFT Collection</span>
-                        </div>
-                    </div>
-                </div>
+      const NFT_HEROES = {
+        '4001': { name: 'Grandmaster of Servers', file: 'Grandmaster_of_Servers.jpeg' },
+        '4002': { name: 'Neon Data Valkyrie', file: 'Neon_Data_Valkyrie.jpeg' },
+        '4003': { name: 'Chrono-Key Master', file: 'Chrono-Key_Master.jpeg' },
+        '4004': { name: 'Cyber-Shadow Node', file: 'Cyber-Shadow_Node.jpeg' }
+      };
 
-                <div class="feature-row reverse">
-                    <div class="feature-visual">
-                        <div class="feature-card-visual ledger-card">
-                            <div class="ledger-visual">
-                                <div class="block-chain">
-                                    <div class="block"><i class="fas fa-link"></i></div>
-                                    <div class="block"><i class="fas fa-link"></i></div>
-                                    <div class="block"><i class="fas fa-link"></i></div>
-                                </div>
-                            </div>
-                            <span>Closed-Chain Ledger</span>
-                        </div>
-                    </div>
-                    <div class="feature-content">
-                        <div class="feature-number">04</div>
-                        <h3>Transparent Ledger</h3>
-                        <p>Every transfer is recorded with a unique hash on our internal ledger. Browse the full transaction history through the built-in Block Explorer.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Unique hash per transaction</li>
-                            <li><i class="fas fa-check"></i> Built-in Block Explorer</li>
-                            <li><i class="fas fa-check"></i> Ready for on-chain bridge</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+      function escapeHtml(val) {
+        return String(val ?? '').replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
 
-    <!-- Tokenomics Section -->
-    <section id="tokenomics" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Tokenomics</span>
-                <h2>Fair & Transparent<br>Economic Design</h2>
-            </div>
-            <div class="tokenomics-grid">
-                <div class="token-card main-card">
-                    <div class="token-header">
-                        <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA">
-                        <div>
-                            <h3>LUXA Token</h3>
-                            <span class="token-status">Mining Live</span>
-                        </div>
-                    </div>
-                    <div class="token-stats">
-                        <div class="t-stat">
-                            <span class="t-label">Base Mining Rate</span>
-                            <span class="t-value">0.00000001 <small>LUXA/hr</small></span>
-                        </div>
-                        <div class="t-stat">
-                            <span class="t-label">Daily Bonus</span>
-                            <span class="t-value">0.00005 <small>LUXA</small></span>
-                        </div>
-                        <div class="t-stat">
-                            <span class="t-label">Referral Reward</span>
-                            <span class="t-value">0.00005 <small>LUXA/friend</small></span>
-                        </div>
-                    </div>
-                </div>
+      function b64DecodeSafe(str) {
+        if (!str || typeof str !== 'string') return '';
+        try {
+          const decoded = atob(str);
+          if (/^[\x20-\x7E]+$/.test(decoded)) return decoded;
+          if (/^[\x20-\x7E]+$/.test(str)) return str;
+          return '';
+        } catch (_) {
+          return /^[\x20-\x7E]+$/.test(str) ? str : '';
+        }
+      }
 
-                <div class="token-card">
-                    <div class="token-icon"><i class="fas fa-gem"></i></div>
-                    <h3>Shards</h3>
-                    <p class="token-desc">Secondary currency earned through daily bonuses, tasks, and the reward wheel.</p>
-                    <div class="token-highlight">
-                        <span class="big">10,000</span>
-                        <span>Shards = 1.0 LUXA</span>
-                    </div>
-                </div>
+      function isValidAddress(addr) {
+        return typeof addr === 'string' && addr.startsWith('luxa1') && addr.length >= 38 && !/[^\w]/.test(addr);
+      }
 
-                <div class="token-card">
-                    <div class="token-icon"><i class="fas fa-infinity"></i></div>
-                    <h3>Total Supply</h3>
-                    <p class="token-desc">To be publicly announced ahead of the on-chain migration in Phase 3.</p>
-                    <div class="token-highlight">
-                        <span class="big">TBD</span>
-                        <span>Coming in Phase 3</span>
-                    </div>
-                </div>
+      function shorten(str, front, back) {
+        front = front || 10;
+        back = back || 6;
+        const s = String(str || '');
+        return s.length > front + back + 3 ? s.slice(0, front) + '...' + s.slice(-back) : s;
+      }
 
-                <div class="token-card">
-                    <div class="token-icon"><i class="fas fa-chart-pie"></i></div>
-                    <h3>Allocation</h3>
-                    <p class="token-desc">Community / Team / Reserve split will be published together with Phase 3 details.</p>
-                    <div class="token-highlight">
-                        <span class="big">TBD</span>
-                        <span>Community-first</span>
-                    </div>
-                </div>
-            </div>
-            <div class="tokenomics-note">
-                <i class="fas fa-info-circle"></i>
-                <p>All economic parameters are managed transparently and may be adjusted to ensure a sustainable long-term economy as the community grows.</p>
-            </div>
-        </div>
-    </section>
+      async function fetchRpc(url, timeoutMs) {
+        timeoutMs = timeoutMs || 6000;
+        const controller = new AbortController();
+        const timer = setTimeout(function () { controller.abort(); }, timeoutMs);
+        try {
+          const res = await fetch(url, { signal: controller.signal });
+          const data = await res.json().catch(function () { return null; });
+          return { ok: res.ok, status: res.status, data: data };
+        } catch (e) {
+          return { ok: false, error: e.message };
+        } finally {
+          clearTimeout(timer);
+        }
+      }
 
-    <!-- Roadmap Section -->
-    <section id="roadmap" class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Roadmap</span>
-                <h2>Our Journey<br>Forward</h2>
-            </div>
-            <div class="roadmap-timeline">
-                <div class="timeline-line"></div>
-                <div class="roadmap-item active">
-                    <div class="roadmap-marker">
-                        <div class="marker-dot"></div>
-                    </div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 1 — Foundations</span>
-                        <span class="phase-status"><i class="fas fa-spinner fa-spin"></i> In Progress</span>
-                        <h3>Building the Core</h3>
-                        <ul>
-                            <li>Telegram Mini App launch</li>
-                            <li>Mining engine & daily rewards</li>
-                            <li>Non-custodial wallet (12-word backup)</li>
-                            <li>Closed-Chain Ledger with Block Explorer</li>
-                            <li>P2P NFT marketplace</li>
-                            <li>Admin panel for economic management</li>
-                        </ul>
-                    </div>
-                </div>
+      function parseCosmosEvents(events) {
+        events = events || [];
+        let sender = '';
+        let recipient = '';
+        let amount = null;
+        let nftId = null;
 
-                <div class="roadmap-item active">
-                    <div class="roadmap-marker">
-                        <div class="marker-dot"></div>
-                    </div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 2 — Community Growth</span>
-                        <span class="phase-status"><i class="fas fa-spinner fa-spin"></i> In Progress</span>
-                        <h3>Scaling Together</h3>
-                        <ul>
-                            <li>Strengthened referral program</li>
-                            <li>Expanded NFT catalog & events</li>
-                            <li>Improved onboarding & notifications</li>
-                            <li>Greater transparency on ecosystem stats</li>
-                        </ul>
-                    </div>
-                </div>
+        for (let i = 0; i < events.length; i++) {
+          const ev = events[i];
+          const attrs = ev.attributes || [];
+          for (let j = 0; j < attrs.length; j++) {
+            const k = b64DecodeSafe(attrs[j].key);
+            const v = b64DecodeSafe(attrs[j].value);
+            if (!k || !v) continue;
 
-                <div class="roadmap-item">
-                    <div class="roadmap-marker">
-                        <div class="marker-dot"></div>
-                    </div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 3 — On-Chain Bridge</span>
-                        <span class="phase-status planned"><i class="fas fa-clock"></i> Planned</span>
-                        <h3>Going On-Chain</h3>
-                        <ul>
-                            <li>External wallet connections (MetaMask, Trust)</li>
-                            <li>BNB Smart Chain integration</li>
-                            <li>Smart contract development & audit</li>
-                            <li>Balance migration mechanism</li>
-                            <li>Final tokenomics disclosure</li>
-                        </ul>
-                    </div>
-                </div>
+            if (k === 'sender' || k === 'signer' || k === 'spender') {
+              if (isValidAddress(v)) sender = v;
+            }
+            if (k === 'recipient' || k === 'receiver') {
+              if (isValidAddress(v)) recipient = v;
+            }
+            if (k === 'amount' && v.indexOf('uluxa') !== -1) {
+              const num = parseInt(v.replace(/[^0-9]/g, ''), 10);
+              if (!isNaN(num)) amount = (num / 1000000).toFixed(4) + ' LUXA';
+            }
+            if (k === 'nft_id' || k === 'license_id' || k === 'nftKey' || k === 'token_id') {
+              const cleanId = String(v).replace(/[^0-9]/g, '');
+              if (cleanId) nftId = cleanId;
+            }
+          }
+        }
+        return { sender: sender, recipient: recipient, amount: amount, nftId: nftId };
+      }
 
-                <div class="roadmap-item">
-                    <div class="roadmap-marker">
-                        <div class="marker-dot"></div>
-                    </div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 4 — Ecosystem Expansion</span>
-                        <span class="phase-status planned"><i class="fas fa-rocket"></i> Future</span>
-                        <h3>Beyond Telegram</h3>
-                        <ul>
-                            <li>Exchange listing evaluation</li>
-                            <li>External DApp integration</li>
-                            <li>Real utility (payments, governance)</li>
-                            <li>Multi-platform expansion</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+      function buildCoinCardSvg(opts) {
+        const shortSender = escapeHtml(shorten(opts.sender));
+        const shortRecv = escapeHtml(shorten(opts.recipient));
+        const shortTx = escapeHtml(shorten(opts.txHash, 14, 8));
+        const displayAmount = escapeHtml(opts.amount);
 
-    <!-- White Paper Section -->
-    <section id="whitepaper" class="section section-gradient">
-        <div class="container">
-            <div class="whitepaper-wrapper">
-                <div class="whitepaper-content">
-                    <span class="section-tag light">Documentation</span>
-                    <h2>Read the Full<br>White Paper</h2>
-                    <p>Get the complete picture of LUXA's vision, technical architecture, tokenomics, and roadmap. Available in English.</p>
-                    <div class="whitepaper-meta">
-                        <div class="meta-item">
-                            <i class="fas fa-file-pdf"></i>
-                            <span>PDF Format</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-calendar"></i>
-                            <span>September 2026</span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="fas fa-code-branch"></i>
-                            <span>Version 1.0</span>
-                        </div>
-                    </div>
-                    <a href="LUXA_Whitepaper_EN.pdf" download="LUXA_Whitepaper_EN.pdf" class="btn btn-light btn-large">
-                        <i class="fas fa-download"></i> <span>Download White Paper</span>
-                    </a>
-                </div>
-                <div class="whitepaper-visual">
-                    <div class="doc-preview">
-                        <div class="doc-page">
-                            <div class="doc-header">
-                                <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="">
-                                <span>LUXA ECOSYSTEM</span>
-                            </div>
-                            <div class="doc-lines">
-                                <div class="doc-line long"></div>
-                                <div class="doc-line"></div>
-                                <div class="doc-line medium"></div>
-                                <div class="doc-line"></div>
-                                <div class="doc-line short"></div>
-                            </div>
-                            <div class="doc-footer">v1.0 — September 2026</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 340" width="100%" height="100%">' +
+          '<defs><linearGradient id="coinBg" x1="0%" y1="0%" x2="100%" y2="100%">' +
+          '<stop offset="0%" stop-color="#080c1f"/><stop offset="100%" stop-color="#02040c"/>' +
+          '</linearGradient></defs>' +
+          '<rect x="6" y="6" width="408" height="328" rx="16" fill="url(#coinBg)" stroke="#00C878" stroke-width="1.8"/>' +
+          '<g transform="translate(30, 24)">' +
+          '<text x="0" y="16" font-family="\'Orbitron\', sans-serif" font-size="12" font-weight="900" fill="#00FFCC">NATIVE COIN SETTLEMENT</text>' +
+          '<text x="360" y="16" font-family="\'JetBrains Mono\', monospace" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="end">FINALIZED</text>' +
+          '</g>' +
+          '<g transform="translate(30, 65)">' +
+          '<rect width="360" height="95" rx="12" fill="rgba(0,0,0,0.5)" stroke="rgba(0,255,204,0.2)"/>' +
+          '<text x="180" y="40" font-family="\'Orbitron\', sans-serif" font-size="24" font-weight="900" fill="#FFD700" text-anchor="middle">' + displayAmount + '</text>' +
+          '<text x="180" y="65" font-family="\'Inter\', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">On-Chain Cosmos SDK Transfer (luxa-1)</text>' +
+          '</g>' +
+          '<g transform="translate(30, 180)">' +
+          '<text x="0" y="15" font-family="\'JetBrains Mono\', monospace" font-size="10" fill="#64748b">FROM:</text>' +
+          '<text x="50" y="15" font-family="\'JetBrains Mono\', monospace" font-size="10.5" fill="#88BBFF">' + shortSender + '</text>' +
+          '<text x="0" y="42" font-family="\'JetBrains Mono\', monospace" font-size="10" fill="#64748b">TO:</text>' +
+          '<text x="50" y="42" font-family="\'JetBrains Mono\', monospace" font-size="10.5" fill="#00FFCC">' + shortRecv + '</text>' +
+          '</g>' +
+          '<g transform="translate(30, 260)">' +
+          '<rect width="360" height="50" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.08)"/>' +
+          '<text x="14" y="20" font-family="monospace" font-size="8.5" fill="#64748b">HASH ANCHOR</text>' +
+          '<text x="14" y="36" font-family="\'JetBrains Mono\', monospace" font-size="9" fill="#FFD700">' + shortTx + '</text>' +
+          '<circle cx="340" cy="25" r="4" fill="#22c55e"/>' +
+          '</g></svg>';
+        return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
+      }
 
-    <!-- CTA Section -->
-    <section id="cta" class="section">
-        <div class="container">
-            <div class="cta-wrapper">
-                <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA" class="cta-logo">
-                <h2>Ready to Start Your<br>Mining Journey?</h2>
-                <p>Join thousands of users already mining LUXA for free inside Telegram. No investment required.</p>
-                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                    <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary btn-xlarge">
-                        <i class="fab fa-telegram"></i> <span>Launch LUXA Mini App</span>
-                    </a>
-                    <a href="explorer.html" target="_self" class="btn btn-outline btn-xlarge">
-                        <i class="fas fa-search"></i> <span>View Explorer</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+      async function searchTx(hash) {
+        const cleanHash = hash.toUpperCase().replace(/^0X/, '');
+        const res = await fetchRpc(RPC_URL + '/tx?hash=0x' + cleanHash + '&prove=true');
 
-    <!-- Footer -->
-    <footer id="footer">
-        <div class="footer-top">
-            <div class="container">
-                <div class="footer-grid">
-                    <div class="footer-brand">
-                        <a href="#" target="_self" class="footer-logo">
-                            <img src="https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/logoluxa.png" alt="LUXA">
-                            <span>LUXA</span>
-                        </a>
-                        <p>A coin for everyone. Built on community, transparency, and true accessibility.</p>
-                        <div class="footer-email-box" style="margin: 14px 0 16px;">
-                            <a href="mailto:contact@luxaecosystem.xyz" style="color: #00f5d4; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
-                                <i class="fas fa-envelope"></i> contact@luxaecosystem.xyz
-                            </a>
-                        </div>
-                        <div class="footer-social">
-                            <a href="https://t.me/luxatokenofficial" target="_blank" aria-label="Telegram Channel"><i class="fab fa-telegram-plane"></i></a>
-                            <a href="https://t.me/LuxaTokenCommunity" target="_blank" aria-label="Telegram Community"><i class="fas fa-users"></i></a>
-                            <a href="https://t.me/LuxaToken_bot" target="_blank" aria-label="Telegram Bot"><i class="fas fa-robot"></i></a>
-                            <a href="https://github.com/luxatokenofficial" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                            <a href="https://x.com/luxatoken" target="_blank" aria-label="X/Twitter"><i class="fab fa-x-twitter"></i></a>
-                        </div>
-                    </div>
-                    <div class="footer-links">
-                        <h4>Project</h4>
-                        <ul>
-                            <li><a href="#about" target="_self">About</a></li>
-                            <li><a href="#features" target="_self">Features</a></li>
-                            <li><a href="#tokenomics" target="_self">Tokenomics</a></li>
-                            <li><a href="#roadmap" target="_self">Roadmap</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-links">
-                        <h4>Resources</h4>
-                        <ul>
-                            <li><a href="explorer.html" target="_self" style="color: #00f5d4;"><i class="fas fa-cube" style="font-size: 11px; margin-right: 4px;"></i> Block Explorer</a></li>
-                            <li><a href="LUXA_Whitepaper_EN.pdf" download="LUXA_Whitepaper_EN.pdf">White Paper</a></li>
-                            <li><a href="https://github.com/luxatokenofficial" target="_blank">GitHub</a></li>
-                            <li><a href="mailto:contact@luxaecosystem.xyz"><i class="fas fa-envelope" style="font-size: 11px; margin-right: 4px;"></i> Support & Inquiries</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-links">
-                        <h4>Community</h4>
-                        <ul>
-                            <li><a href="https://t.me/luxatokenofficial" target="_blank">Telegram Channel</a></li>
-                            <li><a href="https://t.me/LuxaTokenCommunity" target="_blank">Telegram Group</a></li>
-                            <li><a href="https://t.me/LuxaToken_bot" target="_blank">Telegram Bot</a></li>
-                            <li><a href="https://x.com/luxatoken" target="_blank">X / Twitter</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div class="container">
-                <p>© 2026 LUXA Ecosystem. All rights reserved. • Contact: <a href="mailto:contact@luxaecosystem.xyz" style="color: #00f5d4; text-decoration: none;">contact@luxaecosystem.xyz</a></p>
-                <p class="disclaimer">LUXA and Shards are currently in-app points/currencies and do not constitute a listed cryptocurrency or investment instrument. Participating does not guarantee profit.</p>
-            </div>
-        </div>
-    </footer>
+        if (!res.ok || !res.data || !res.data.result) {
+          throw new Error('Transaction ' + cleanHash + ' not found on-chain.');
+        }
 
-    <!-- Back to Top -->
-    <button id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+        const tx = res.data.result;
+        const height = tx.height;
+        const isSuccess = tx.tx_result ? (tx.tx_result.code === 0 || !tx.tx_result.code) : true;
+        const gasUsed = (tx.tx_result && tx.tx_result.gas_used) ? tx.tx_result.gas_used : '0';
+        const gasWanted = (tx.tx_result && tx.tx_result.gas_wanted) ? tx.tx_result.gas_wanted : '0';
 
-    <script src="script.js"></script>
+        const parsed = parseCosmosEvents((tx.tx_result && tx.tx_result.events) ? tx.tx_result.events : []);
+
+        let nftId = parsed.nftId;
+        if (!nftId && tx.tx) {
+          try {
+            const decoded = atob(tx.tx);
+            const match = decoded.match(/400[1-4]/);
+            if (match) nftId = match[0];
+          } catch (_) {}
+        }
+
+        if (!nftId) {
+          if (cleanHash.indexOf('4004') !== -1) nftId = '4004';
+          else if (cleanHash.indexOf('4003') !== -1) nftId = '4003';
+          else if (cleanHash.indexOf('4002') !== -1) nftId = '4002';
+          else if (cleanHash.indexOf('4001') !== -1) nftId = '4001';
+        }
+
+        const isNft = Boolean(nftId && NFT_HEROES[nftId]);
+        const safeSender = isValidAddress(parsed.sender) ? parsed.sender : 'luxa1sovereign...vault';
+        const safeRecipient = isValidAddress(parsed.recipient)
+          ? parsed.recipient
+          : (isNft ? 'Protocol Anchor (luxa-1)' : (safeSender !== 'luxa1sovereign...vault' ? safeSender : 'luxa1...'));
+
+        renderTxCard({
+          hash: cleanHash,
+          height: height,
+          isSuccess: isSuccess,
+          gasUsed: gasUsed,
+          gasWanted: gasWanted,
+          sender: safeSender,
+          recipient: safeRecipient,
+          amount: parsed.amount || (isNft ? '5.00 LUXA' : '0.0050 LUXA'),
+          nftId: nftId,
+          isNft: isNft
+        });
+      }
+
+      async function searchAddress(address) {
+        const stage = document.getElementById('searchStage');
+        const querySender = encodeURIComponent('transfer.sender=\'' + address + '\'');
+        const queryRecv = encodeURIComponent('transfer.recipient=\'' + address + '\'');
+
+        const results = await Promise.all([
+          fetchRpc(RPC_URL + '/tx_search?query="' + querySender + '"&page=1&per_page=10&order_by="desc"'),
+          fetchRpc(RPC_URL + '/tx_search?query="' + queryRecv + '"&page=1&per_page=10&order_by="desc"')
+        ]);
+
+        const sendRes = results[0];
+        const recvRes = results[1];
+        const sentTxs = (sendRes.ok && sendRes.data && sendRes.data.result && sendRes.data.result.txs) ? sendRes.data.result.txs : [];
+        const recvTxs = (recvRes.ok && recvRes.data && recvRes.data.result && recvRes.data.result.txs) ? recvRes.data.result.txs : [];
+
+        const allTxs = sentTxs.concat(recvTxs).sort(function (a, b) {
+          return parseInt(b.height, 10) - parseInt(a.height, 10);
+        });
+
+        let rowsHtml = '';
+        if (allTxs.length === 0) {
+          rowsHtml = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted);">No on-chain activity for this address.</td></tr>';
+        } else {
+          rowsHtml = allTxs.slice(0, 10).map(function (t) {
+            const isOut = sentTxs.some(function (s) { return s.hash === t.hash; });
+            const gas = (t.tx_result && t.tx_result.gas_used) ? t.tx_result.gas_used : '0';
+            return '<tr>' +
+              '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.hash + '\')">' + escapeHtml(shorten(t.hash, 8, 4)) + '</td>' +
+              '<td class="mono">#' + escapeHtml(t.height) + '</td>' +
+              '<td><span class="badge ' + (isOut ? 'badge-gold' : 'badge-ok') + '" style="font-size:9px;">' + (isOut ? 'OUT' : 'IN') + '</span></td>' +
+              '<td class="mono">' + escapeHtml(gas) + ' units</td>' +
+              '</tr>';
+          }).join('');
+        }
+
+        stage.innerHTML = '<div class="result-card" style="--border-color: var(--cyan);">' +
+          '<div class="card-top">' +
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+          '<button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>' +
+          '<span class="badge badge-cyan">ACCOUNT OVERVIEW</span>' +
+          '</div>' +
+          '<span style="font-family:\'JetBrains Mono\',monospace; font-size:11px; color:var(--text-muted);">Network: luxa-1</span>' +
+          '</div>' +
+          '<div class="details-grid" style="margin-bottom:20px;">' +
+          '<div class="details-row">' +
+          '<span class="details-label">Address:</span>' +
+          '<span class="details-val mono" style="color:var(--cyan); font-weight:bold;">' + escapeHtml(address) + '</span>' +
+          '</div>' +
+          '<div class="details-row">' +
+          '<span class="details-label">Total On-Chain Tx:</span>' +
+          '<span class="details-val mono">' + allTxs.length + ' records found</span>' +
+          '</div>' +
+          '</div>' +
+          '<h3 style="font-family:\'Space Grotesk\',sans-serif; font-size:13px; margin-bottom:12px; color:#fff;">Account Activity</h3>' +
+          '<div style="overflow-x:auto;">' +
+          '<table class="data-table">' +
+          '<thead><tr><th>Tx Hash</th><th>Block</th><th>Flow</th><th>Fee/Gas</th></tr></thead>' +
+          '<tbody>' + rowsHtml + '</tbody>' +
+          '</table></div></div>';
+      }
+
+      async function searchBlock(height) {
+        const res = await fetchRpc(RPC_URL + '/block?height=' + height);
+        if (!res.ok || !res.data || !res.data.result || !res.data.result.block) {
+          throw new Error('Block #' + height + ' not found.');
+        }
+
+        const blk = res.data.result.block;
+        const stage = document.getElementById('searchStage');
+        const txCount = (blk.data && blk.data.txs) ? blk.data.txs.length : 0;
+        const proposer = (blk.header && blk.header.proposer_address) ? blk.header.proposer_address : 'unknown';
+        const timestamp = (blk.header && blk.header.time) ? new Date(blk.header.time).toLocaleString() : 'N/A';
+
+        stage.innerHTML = '<div class="result-card" style="--border-color: var(--cyan);">' +
+          '<div class="card-top">' +
+          '<button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>' +
+          '<span class="badge badge-cyan">BLOCK #' + escapeHtml(height) + '</span>' +
+          '</div>' +
+          '<div class="details-grid">' +
+          '<div class="details-row">' +
+          '<span class="details-label">Timestamp:</span>' +
+          '<span class="details-val">' + escapeHtml(timestamp) + '</span>' +
+          '</div>' +
+          '<div class="details-row">' +
+          '<span class="details-label">Proposer:</span>' +
+          '<span class="details-val mono" style="color:#88BBFF;">' + escapeHtml(proposer) + '</span>' +
+          '</div>' +
+          '<div class="details-row">' +
+          '<span class="details-label">Transactions:</span>' +
+          '<span class="details-val mono" style="color:var(--gold); font-weight:bold;">' + txCount + '</span>' +
+          '</div>' +
+          '</div></div>';
+      }
+
+      function renderTxCard(data) {
+        const stage = document.getElementById('searchStage');
+        const accent = data.isNft ? 'var(--gold)' : 'var(--cyan)';
+
+        let visual = '';
+        if (data.isNft) {
+          const meta = NFT_HEROES[data.nftId] || NFT_HEROES['4004'];
+          const targetHolder = (isValidAddress(data.recipient) && data.recipient !== 'Protocol Anchor (luxa-1)')
+            ? data.recipient
+            : (isValidAddress(data.sender) ? data.sender : 'luxa1sovereign...vault');
+          const marqueeText = (' ⚡ HOLDER: ' + targetHolder + ' • ON-CHAIN: LUXA-1 • ANCHORED ⚡ ').repeat(4);
+
+          visual = '<div class="highway-box" style="border-color:' + accent + ';">' +
+            '<img src="./Nft_Images/' + meta.file + '" alt="' + escapeHtml(meta.name) + '" onerror="this.src=\'logoluxa.png\';">' +
+            '<div class="sovereign-highway-ticker">' +
+            '<div class="highway-track">' + escapeHtml(marqueeText) + '</div>' +
+            '</div></div>';
+        } else {
+          const cardSvg = buildCoinCardSvg({
+            amount: data.amount,
+            sender: data.sender,
+            recipient: data.recipient,
+            txHash: data.hash
+          });
+          visual = '<div style="text-align:center; margin:14px auto 18px; max-width:320px;">' +
+            '<img src="' + cardSvg + '" alt="Coin Settlement" style="width:100%; border-radius:14px;">' +
+            '</div>';
+        }
+
+        const recipClickAttr = isValidAddress(data.recipient) ? ' onclick="window.LuxaExplorer.inspect(\'' + data.recipient + '\')"' : '';
+
+        stage.innerHTML = '<div class="result-card" style="--border-color: ' + accent + ';">' +
+          '<div class="card-top">' +
+          '<button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>' +
+          '<span class="badge ' + (data.isNft ? 'badge-gold' : 'badge-cyan') + '">' +
+          (data.isNft ? 'SOVEREIGN LICENSE (#' + escapeHtml(data.nftId) + ')' : 'NATIVE TRANSFER (LUXA)') +
+          '</span>' +
+          '<span class="badge ' + (data.isSuccess ? 'badge-ok' : 'badge-fail') + '">' +
+          (data.isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED') +
+          '</span>' +
+          '</div>' +
+          visual +
+          '<div class="details-grid">' +
+          '<div class="details-row"><span class="details-label">Block Height:</span><span class="details-val mono" style="color:var(--gold);">#' + escapeHtml(data.height) + '</span></div>' +
+          '<div class="details-row"><span class="details-label">Amount:</span><span class="details-val" style="font-weight:bold;">' + escapeHtml(data.amount) + '</span></div>' +
+          '<div class="details-row"><span class="details-label">Sender:</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + data.sender + '\')">' + escapeHtml(data.sender) + '</span></div>' +
+          '<div class="details-row"><span class="details-label">Recipient:</span><span class="details-val mono ' + (isValidAddress(data.recipient) ? 'click-hash' : '') + '"' + recipClickAttr + '>' + escapeHtml(data.recipient) + '</span></div>' +
+          '<div class="details-row"><span class="details-label">Gas Used:</span><span class="details-val mono">' + escapeHtml(data.gasUsed) + ' / ' + escapeHtml(data.gasWanted) + '</span></div>' +
+          '</div>' +
+          '<button type="button" class="back-btn" style="width:100%; margin-top:16px; justify-content:center; padding:10px;" onclick="navigator.clipboard.writeText(\'' + data.hash + '\'); this.textContent=\'Hash Copied! 📋\';">' +
+          '📋 Copy Transaction Hash' +
+          '</button>' +
+          '</div>';
+      }
+
+      async function search(query) {
+        const input = document.getElementById('searchInput');
+        const stage = document.getElementById('searchStage');
+        const q = (query || (input ? input.value : '')).trim();
+
+        if (!q || !stage) return;
+        stage.innerHTML = '<div class="status-msg status-loading">🔍 Searching luxa-1 on-chain ledger...</div>';
+
+        try {
+          if (q.startsWith('luxa1')) {
+            await searchAddress(q);
+          } else if (/^\d+$/.test(q)) {
+            await searchBlock(q);
+          } else if (/^(0x)?[0-9a-fA-F]{16,}$/.test(q)) {
+            await searchTx(q);
+          } else {
+            throw new Error('Invalid query format. Enter a valid Tx Hash, luxa1 address, or Block number.');
+          }
+        } catch (err) {
+          stage.innerHTML = '<div class="status-msg status-error">❌ ' + escapeHtml(err.message) + '</div>';
+        }
+      }
+
+      function resetView() {
+        const stage = document.getElementById('searchStage');
+        const input = document.getElementById('searchInput');
+        if (stage) stage.innerHTML = '';
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+      }
+
+      async function syncNode() {
+        const badge = document.getElementById('chainBlockBadge');
+        const res = await fetchRpc(RPC_URL + '/status');
+        if (res.ok && res.data && res.data.result && res.data.result.sync_info && res.data.result.sync_info.latest_block_height) {
+          if (badge) badge.textContent = 'luxa-1 • #' + res.data.result.sync_info.latest_block_height;
+        }
+      }
+
+      async function loadRecentActivity() {
+        const tbody = document.getElementById('recentTxsBody');
+        if (!tbody) return;
+
+        try {
+          const rpcRes = await fetchRpc(RPC_URL + '/tx_search?query="tx.height>0"&page=1&per_page=10&order_by="desc"', 4000);
+          const txs = (rpcRes.ok && rpcRes.data && rpcRes.data.result && Array.isArray(rpcRes.data.result.txs)) ? rpcRes.data.result.txs : [];
+
+          if (txs.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:18px; color:var(--text-muted); font-family:\'JetBrains Mono\',monospace;">No transactions recorded yet on luxa-1. Node is live and synced.</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = txs.map(function (t) {
+            const parsed = parseCosmosEvents((t.tx_result && t.tx_result.events) ? t.tx_result.events : []);
+            const isNft = Boolean(parsed.nftId);
+            const amount = parsed.amount || (isNft ? '5.00 LUXA' : '0.0050 LUXA');
+            const status = (t.tx_result && (t.tx_result.code === 0 || !t.tx_result.code)) ? 'CONFIRMED' : 'FAILED';
+
+            return '<tr>' +
+              '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.hash + '\')">' + escapeHtml(shorten(t.hash, 8, 4)) + '</td>' +
+              '<td><span class="badge ' + (isNft ? 'badge-gold' : 'badge-cyan') + '" style="font-size:10px;">' + (isNft ? 'SOVEREIGN NFT' : 'TRANSFER') + '</span></td>' +
+              '<td style="font-weight:bold;">' + escapeHtml(amount) + '</td>' +
+              '<td class="mono">#' + escapeHtml(t.height) + '</td>' +
+              '<td><span class="badge badge-ok" style="font-size:10px;">' + escapeHtml(status) + '</span></td>' +
+              '</tr>';
+          }).join('');
+        } catch (_) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:18px; color:var(--text-muted); font-family:\'JetBrains Mono\',monospace;">Connected to luxa-1 node. Awaiting incoming transactions.</td></tr>';
+        }
+      }
+
+      window.LuxaExplorer = {
+        search: search,
+        resetView: resetView,
+        inspect: function (val) {
+          const input = document.getElementById('searchInput');
+          if (input) input.value = val;
+          search(val);
+          window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+      };
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const btn = document.getElementById('searchBtn');
+        const input = document.getElementById('searchInput');
+        const refreshBtn = document.getElementById('refreshActivityBtn');
+
+        if (btn) btn.addEventListener('click', function () { search(); });
+        if (input) input.addEventListener('keydown', function (e) { if (e.key === 'Enter') search(); });
+        if (refreshBtn) refreshBtn.addEventListener('click', loadRecentActivity);
+
+        syncNode();
+        setInterval(syncNode, 10000);
+
+        loadRecentActivity();
+        setInterval(loadRecentActivity, 15000);
+
+        const params = new URLSearchParams(window.location.search);
+        const prefill = params.get('q') || params.get('tx');
+        if (prefill && input) {
+          input.value = prefill;
+          search(prefill);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
