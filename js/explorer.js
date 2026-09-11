@@ -68,37 +68,6 @@
     }
   }
 
-  // Recupera gli eventi di una tx: normalmente da tx_result.events, ma
-  // se il nodo non li fornisce lì (capita con /tx su alcuni nodi), prova
-  // a estrarli dal campo tx_result.log, che su ABCI è spesso una stringa
-  // JSON con la stessa struttura di eventi per ogni messaggio.
-  function extractEvents(tx_result) {
-    if (!tx_result) return [];
-
-    if (Array.isArray(tx_result.events) && tx_result.events.length > 0) {
-      return tx_result.events;
-    }
-
-    if (typeof tx_result.log === 'string' && tx_result.log.length > 0) {
-      try {
-        const parsedLog = JSON.parse(tx_result.log);
-        if (Array.isArray(parsedLog)) {
-          let combined = [];
-          for (let i = 0; i < parsedLog.length; i++) {
-            if (parsedLog[i] && Array.isArray(parsedLog[i].events)) {
-              combined = combined.concat(parsedLog[i].events);
-            }
-          }
-          if (combined.length > 0) return combined;
-        }
-      } catch (_) {
-        // log non è JSON valido, ignoriamo
-      }
-    }
-
-    return [];
-  }
-
   // --- Parser Eventi Cosmos SDK ---
   //
   // FIX v2: affidarsi a "msg_index" per distinguere il transfer della fee
@@ -203,7 +172,7 @@
     const gasUsed = (tx.tx_result && tx.tx_result.gas_used) ? tx.tx_result.gas_used : '0';
     const gasWanted = (tx.tx_result && tx.tx_result.gas_wanted) ? tx.tx_result.gas_wanted : '0';
 
-    const parsed = parseCosmosEvents(extractEvents(tx.tx_result));
+    const parsed = parseCosmosEvents((tx.tx_result && tx.tx_result.events) ? tx.tx_result.events : []);
 
     let nftId = parsed.nftId;
     if (!nftId && tx.tx) {
@@ -345,7 +314,7 @@
       const marquee = (' ⚡ HOLDER: ' + targetHolder + ' • ON-CHAIN: LUXA-1 • ANCHORED ⚡ ').repeat(4);
 
       visual = '<div class="highway-box" style="border-color:' + accent + ';">' +
-        '<img src="assets/nft/Nft_Images/' + meta.file + '" alt="' + escapeHtml(meta.name) + '" onerror="this.src=\'assets/images/logoluxa.png\';">' +
+        '<img src="./Nft_Images/' + meta.file + '" alt="' + escapeHtml(meta.name) + '" onerror="this.src=\'logoluxa.png\';">' +
         '<div class="sovereign-highway-ticker">' +
         '<div class="highway-track">' + escapeHtml(marquee) + '</div>' +
         '</div></div>';
@@ -434,7 +403,7 @@
       }
 
       tbody.innerHTML = txs.map(function (t) {
-        const parsed = parseCosmosEvents(extractEvents(t.tx_result));
+        const parsed = parseCosmosEvents((t.tx_result && t.tx_result.events) ? t.tx_result.events : []);
         const isNft = Boolean(parsed.nftId);
         const amount = parsed.amount || (isNft ? '5.00 LUXA' : '0.0050 LUXA');
         const status = (t.tx_result && (t.tx_result.code === 0 || !t.tx_result.code)) ? 'CONFIRMED' : 'FAILED';
