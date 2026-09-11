@@ -1,393 +1,428 @@
-/* ==========================================================================
-   LUXA SCAN ENGINE — explorer.js
-   Full On-Chain Parser: Tx Hash, Block Height & Wallet Address (luxa1...)
-   ========================================================================== */
-
-(function () {
-  'use strict';
-
-  const RPC_URL = 'https://rpc.luxaecosystem.xyz';
-  const API_URL = 'https://luxaecosystem.alwaysdata.net/api';
-
-  const NFT_HEROES = {
-    '4001': { name: 'Grandmaster of Servers', file: 'Grandmaster_of_Servers.jpeg' },
-    '4002': { name: 'Neon Data Valkyrie', file: 'Neon_Data_Valkyrie.jpeg' },
-    '4003': { name: 'Chrono-Key Master', file: 'Chrono-Key_Master.jpeg' },
-    '4004': { name: 'Cyber-Shadow Node', file: 'Cyber-Shadow_Node.jpeg' }
-  };
-
-  // --- Utility ---
-  function escapeHtml(val) {
-    return String(val ?? '').replace(/[&<>"']/g, c => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;'
-    }[c]));
-  }
-
-  function b64Decode(str) {
-    try { return atob(str); } catch (_) { return str; }
-  }
-
-  function shorten(str, front = 10, back = 6) {
-    const s = String(str || '');
-    return s.length > front + back + 3 ? `${s.slice(0, front)}...${s.slice(-back)}` : s;
-  }
-
-  async function fetchJson(url, timeoutMs = 6000) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      const res = await fetch(url, { signal: controller.signal });
-      const data = await res.json().catch(() => null);
-      return { ok: res.ok, status: res.status, data };
-    } catch (e) {
-      return { ok: false, error: e.message };
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-
-  // --- Parser Eventi Cosmos SDK ---
-  function parseCosmosEvents(events = []) {
-    let sender = 'luxa1...';
-    let recipient = 'luxa1...';
-    let amount = null;
-    let nftId = null;
-
-    for (const ev of events) {
-      for (const attr of ev.attributes || []) {
-        const k = b64Decode(attr.key);
-        const v = b64Decode(attr.value);
-
-        if (k === 'sender' && sender === 'luxa1...') sender = v;
-        if (k === 'recipient' && recipient === 'luxa1...') recipient = v;
-        if (k === 'amount' && v.includes('uluxa') && !amount) {
-          const num = parseInt(v.replace('uluxa', ''), 10);
-          amount = `${(num / 1000000).toFixed(4)} LUXA`;
-        }
-        if ((k === 'nft_id' || k === 'license_id' || k === 'nftKey') && !nftId) {
-          nftId = String(v).trim();
-        }
-      }
-    }
-    return { sender, recipient, amount, nftId };
-  }
-
-  // --- 1. Ricerca Transazione (Hash) ---
-  async function searchTx(hash) {
-    const cleanHash = hash.toUpperCase().replace(/^0X/, '');
-    const { ok, data } = await fetchJson(`${RPC_URL}/tx?hash=0x${cleanHash}&prove=true`);
-
-    if (!ok || !data?.result) {
-      throw new Error(`Transaction ${cleanHash} not found on luxa-1.`);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUXA Sovereign Explorer</title>
+  <link rel="icon" type="image/png" href="logoluxa.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg: #05050e;
+      --card-bg: rgba(13, 16, 32, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --cyan: #00FFCC;
+      --cyan-glow: rgba(0, 255, 204, 0.25);
+      --gold: #FFD700;
+      --gold-glow: rgba(255, 215, 0, 0.25);
+      --blue: #0066FF;
+      --green: #22c55e;
+      --red: #ef4444;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
     }
 
-    const tx = data.result;
-    const height = tx.height;
-    const isSuccess = tx.tx_result?.code === 0 || !tx.tx_result?.code;
-    const gasUsed = tx.tx_result?.gas_used || '0';
-    const gasWanted = tx.tx_result?.gas_wanted || '0';
-    
-    const parsed = parseCosmosEvents(tx.tx_result?.events || []);
-    
-    // Heuristic su memo o fallback hash
-    let nftId = parsed.nftId;
-    if (!nftId && tx.tx) {
-      try {
-        const decoded = atob(tx.tx);
-        const match = decoded.match(/400[1-4]/);
-        if (match) nftId = match[0];
-      } catch (_) {}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 60px;
     }
 
-    const isNft = Boolean(nftId && NFT_HEROES[nftId]);
-    renderTxCard({
-      hash: cleanHash,
-      height,
-      isSuccess,
-      gasUsed,
-      gasWanted,
-      sender: parsed.sender,
-      recipient: parsed.recipient,
-      amount: parsed.amount || (isNft ? '5.00 LUXA' : '0.0050 LUXA'),
-      nftId,
-      isNft
-    });
-  }
+    .container {
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
 
-  // --- 2. Ricerca Indirizzo Wallet (Stile BscScan) ---
-  async function searchAddress(address) {
-    const stage = document.getElementById('searchStage');
-    
-    // Cerca transazioni in cui il wallet è mittente o destinatario
-    const querySender = encodeURIComponent(`transfer.sender='${address}'`);
-    const queryRecv = encodeURIComponent(`transfer.recipient='${address}'`);
+    /* Top Navigation Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 24px;
+    }
 
-    const [sendRes, recvRes] = await Promise.all([
-      fetchJson(`${RPC_URL}/tx_search?query="${querySender}"&page=1&per_page=10&order_by="desc"`),
-      fetchJson(`${RPC_URL}/tx_search?query="${queryRecv}"&page=1&per_page=10&order_by="desc"`)
-    ]);
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--cyan);
+    }
 
-    const sentTxs = sendRes.ok ? (sendRes.data?.result?.txs || []) : [];
-    const recvTxs = recvRes.ok ? (recvRes.data?.result?.txs || []) : [];
-    
-    // Unisci e ordina per altezza decrescente
-    const allTxs = [...sentTxs, ...recvTxs].sort((a, b) => parseInt(b.height, 10) - parseInt(a.height, 10));
+    .brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid var(--cyan);
+      object-fit: cover;
+    }
 
-    stage.innerHTML = `
-      <div class="result-card" style="--border-color: var(--cyan);">
-        <div class="card-top">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>
-            <span class="badge badge-cyan">ACCOUNT OVERVIEW</span>
-          </div>
-          <span style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-muted);">Network: luxa-1</span>
-        </div>
+    .header-badges {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
 
-        <div class="details-grid" style="margin-bottom:20px;">
-          <div class="details-row">
-            <span class="details-label">Address:</span>
-            <span class="details-val mono" style="color:var(--cyan); font-weight:bold;">${escapeHtml(address)}</span>
-          </div>
-          <div class="details-row">
-            <span class="details-label">Total On-Chain Tx:</span>
-            <span class="details-val mono">${allTxs.length} records found</span>
-          </div>
-        </div>
+    .chain-pill {
+      background: rgba(0, 255, 204, 0.08);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:13px; margin-bottom:12px; color:#fff;">Account Activity</h3>
-        <div style="overflow-x:auto;">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Tx Hash</th>
-                <th>Block</th>
-                <th>Flow</th>
-                <th>Fee/Gas</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${allTxs.length === 0 ? `<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted);">No on-chain activity for this address.</td></tr>` : 
-                allTxs.slice(0, 10).map(t => {
-                  const isOut = sentTxs.some(s => s.hash === t.hash);
-                  return `
-                    <tr>
-                      <td class="click-hash" onclick="window.LuxaExplorer.inspect('${t.hash}')">${escapeHtml(shorten(t.hash, 8, 4))}</td>
-                      <td class="mono">#${escapeHtml(t.height)}</td>
-                      <td>
-                        <span class="badge ${isOut ? 'badge-gold' : 'badge-ok'}" style="font-size:9px;">
-                          ${isOut ? 'OUT' : 'IN'}
-                        </span>
-                      </td>
-                      <td class="mono">${escapeHtml(t.tx_result?.gas_used || '0')} units</td>
-                    </tr>
-                  `;
-                }).join('')
-              }
-            </tbody>
-          </table>
-        </div>
+    .chain-pill::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    /* Search Section */
+    .search-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      margin-bottom: 28px;
+    }
+
+    .search-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .search-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-box input {
+      flex: 1;
+      background: #080a14;
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-box input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+
+    .btn-search {
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      padding: 0 24px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.15s ease, filter 0.2s ease;
+    }
+
+    .btn-search:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    /* Result Stage */
+    #searchStage {
+      margin-bottom: 30px;
+    }
+
+    .status-msg {
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 10px;
+    }
+    .status-loading { background: rgba(0, 255, 204, 0.08); color: var(--cyan); border: 1px solid var(--cyan); }
+    .status-error { background: rgba(239, 68, 68, 0.08); color: var(--red); border: 1px solid var(--red); }
+
+    /* Result Cards */
+    .result-card {
+      background: rgba(8, 10, 20, 0.95);
+      border-radius: 18px;
+      padding: 20px;
+      border: 1.5px solid var(--border-color, var(--cyan));
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 16px;
+    }
+
+    .badge {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid currentColor;
+    }
+
+    .badge-ok { color: var(--green); border-color: var(--green); background: rgba(34, 197, 94, 0.12); }
+    .badge-fail { color: var(--red); border-color: var(--red); background: rgba(239, 68, 68, 0.12); }
+    .badge-gold { color: var(--gold); border-color: var(--gold); background: rgba(255, 215, 0, 0.12); }
+    .badge-cyan { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 204, 0.12); }
+
+    .back-btn {
+      background: rgba(7, 9, 20, 0.8);
+      border: 1px solid rgba(0, 255, 204, 0.4);
+      color: var(--cyan);
+      padding: 6px 14px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Space Grotesk', sans-serif;
+      transition: background 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background: rgba(0, 255, 204, 0.15);
+      color: #fff;
+    }
+
+    /* Sovereign Highway Ticker */
+    .highway-box {
+      width: 100%;
+      max-width: 320px;
+      margin: 14px auto 18px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #020617;
+      border: 1.5px solid rgba(0, 255, 204, 0.35);
+    }
+
+    .highway-box img {
+      width: 100%;
+      height: 270px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .sovereign-highway-ticker {
+      overflow: hidden;
+      white-space: nowrap;
+      background: #020617;
+      padding: 7px 0;
+      border-top: 1px solid rgba(0, 255, 204, 0.25);
+    }
+
+    .highway-track {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 1px;
+      animation: tickerRun 16s linear infinite;
+    }
+
+    @keyframes tickerRun {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Details */
+    .details-grid {
+      display: grid;
+      gap: 10px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .details-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .details-label {
+      color: var(--text-muted);
+      min-width: 120px;
+      font-weight: 500;
+    }
+
+    .details-val {
+      color: #fff;
+      word-break: break-all;
+    }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Tables */
+    .table-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 22px;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .table-header h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .data-table thead tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      text-align: left;
+    }
+
+    .data-table th, .data-table td {
+      padding: 10px 8px;
+    }
+
+    .data-table tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background 0.15s ease;
+    }
+
+    .data-table tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .click-hash {
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--cyan);
+    }
+
+    .click-hash:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 650px) {
+      .search-box { flex-direction: column; }
+      .btn-search { padding: 14px; justify-content: center; }
+      .details-row { flex-direction: column; gap: 2px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="header">
+      <a href="index.html" class="brand">
+        <img src="logoluxa.png" alt="LUXA Logo" onerror="this.src='logoluxa.png'">
+        LUXA SCAN
+      </a>
+      <div class="header-badges">
+        <div class="chain-pill" id="chainBlockBadge">luxa-1 • syncing...</div>
       </div>
-    `;
-  }
+    </header>
 
-  // --- 3. Ricerca Blocco ---
-  async function searchBlock(height) {
-    const { ok, data } = await fetchJson(`${RPC_URL}/block?height=${height}`);
-    if (!ok || !data?.result?.block) {
-      throw new Error(`Block #${height} not found.`);
-    }
-
-    const blk = data.result.block;
-    const stage = document.getElementById('searchStage');
-
-    stage.innerHTML = `
-      <div class="result-card" style="--border-color: var(--cyan);">
-        <div class="card-top">
-          <button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>
-          <span class="badge badge-cyan">BLOCK #${escapeHtml(height)}</span>
-        </div>
-        <div class="details-grid">
-          <div class="details-row">
-            <span class="details-label">Timestamp:</span>
-            <span class="details-val">${escapeHtml(new Date(blk.header.time).toLocaleString())}</span>
-          </div>
-          <div class="details-row">
-            <span class="details-label">Proposer:</span>
-            <span class="details-val mono" style="color:#88BBFF;">${escapeHtml(blk.header.proposer_address)}</span>
-          </div>
-          <div class="details-row">
-            <span class="details-label">Transactions:</span>
-            <span class="details-val mono" style="color:var(--gold); font-weight:bold;">${blk.data?.txs?.length || 0}</span>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  // --- Rendering Scheda Transazione ---
-  function renderTxCard(data) {
-    const stage = document.getElementById('searchStage');
-    const accent = data.isNft ? 'var(--gold)' : 'var(--cyan)';
-
-    let visual = '';
-    if (data.isNft) {
-      const meta = NFT_HEROES[data.nftId];
-      const targetHolder = data.recipient !== 'luxa1...' ? data.recipient : data.sender;
-      const marquee = ` ⚡ HOLDER: ${targetHolder} • ON-CHAIN: LUXA-1 • ANCHORED ⚡ `.repeat(4);
-
-      visual = `
-        <div class="highway-box" style="border-color:${accent};">
-          <img src="./Nft_Images/${meta.file}" alt="${meta.name}" onerror="this.src='logoluxa.png';">
-          <div class="sovereign-highway-ticker">
-            <div class="highway-track">${escapeHtml(marquee)}</div>
-          </div>
-        </div>
-      `;
-    }
-
-    stage.innerHTML = `
-      <div class="result-card" style="--border-color: ${accent};">
-        <div class="card-top">
-          <button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>
-          <span class="badge ${data.isNft ? 'badge-gold' : 'badge-cyan'}">
-            ${data.isNft ? `SOVEREIGN LICENSE (#${escapeHtml(data.nftId)})` : 'NATIVE TRANSFER (LUXA)'}
-          </span>
-          <span class="badge ${data.isSuccess ? 'badge-ok' : 'status-error'}">
-            ${data.isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED'}
-          </span>
-        </div>
-
-        ${visual}
-
-        <div class="details-grid">
-          <div class="details-row">
-            <span class="details-label">Block Height:</span>
-            <span class="details-val mono" style="color:var(--gold);">#${escapeHtml(data.height)}</span>
-          </div>
-          <div class="details-row">
-            <span class="details-label">Amount:</span>
-            <span class="details-val" style="font-weight:bold;">${escapeHtml(data.amount)}</span>
-          </div>
-          <div class="details-row">
-            <span class="details-label">Sender:</span>
-            <span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect('${data.sender}')">${escapeHtml(data.sender)}</span>
-          </div>
-          <div class="details-row">
-            <span class="details-label">Recipient:</span>
-            <span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect('${data.recipient}')">${escapeHtml(data.recipient)}</span>
-          </div>
-          <div class="details-row">
-            <span class="details-label">Gas Used:</span>
-            <span class="details-val mono">${escapeHtml(data.gasUsed)} / ${escapeHtml(data.gasWanted)}</span>
-          </div>
-        </div>
-
-        <button type="button" class="back-btn" style="width:100%; margin-top:16px; justify-content:center; padding:10px;" onclick="navigator.clipboard.writeText('${data.hash}'); this.textContent='Hash Copied! 📋';">
-          📋 Copy Transaction Hash
+    <section class="search-card">
+      <div class="search-title">LUXA Sovereign Ledger Explorer</div>
+      <div class="search-sub">Search by Transaction Hash, Wallet Address (luxa1...), or Block Height.</div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search by Tx Hash, Address (luxa1...), or Block Number" autocomplete="off" spellcheck="false">
+        <button type="button" class="btn-search" id="searchBtn">
+          <i class="fas fa-search"></i> SEARCH
         </button>
       </div>
-    `;
-  }
+    </section>
 
-  // --- Router di Ricerca Principale ---
-  async function search(query) {
-    const input = document.getElementById('searchInput');
-    const stage = document.getElementById('searchStage');
-    const q = (query || input?.value || '').trim();
+    <!-- Risultato dinamico -->
+    <div id="searchStage"></div>
 
-    if (!q) return;
-    stage.innerHTML = `<div class="status-msg status-loading">🔍 Searching luxa-1 ledger...</div>`;
+    <!-- Tabella transazioni -->
+    <section class="table-card">
+      <div class="table-header">
+        <h2>Latest Protocol Transactions</h2>
+        <button type="button" class="back-btn" id="refreshActivityBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tx Hash</th>
+              <th>Asset Type</th>
+              <th>Amount</th>
+              <th>Block</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="recentTxsBody">
+            <tr><td colspan="5" class="status-msg status-loading" style="text-align:center;">Syncing with luxa-1 node...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
 
-    try {
-      if (q.startsWith('luxa1')) {
-        // Indirizzo Wallet
-        await searchAddress(q);
-      } else if (/^\d+$/.test(q)) {
-        // Altezza Blocco
-        await searchBlock(q);
-      } else if (/^(0x)?[0-9a-fA-F]{16,}$/.test(q)) {
-        // Hash Transazione
-        await searchTx(q);
-      } else {
-        throw new Error('Invalid query format. Enter a valid Tx Hash, luxa1 address, or Block number.');
-      }
-    } catch (err) {
-      stage.innerHTML = `<div class="status-msg status-error">❌ ${escapeHtml(err.message)}</div>`;
-    }
-  }
-
-  function resetView() {
-    const stage = document.getElementById('searchStage');
-    const input = document.getElementById('searchInput');
-    if (stage) stage.innerHTML = '';
-    if (input) {
-      input.value = '';
-      input.focus();
-    }
-  }
-
-  // --- Sync Nodo & Attività Recente ---
-  async function syncNode() {
-    const badge = document.getElementById('chainBlockBadge');
-    const { ok, data } = await fetchJson(`${RPC_URL}/status`);
-    if (ok && data?.result?.sync_info?.latest_block_height) {
-      if (badge) badge.textContent = `luxa-1 • #${data.result.sync_info.latest_block_height}`;
-    }
-  }
-
-  async function loadRecentActivity() {
-    const tbody = document.getElementById('recentTxsBody');
-    if (!tbody) return;
-
-    // Interroga le transazioni reali indicizzate sul ledger
-    const { ok, data } = await fetchJson(`${API_URL}/ecosystem/chain/txs/recent`);
-    const list = ok && Array.isArray(data?.txs) ? data.txs : [];
-
-    if (!list.length) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:18px; color:var(--text-muted);">No transactions recorded on ledger.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = list.map(item => {
-      const isNft = Boolean(item.isNft);
-      const accent = isNft ? 'var(--gold)' : 'var(--cyan)';
-      return `
-        <tr>
-          <td class="click-hash" onclick="window.LuxaExplorer.inspect('${item.hash}')">${escapeHtml(shorten(item.hash, 8, 4))}</td>
-          <td><span class="badge ${isNft ? 'badge-gold' : 'badge-cyan'}" style="font-size:10px;">${isNft ? 'SOVEREIGN NFT' : 'TRANSFER'}</span></td>
-          <td style="font-weight:bold;">${escapeHtml(item.amount)}</td>
-          <td class="mono">#${escapeHtml(item.height)}</td>
-          <td><span class="badge badge-ok" style="font-size:10px;">${escapeHtml(item.status)}</span></td>
-        </tr>
-      `;
-    }).join('');
-  }
-
-  // --- Inizializzazione ---
-  window.LuxaExplorer = {
-    search,
-    resetView,
-    inspect: (val) => {
-      const input = document.getElementById('searchInput');
-      if (input) input.value = val;
-      search(val);
-      window.scrollTo({ top: 120, behavior: 'smooth' });
-    }
-  };
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('searchBtn');
-    const input = document.getElementById('searchInput');
-    const refreshBtn = document.getElementById('refreshActivityBtn');
-
-    btn?.addEventListener('click', () => search());
-    input?.addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
-    refreshBtn?.addEventListener('click', loadRecentActivity);
-
-    syncNode();
-    setInterval(syncNode, 10000);
-
-    loadRecentActivity();
-    setInterval(loadRecentActivity, 20000);
-  });
-})();
+  <script src="explorer.js"></script>
+</body>
+</html>
