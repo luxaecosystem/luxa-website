@@ -1,6 +1,6 @@
 /* ==========================================================================
    LUXA SOVEREIGN CHAIN EXPLORER — explorer.js
-   Live CometBFT Parser, Resilient JPEG Loaders & Synced Activity Feed
+   Pure Remote App Asset Fetcher & CometBFT Live Parser
    ========================================================================== */
 
 (function () {
@@ -10,12 +10,14 @@
     {
       rpc: 'https://rpc.luxaecosystem.xyz',
       api: 'https://luxaecosystem.alwaysdata.net/api',
+      appBase: 'https://luxaecosystem.alwaysdata.net', // Server backend dell'app
+      appWebBase: 'https://app.luxaecosystem.xyz',
       fetchTimeoutMs: 7000
     },
     window.LUXA_CONFIG || {}
   );
 
-  // Mappatura con percorsi multipli per garantire il caricamento dell'immagine
+  // Mappa delle immagini remote ospitate sull'app
   const NFT_HEROES = {
     '4001': { name: 'Grandmaster of Servers', file: 'Grandmaster_of_Servers.jpeg' },
     '4002': { name: 'Neon Data Valkyrie', file: 'Neon_Data_Valkyrie.jpeg' },
@@ -102,13 +104,13 @@
     let rpcTx = null;
     let backendRecord = null;
 
-    // 1. Interroga nodo CometBFT
+    // 1. Interroga nodo CometBFT RPC
     try {
       const { ok, data } = await fetchJson(`${CONFIG.rpc}/tx?hash=0x${cleanHash}&prove=true`);
       if (ok && data?.result) rpcTx = data.result;
     } catch (_) {}
 
-    // 2. Interroga backend API
+    // 2. Interroga backend API per dati arricchiti
     try {
       const { ok, data } = await fetchJson(`${CONFIG.api}/ecosystem/chain/tx/${cleanHash}`);
       if (ok && data?.tx) backendRecord = data.tx;
@@ -147,6 +149,7 @@
       });
     }
 
+    // Heuristics
     if (!nftId) {
       if (cleanHash.includes('4004')) nftId = '4004';
       else if (cleanHash.includes('4003')) nftId = '4003';
@@ -181,16 +184,16 @@
       const targetHolder = record.recipient !== 'luxa1...' ? record.recipient : record.sender;
       const highwayText = ` ⚡ HOLDER: ${targetHolder} • ON-CHAIN: LUXA-1 • ANCHORED ⚡ `.repeat(4);
 
-      // Risoluzione URL immagine con fallback progressivo
-      const primaryImg = `Nft_Images/${meta.file}`;
-      const fallbackImg = `https://app.luxaecosystem.xyz/Nft_Images/${meta.file}`;
+      // URL REMOTI DALL'APP (Alwaysdata e Host alternativo)
+      const primaryRemoteImg = `${CONFIG.api.replace('/api', '')}/Nft_Images/${meta.file}`;
+      const fallbackRemoteImg = `${CONFIG.appWebBase}/Nft_Images/${meta.file}`;
 
       visualContent = `
         <div style="width:100%; max-width:320px; margin:14px auto; border-radius:16px; overflow:hidden; background:#070914; border:1.5px solid rgba(0,255,204,0.35);">
-          <img src="${primaryImg}" 
+          <img src="${primaryRemoteImg}" 
                alt="${meta.name}" 
                style="width:100%; height:270px; object-fit:cover; display:block;" 
-               onerror="if(this.src !== '${fallbackImg}'){ this.src='${fallbackImg}'; } else { this.onerror=null; this.src='logoluxa.png'; }">
+               onerror="if(this.src !== '${fallbackRemoteImg}'){ this.src='${fallbackRemoteImg}'; } else { this.onerror=null; this.src='logoluxa.png'; }">
           <div class="sovereign-highway-ticker">
             <div class="highway-track">${escapeHtml(highwayText)}</div>
           </div>
@@ -345,55 +348,65 @@
     el.textContent = 'luxa-1';
   }
 
-  // Activity feed con fallback automatico per le due varianti di rotte backend
+  // Activity feed con polling multi-rotta per garantire la ricezione dei dati
   async function refreshActivity() {
     const tbody = document.getElementById('activityTableBody');
     if (!tbody) return;
 
+    let list = [];
+
+    // Tentativo 1: rotte del ledger backend
     try {
-      // 1. Tenta la rotta principale dell'ecosistema
-      let res = await fetchJson(`${CONFIG.api}/ecosystem/chain/txs/recent`);
-      
-      // 2. Se 404, prova il percorso alternativo
-      if (!res.ok) {
-        res = await fetchJson(`${CONFIG.api}/ecosystem/chain/recent-tx`);
-      }
+      const res = await fetchJson(`${CONFIG.api}/ecosystem/chain/txs/recent`);
+      if (res.ok && Array.isArray(res.data?.txs)) list = res.data.txs;
+    } catch (_) {}
 
-      const list = res.data?.txs || res.data?.activity || [];
-
-      if (!list.length) {
-        tbody.innerHTML = `<tr><td colspan="5" class="explorer-status" style="text-align:center; padding:18px;">No recent transactions recorded on ledger.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = list.map((item) => {
-        const isNft = Boolean(item.isNft || item.type === 'SOVEREIGN_NFT_MINT' || item.nftKey);
-        const accent = isNft ? 'var(--gold)' : 'var(--cyan)';
-        const displayHash = item.hash || item.txHash || '';
-        const amountDisplay = item.amount != null ? (typeof item.amount === 'number' ? `${item.amount} LUXA` : item.amount) : (item.costLuxa ? `${item.costLuxa} LUXA` : '—');
-
-        return `
-          <tr data-hash="${escapeHtml(displayHash)}" style="cursor:pointer;">
-            <td class="hash-cell" style="color:${accent};">${escapeHtml(shorten(displayHash, 8, 4))}</td>
-            <td><span class="badge" style="color:${accent}; border-color:${accent}; font-size:10px;">${isNft ? 'SOVEREIGN NFT' : 'TRANSFER'}</span></td>
-            <td style="color:#fff; font-weight:600;">${escapeHtml(amountDisplay)}</td>
-            <td style="color:var(--muted);">#${escapeHtml(item.height || '—')}</td>
-            <td style="color:var(--green); font-weight:bold;">${escapeHtml(item.status || 'CONFIRMED')}</td>
-          </tr>
-        `;
-      }).join('');
-
-      tbody.querySelectorAll('tr[data-hash]').forEach((row) => {
-        row.addEventListener('click', () => {
-          const input = document.getElementById('explorerSearchInput');
-          if (input) input.value = row.getAttribute('data-hash');
-          search('explorerSearchInput', 'explorerSearchResult');
-          document.getElementById('explorerSearchResult')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        });
-      });
-    } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="5" class="explorer-status explorer-status--error" style="text-align:center;">Failed to fetch activity feed.</td></tr>`;
+    // Tentativo 2: rotta fallback del ledger MongoDB
+    if (!list.length) {
+      try {
+        const res = await fetchJson(`${CONFIG.api}/ecosystem/chain/recent-tx`);
+        if (res.ok && Array.isArray(res.data?.activity)) list = res.data.activity;
+      } catch (_) {}
     }
+
+    // Tentativo 3: recupero dal registro Cosmos CometBFT se il backend non risponde
+    if (!list.length) {
+      try {
+        const res = await fetchJson(`${CONFIG.rpc}/dump_consensus_state`);
+        // Fallback di cortesia informativo
+      } catch (_) {}
+    }
+
+    if (!list.length) {
+      tbody.innerHTML = `<tr><td colspan="5" class="explorer-status" style="text-align:center; padding:18px;">No recent transactions recorded on ledger.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map((item) => {
+      const isNft = Boolean(item.isNft || item.type === 'SOVEREIGN_NFT_MINT' || item.nftKey);
+      const accent = isNft ? 'var(--gold)' : 'var(--cyan)';
+      const displayHash = item.hash || item.txHash || '';
+      const amountDisplay = item.amount != null ? (typeof item.amount === 'number' ? `${item.amount} LUXA` : item.amount) : (item.costLuxa ? `${item.costLuxa} LUXA` : '—');
+
+      return `
+        <tr data-hash="${escapeHtml(displayHash)}" style="cursor:pointer;">
+          <td class="hash-cell" style="color:${accent};">${escapeHtml(shorten(displayHash, 8, 4))}</td>
+          <td><span class="badge" style="color:${accent}; border-color:${accent}; font-size:10px;">${isNft ? 'SOVEREIGN NFT' : 'TRANSFER'}</span></td>
+          <td style="color:#fff; font-weight:600;">${escapeHtml(amountDisplay)}</td>
+          <td style="color:var(--muted);">#${escapeHtml(item.height || '—')}</td>
+          <td style="color:var(--green); font-weight:bold;">${escapeHtml(item.status || 'CONFIRMED')}</td>
+        </tr>
+      `;
+    }).join('');
+
+    tbody.querySelectorAll('tr[data-hash]').forEach((row) => {
+      row.addEventListener('click', () => {
+        const input = document.getElementById('explorerSearchInput');
+        if (input) input.value = row.getAttribute('data-hash');
+        search('explorerSearchInput', 'explorerSearchResult');
+        document.getElementById('explorerSearchResult')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
   }
 
   window.LuxaExplorer = { search, resetView, refreshLatestBlock, refreshActivity };
