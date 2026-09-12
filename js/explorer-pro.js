@@ -26,7 +26,9 @@
     if (typeof str !== 'string' || str.length === 0) return str;
     try {
       const decoded = atob(str);
-      if (btoa(decoded) === str) return decoded;
+      if (/^[\x20-\x7E\s\r\n\t]+$/.test(decoded) && btoa(decoded) === str) {
+        return decoded;
+      }
       return str;
     } catch (_) {
       return str;
@@ -71,76 +73,93 @@
     }
   }
 
-  // --- Parser Eventi Cosmos SDK ---
-  function parseCosmosEvents(events) {
+  // --- Parser Eventi Reali Cosmos SDK (Zero Dati Fittizi) ---
+  function parseCosmosEvents(events, rawTxB64) {
     events = events || [];
-    let sender = 'luxa1...';
-    let recipient = 'luxa1...';
-    let amount = null;
-    let fallbackSender = null;
-    let fallbackRecipient = null;
+    const transfers = [];
     let nftId = null;
-
-    let feeAmountStr = null;
-    let feePayer = null;
+    let detectedFee = 0;
 
     for (let i = 0; i < events.length; i++) {
       const ev = events[i];
-      if (ev.type !== 'tx') continue;
-      const attrs = ev.attributes || [];
-      for (let j = 0; j < attrs.length; j++) {
-        const k = b64Decode(attrs[j].key);
-        const v = b64Decode(attrs[j].value);
-        if (k === 'fee') feeAmountStr = v;
-        if (k === 'fee_payer') feePayer = v;
-      }
-    }
-
-    for (let i = 0; i < events.length; i++) {
-      const ev = events[i];
+      const evType = b64Decode(ev.type);
       const attrs = ev.attributes || [];
 
-      if (ev.type === 'transfer') {
-        let evSender = null;
-        let evRecipient = null;
-        let evAmount = null;
-
-        for (let j = 0; j < attrs.length; j++) {
-          const k = b64Decode(attrs[j].key);
-          const v = b64Decode(attrs[j].value);
-          if (k === 'sender') evSender = v;
-          if (k === 'recipient') evRecipient = v;
-          if (k === 'amount' && typeof v === 'string' && v.indexOf('uluxa') !== -1) evAmount = v;
-        }
-
-        const isFeeTransfer = Boolean(
-          feeAmountStr && evAmount === feeAmountStr && (!feePayer || evSender === feePayer)
-        );
-
-        if (!isFeeTransfer && evAmount && !amount) {
-          if (isCleanAddress(evSender)) sender = evSender;
-          if (isCleanAddress(evRecipient)) recipient = evRecipient;
-          const num = parseInt(evAmount.replace(/[^0-9]/g, ''), 10);
-          if (!isNaN(num)) amount = (num / 1000000).toFixed(4) + ' LUXA';
-        } else if (isFeeTransfer && !fallbackSender) {
-          if (isCleanAddress(evSender)) fallbackSender = evSender;
-          if (isCleanAddress(evRecipient)) fallbackRecipient = evRecipient;
-        }
-      }
+      let evSender = '';
+      let evRecipient = '';
+      let evAmount = '';
 
       for (let j = 0; j < attrs.length; j++) {
         const k = b64Decode(attrs[j].key);
         const v = b64Decode(attrs[j].value);
+
+        if (k === 'sender' || k === 'spender') evSender = v;
+        if (k === 'recipient' || k === 'receiver') evRecipient = v;
+        if (k === 'amount' && typeof v === 'string' && v.indexOf('uluxa') !== -1) evAmount = v;
+        if (k === 'fee' && typeof v === 'string' && v.indexOf('uluxa') !== -1) {
+          const num = parseInt(v.replace(/[^0-9]/g, ''), 10);
+          if (!isNaN(num)) detectedFee = num / 1000000;
+        }
+
         if ((k === 'nft_id' || k === 'license_id' || k === 'nftKey') && !nftId) {
           nftId = String(v).trim();
         }
       }
+
+      if (evType === 'transfer' && evAmount) {
+        const rawNum = parseInt(evAmount.replace(/[^0-9]/g, ''), 10);
+        if (!isNaN(rawNum)) {
+          transfers.push({
+            sender: evSender,
+            recipient: evRecipient,
+            uAmount: rawNum,
+            luxa: rawNum / 1000000
+          });
+        }
+      }
     }
 
-    if (sender === 'luxa1...' && fallbackSender) sender = fallbackSender;
-    if (recipient === 'luxa1...' && fallbackRecipient) recipient = fallbackRecipient;
+    if (!nftId && rawTxB64) {
+      try {
+        const decoded = atob(rawTxB64);
+        const match = decoded.match(/400[1-4]/);
+        if (match) nftId = match[0];
+      } catch (_) {}
+    }
 
-    return { sender: sender, recipient: recipient, amount: amount, nftId: nftId };
+    let sender = 'luxa1...';
+    let recipient = 'luxa1...';
+    let amountStr = '0 LUXA';
+
+    if (transfers.length > 0) {
+      // Ordina in modo decrescente: il trasferimento reale ha sempre la priorità rispetto alla gas fee
+      transfers.sort(function (a, b) { return b.uAmount - a.uAmount; });
+
+      const mainTx = transfers[0];
+      if (isCleanAddress(mainTx.sender)) sender = mainTx.sender;
+      if (isCleanAddress(mainTx.recipient)) recipient = mainTx.recipient;
+
+      const val = mainTx.luxa;
+      amountStr = (val % 1 === 0 ? val.toString() : val.toFixed(4)) + ' LUXA';
+
+      if (transfers.length > 1 && detectedFee === 0) {
+        const minor = transfers[transfers.length - 1];
+        if (minor.uAmount <= 5000) {
+          detectedFee = minor.luxa;
+        }
+      }
+    }
+
+    const isNft = Boolean(nftId && NFT_HEROES[nftId]);
+
+    return {
+      sender: sender,
+      recipient: recipient,
+      amount: amountStr,
+      fee: detectedFee > 0 ? (detectedFee.toFixed(4) + ' LUXA') : '0 LUXA (Free)',
+      nftId: nftId,
+      isNft: isNft
+    };
   }
 
   // --- 1. Ricerca Transazione (Hash) ---
@@ -158,17 +177,9 @@
     const gasUsed = (tx.tx_result && tx.tx_result.gas_used) ? tx.tx_result.gas_used : '0';
     const gasWanted = (tx.tx_result && tx.tx_result.gas_wanted) ? tx.tx_result.gas_wanted : '0';
 
-    const parsed = parseCosmosEvents((tx.tx_result && tx.tx_result.events) ? tx.tx_result.events : []);
+    const parsed = parseCosmosEvents((tx.tx_result && tx.tx_result.events) ? tx.tx_result.events : [], tx.tx);
 
     let nftId = parsed.nftId;
-    if (!nftId && tx.tx) {
-      try {
-        const decoded = atob(tx.tx);
-        const match = decoded.match(/400[1-4]/);
-        if (match) nftId = match[0];
-      } catch (_) {}
-    }
-
     if (!nftId) {
       if (cleanHash.indexOf('4004') !== -1) nftId = '4004';
       else if (cleanHash.indexOf('4003') !== -1) nftId = '4003';
@@ -186,7 +197,8 @@
       gasWanted: gasWanted,
       sender: parsed.sender,
       recipient: parsed.recipient,
-      amount: parsed.amount || (isNft ? '5.00 LUXA' : '0.0050 LUXA'),
+      amount: parsed.amount,
+      fee: parsed.fee,
       nftId: nftId,
       isNft: isNft
     });
@@ -321,7 +333,8 @@
       visual +
       '<div class="details-grid">' +
       '<div class="details-row"><span class="details-label">Block Height:</span><span class="details-val mono" style="color:var(--gold);">#' + escapeHtml(data.height) + '</span></div>' +
-      '<div class="details-row"><span class="details-label">Amount:</span><span class="details-val" style="font-weight:bold;">' + escapeHtml(data.amount) + '</span></div>' +
+      '<div class="details-row"><span class="details-label">Amount:</span><span class="details-val" style="font-weight:bold; color:var(--cyan);">' + escapeHtml(data.amount) + '</span></div>' +
+      '<div class="details-row"><span class="details-label">Network Fee:</span><span class="details-val mono">' + escapeHtml(data.fee) + '</span></div>' +
       '<div class="details-row"><span class="details-label">Sender:</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + data.sender + '\')">' + escapeHtml(data.sender) + '</span></div>' +
       '<div class="details-row"><span class="details-label">Recipient:</span><span class="details-val mono">' + escapeHtml(safeRecipientDisplay) + '</span></div>' +
       '<div class="details-row"><span class="details-label">Gas Used:</span><span class="details-val mono">' + escapeHtml(data.gasUsed) + ' / ' + escapeHtml(data.gasWanted) + '</span></div>' +
@@ -405,7 +418,6 @@
   }
 
   async function loadRecentActivity() {
-    // Compatibile sia con explorer-pro.html (latestTxsBody) che con explorer.html (recentTxsBody)
     const tbody = document.getElementById('latestTxsBody') || document.getElementById('recentTxsBody');
     if (!tbody) return;
 
@@ -421,9 +433,9 @@
       }
 
       tbody.innerHTML = txs.map(function (t) {
-        const parsed = parseCosmosEvents((t.tx_result && t.tx_result.events) ? t.tx_result.events : []);
-        const isNft = Boolean(parsed.nftId);
-        const amount = parsed.amount || (isNft ? '5.00 LUXA' : '0.0050 LUXA');
+        const parsed = parseCosmosEvents((t.tx_result && t.tx_result.events) ? t.tx_result.events : [], t.tx);
+        const isNft = parsed.isNft;
+        const amount = parsed.amount;
         const status = (t.tx_result && (t.tx_result.code === 0 || !t.tx_result.code)) ? 'CONFIRMED' : 'FAILED';
 
         if (isProTable) {
@@ -432,14 +444,14 @@
             '<td><span class="badge ' + (isNft ? 'badge-gold' : 'badge-cyan') + '" style="font-size:9px;">' + (isNft ? 'NFT' : 'TX') + '</span></td>' +
             '<td class="mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.height + '\')">#' + escapeHtml(t.height) + '</td>' +
             '<td class="mono muted-note">Latest</td>' +
-            '<td style="font-weight:bold;">' + escapeHtml(amount) + '</td>' +
+            '<td style="font-weight:bold; color:var(--cyan);">' + escapeHtml(amount) + '</td>' +
             '<td><span class="badge badge-ok" style="font-size:9px;">' + escapeHtml(status) + '</span></td>' +
             '</tr>';
         } else {
           return '<tr>' +
             '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.hash + '\')">' + escapeHtml(shorten(t.hash, 8, 4)) + '</td>' +
             '<td><span class="badge ' + (isNft ? 'badge-gold' : 'badge-cyan') + '" style="font-size:10px;">' + (isNft ? 'SOVEREIGN NFT' : 'TRANSFER') + '</span></td>' +
-            '<td style="font-weight:bold;">' + escapeHtml(amount) + '</td>' +
+            '<td style="font-weight:bold; color:var(--cyan);">' + escapeHtml(amount) + '</td>' +
             '<td class="mono">#' + escapeHtml(t.height) + '</td>' +
             '<td><span class="badge badge-ok" style="font-size:10px;">' + escapeHtml(status) + '</span></td>' +
             '</tr>';
