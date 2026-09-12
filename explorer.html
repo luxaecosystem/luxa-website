@@ -1,214 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LUXA Sovereign Explorer PRO</title>
-  <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <style>
-    :root {
-      --bg: #05050e;
-      --card-bg: rgba(13, 16, 32, 0.85);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --cyan: #00FFCC;
-      --cyan-glow: rgba(0, 255, 204, 0.25);
-      --gold: #FFD700;
-      --gold-glow: rgba(255, 215, 0, 0.25);
-      --blue: #0066FF;
-      --green: #22c55e;
-      --red: #ef4444;
-      --muted-badge: #64748b;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      padding-bottom: 60px;
-    }
-
-    .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
-
-    .header {
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 14px; padding-bottom: 20px;
-      border-bottom: 1px solid var(--border-subtle); margin-bottom: 24px;
-    }
-
-    .brand {
-      display: flex; align-items: center; gap: 12px; text-decoration: none;
-      font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 800; color: var(--cyan);
-    }
-    .brand img { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--cyan); object-fit: cover; }
-
-    .chain-pill {
-      background: rgba(0, 255, 204, 0.08); border: 1px solid var(--cyan); color: var(--cyan);
-      padding: 6px 14px; border-radius: 20px; font-size: 11px; font-family: 'JetBrains Mono', monospace;
-      font-weight: 700; display: flex; align-items: center; gap: 8px;
-    }
-    .chain-pill::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
-
-    .search-card {
-      background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: 20px;
-      padding: 24px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-bottom: 28px;
-    }
-    .search-title { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-    .search-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
-    .search-box { display: flex; gap: 10px; }
-    .search-box input {
-      flex: 1; background: #080a14; border: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 12px;
-      padding: 14px 18px; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 13px; outline: none;
-      transition: all 0.2s ease;
-    }
-    .search-box input:focus { border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan-glow); }
-    .btn-search {
-      background: linear-gradient(135deg, var(--blue), var(--cyan)); color: #000; border: none; border-radius: 12px;
-      padding: 0 24px; font-family: 'Orbitron', sans-serif; font-size: 12.5px; font-weight: 800; cursor: pointer;
-      display: flex; align-items: center; gap: 8px; transition: transform 0.15s ease, filter 0.2s ease;
-    }
-    .btn-search:hover { filter: brightness(1.1); transform: translateY(-1px); }
-
-    #searchStage { margin-bottom: 30px; }
-    .status-msg { padding: 14px; border-radius: 12px; font-size: 12.5px; font-family: 'JetBrains Mono', monospace; margin-top: 10px; }
-    .status-loading { background: rgba(0, 255, 204, 0.08); color: var(--cyan); border: 1px solid var(--cyan); }
-    .status-error { background: rgba(239, 68, 68, 0.08); color: var(--red); border: 1px solid var(--red); }
-
-    .result-card {
-      background: rgba(8, 10, 20, 0.95); border-radius: 18px; padding: 20px;
-      border: 1.5px solid var(--border-color, var(--cyan)); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-    }
-    .card-top {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
-      padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 16px;
-    }
-    .badge {
-      font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 800; padding: 4px 10px;
-      border-radius: 6px; border: 1px solid currentColor;
-    }
-    .badge-ok { color: var(--green); border-color: var(--green); background: rgba(34, 197, 94, 0.12); }
-    .badge-gold { color: var(--gold); border-color: var(--gold); background: rgba(255, 215, 0, 0.12); }
-    .badge-cyan { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 204, 0.12); }
-    .badge-muted { color: var(--muted-badge); border-color: var(--muted-badge); background: rgba(100, 116, 139, 0.12); }
-
-    .back-btn {
-      background: rgba(7, 9, 20, 0.8); border: 1px solid rgba(0, 255, 204, 0.4); color: var(--cyan);
-      padding: 6px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 6px; font-family: 'Space Grotesk', sans-serif;
-      transition: background 0.2s ease;
-    }
-    .back-btn:hover { background: rgba(0, 255, 204, 0.15); color: #fff; }
-
-    .highway-box {
-      width: 100%; max-width: 320px; margin: 14px auto 18px; border-radius: 16px; overflow: hidden;
-      background: #020617; border: 1.5px solid rgba(0, 255, 204, 0.35);
-    }
-    .highway-box img { width: 100%; height: 270px; object-fit: cover; display: block; }
-    .sovereign-highway-ticker { overflow: hidden; white-space: nowrap; background: #020617; padding: 7px 0; border-top: 1px solid rgba(0, 255, 204, 0.25); }
-    .highway-track {
-      display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
-      color: var(--cyan); letter-spacing: 1px; animation: tickerRun 16s linear infinite;
-    }
-    @keyframes tickerRun { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
-
-    .details-grid { display: grid; gap: 10px; font-size: 12px; line-height: 1.6; }
-    .details-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
-    .details-label { color: var(--text-muted); min-width: 130px; font-weight: 500; }
-    .details-val { color: #fff; word-break: break-all; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .muted-note { color: var(--text-muted); font-size: 11px; }
-    .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 13px; margin: 18px 0 12px; color: #fff; }
-
-    /* Griglia overview stile bscscan: blocchi + transazioni affiancati */
-    .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    @media (max-width: 900px) { .overview-grid { grid-template-columns: 1fr; } }
-
-    .table-card { background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: 20px; padding: 22px; }
-    .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .table-header h2 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; }
-
-    .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .data-table thead tr { border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted); text-align: left; }
-    .data-table th, .data-table td { padding: 10px 8px; }
-    .data-table tbody tr { border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.15s ease; }
-    .data-table tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
-    .empty-cell { text-align: center; padding: 18px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
-
-    .click-hash { cursor: pointer; font-family: 'JetBrains Mono', monospace; color: var(--cyan); }
-    .click-hash:hover { text-decoration: underline; }
-
-    @media (max-width: 650px) {
-      .search-box { flex-direction: column; }
-      .btn-search { padding: 14px; justify-content: center; }
-      .details-row { flex-direction: column; gap: 2px; }
-    }
-  </style>
+    <title>LUXA Block Explorer — LUXA Ecosystem</title>
+    <meta name="description" content="Explore the LUXA closed-chain ledger: blocks, transactions and network stats.">
+<base target="_blank">
 </head>
 <body>
 
-  <div class="container">
-    <header class="header">
-      <a href="index.html" class="brand">
-        <img src="assets/images/logoluxa.png" alt="LUXA Logo" onerror="this.src='assets/images/logoluxa.png'">
-        LUXA SCAN <span style="color:var(--gold); font-size:12px; margin-left:4px;">PRO</span>
-      </a>
-      <div class="header-badges">
-        <div class="chain-pill" id="chainBlockBadge">luxa-1 • syncing...</div>
-      </div>
-    </header>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/images/logoluxa.png" alt="LUXA">
+                <span>LUXA</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html">About</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#tokenomics">Tokenomics</a></li>
+                <li><a href="index.html#roadmap">Roadmap</a></li>
+                <li><a href="index.html#whitepaper">White Paper</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="explorer.html" class="btn btn-outline" style="padding: 8px 16px;">
+                    <i class="fas fa-network-wired"></i> <span>Explorer</span>
+                </a>
+                <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">
+                    <i class="fab fa-telegram"></i> <span>Launch App</span>
+                </a>
+                <button class="mobile-menu-toggle" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-    <section class="search-card">
-      <div class="search-title">LUXA Sovereign Ledger Explorer</div>
-      <div class="search-sub">Search by Transaction Hash, Wallet Address (luxa1...), or Block Height.</div>
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search by Tx Hash, Address (luxa1...), or Block Number" autocomplete="off" spellcheck="false">
-        <button type="button" class="btn-search" id="searchBtn"><i class="fas fa-search"></i> SEARCH</button>
-      </div>
-    </section>
-
-    <div id="searchStage"></div>
-
-    <div class="table-header" style="margin-bottom:14px;">
-      <h2 style="font-size:16px;">Protocol Overview</h2>
-      <button type="button" class="back-btn" id="refreshActivityBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#tokenomics">Tokenomics</a></li>
+            <li><a href="index.html#roadmap">Roadmap</a></li>
+            <li><a href="index.html#whitepaper">White Paper</a></li>
+            <li><a href="explorer.html" style="color: #22d3ee;"><i class="fas fa-cube"></i> Block Explorer</a></li>
+            <li><a href="terms.html"><i class="fas fa-file-contract" style="font-size:12px;margin-right:4px;"></i> Terms of Service</a></li>
+            <li><a href="privacy-policy.html"><i class="fas fa-user-shield" style="font-size:12px;margin-right:4px;"></i> Privacy Policy</a></li>
+            <li><a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">Launch App</a></li>
+        </ul>
     </div>
 
-    <section class="overview-grid">
-      <div class="table-card">
-        <div class="table-header"><h2>Latest Blocks</h2></div>
-        <div style="overflow-x:auto;">
-          <table class="data-table">
-            <thead><tr><th>Height</th><th>Age</th><th>Proposer</th><th>Txns</th></tr></thead>
-            <tbody id="latestBlocksBody">
-              <tr><td colspan="4" class="empty-cell">Syncing with luxa-1 node...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
 
-      <div class="table-card">
-        <div class="table-header"><h2>Latest Transactions</h2></div>
-        <div style="overflow-x:auto;">
-          <table class="data-table">
-            <thead><tr><th>Tx Hash</th><th>Type</th><th>Block</th><th>Age</th><th>Amount</th><th>Status</th></tr></thead>
-            <tbody id="latestTxsBody">
-              <tr><td colspan="6" class="empty-cell">Syncing with luxa-1 node...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <section class="explorer-hero">
+        <span class="section-tag">LUXA Ledger</span>
+        <h1><i class="fas fa-cube" style="margin-right:10px;"></i>LUXA Block Explorer</h1>
+        <p>Explore blocks, transactions and activity on the LUXA closed-chain ledger.</p>
+        <form class="explorer-search" id="explorerSearchForm">
+            <input type="text" placeholder="Search by block height, transaction hash or address…" aria-label="Search">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> <span>Search</span></button>
+        </form>
     </section>
-  </div>
 
-  <script src="js/explorer-pro.js"></script>
+    <section class="section" style="padding-top: 0;">
+        <div class="container">
+            <div class="explorer-stats">
+                <div class="explorer-stat">
+                    <div class="es-label">Latest Block</div>
+                    <div class="es-value" id="exLatestBlock">154,230</div>
+                </div>
+                <div class="explorer-stat">
+                    <div class="es-label">Transactions (24h)</div>
+                    <div class="es-value">18,442</div>
+                </div>
+                <div class="explorer-stat">
+                    <div class="es-label">Active Miners</div>
+                    <div class="es-value">12,480+</div>
+                </div>
+                <div class="explorer-stat">
+                    <div class="es-label">Network Status</div>
+                    <div class="es-value" style="color:#4ade80;">● Online</div>
+                </div>
+            </div>
+
+            <div class="explorer-panel">
+                <h3><i class="fas fa-cubes"></i> Latest Blocks</h3>
+                <div style="overflow-x:auto;">
+                    <table class="ex-table">
+                        <thead>
+                            <tr><th>Height</th><th>Block Hash</th><th>Txs</th><th>Time</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="blocksBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="explorer-panel">
+                <h3><i class="fas fa-exchange-alt"></i> Latest Transactions</h3>
+                <div style="overflow-x:auto;">
+                    <table class="ex-table">
+                        <thead>
+                            <tr><th>Hash</th><th>From</th><th>To</th><th>Amount</th></tr>
+                        </thead>
+                        <tbody id="txBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="cta-wrapper" style="margin-bottom: 70px;">
+                <h2 style="font-size:1.5rem;">Start Mining on LUXA</h2>
+                <p style="margin:12px auto 22px;">Every transaction on this ledger starts with a miner. Become one — for free.</p>
+                <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary btn-large">
+                    <i class="fab fa-telegram"></i> <span>Launch LUXA Mini App</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="index.html" class="footer-logo">
+                            <img src="assets/images/logoluxa.png" alt="LUXA">
+                            <span>LUXA</span>
+                        </a>
+                        <p>A coin for everyone. Built on community, transparency, and true accessibility.</p>
+                        <div style="margin: 14px 0 16px;">
+                            <a href="mailto:contact@luxaecosystem.xyz" style="color: #22d3ee; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
+                                <i class="fas fa-envelope"></i> contact@luxaecosystem.xyz
+                            </a>
+                        </div>
+                        <div class="footer-social">
+                            <a href="https://t.me/luxatokenofficial" target="_blank" aria-label="Telegram Channel"><i class="fab fa-telegram-plane"></i></a>
+                            <a href="https://t.me/LuxaTokenCommunity" target="_blank" aria-label="Telegram Community"><i class="fas fa-users"></i></a>
+                            <a href="https://t.me/LuxaToken_bot" target="_blank" aria-label="Telegram Bot"><i class="fas fa-robot"></i></a>
+                            <a href="https://github.com/luxatokenofficial" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="https://x.com/luxatoken" target="_blank" aria-label="X/Twitter"><i class="fab fa-x-twitter"></i></a>
+                        </div>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Project</h4>
+                        <ul>
+                            <li><a href="about.html">About Us</a></li>
+                            <li><a href="index.html#features">Features</a></li>
+                            <li><a href="index.html#tokenomics">Tokenomics</a></li>
+                            <li><a href="index.html#roadmap">Roadmap</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="explorer.html" style="color: #22d3ee;"><i class="fas fa-cube" style="font-size: 11px; margin-right: 4px;"></i> Block Explorer</a></li>
+                            <li><a href="assets/docs/LUXA_Whitepaper_EN.pdf" download="LUXA_Whitepaper_EN.pdf">White Paper</a></li>
+                            <li><a href="https://github.com/luxatokenofficial" target="_blank">GitHub</a></li>
+                            <li><a href="mailto:contact@luxaecosystem.xyz"><i class="fas fa-envelope" style="font-size: 11px; margin-right: 4px;"></i> Support &amp; Inquiries</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Legal &amp; Community</h4>
+                        <ul>
+                            <li><a href="terms.html"><i class="fas fa-file-contract" style="font-size: 11px; margin-right: 4px;"></i> Terms of Service</a></li>
+                            <li><a href="privacy-policy.html"><i class="fas fa-user-shield" style="font-size: 11px; margin-right: 4px;"></i> Privacy Policy</a></li>
+                            <li><a href="https://t.me/luxatokenofficial" target="_blank">Telegram Channel</a></li>
+                            <li><a href="https://t.me/LuxaTokenCommunity" target="_blank">Telegram Group</a></li>
+                            <li><a href="https://x.com/luxatoken" target="_blank">X / Twitter</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2026 LUXA Ecosystem SARL — Casablanca, Morocco. All rights reserved. • <a href="terms.html" style="color: #22d3ee; text-decoration: none;">Terms</a> • <a href="privacy-policy.html" style="color: #22d3ee; text-decoration: none;">Privacy</a> • Contact: <a href="mailto:contact@luxaecosystem.xyz" style="color: #22d3ee; text-decoration: none;">contact@luxaecosystem.xyz</a></p>
+                <p class="disclaimer">LUXA and Shards are currently in-app points/currencies and do not constitute a listed cryptocurrency or investment instrument. Participating does not guarantee profit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
