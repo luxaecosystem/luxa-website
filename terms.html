@@ -1,199 +1,208 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terms of Service — LUXA Ecosystem</title>
-  <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <style>
-    :root {
-      --bg: #05050e;
-      --card-bg: rgba(13, 16, 32, 0.85);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --cyan: #00FFCC;
-      --cyan-glow: rgba(0, 255, 204, 0.25);
-      --gold: #FFD700;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      padding-bottom: 60px;
-      line-height: 1.7;
-    }
-
-    .container { max-width: 860px; margin: 0 auto; padding: 24px 20px; }
-
-    .header {
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 14px; padding-bottom: 20px;
-      border-bottom: 1px solid var(--border-subtle); margin-bottom: 32px;
-    }
-
-    .brand {
-      display: flex; align-items: center; gap: 12px; text-decoration: none;
-      font-family: 'Orbitron', sans-serif; font-size: 18px; font-weight: 800; color: var(--cyan);
-    }
-    .brand img { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--cyan); object-fit: cover; }
-
-    .back-link {
-      font-size: 12px; color: var(--text-muted); text-decoration: none;
-      border: 1px solid var(--border-subtle); padding: 6px 14px; border-radius: 10px;
-      transition: all 0.2s ease;
-    }
-    .back-link:hover { color: var(--cyan); border-color: var(--cyan); }
-
-    .page-card {
-      background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: 20px;
-      padding: 32px 28px; backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    h1 {
-      font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700;
-      color: #fff; margin-bottom: 6px;
-    }
-
-    .last-updated {
-      font-size: 12px; color: var(--text-muted); margin-bottom: 28px;
-      font-family: 'Inter', sans-serif;
-    }
-
-    h2 {
-      font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700;
-      color: var(--cyan); margin: 28px 0 10px;
-    }
-
-    h2:first-of-type { margin-top: 0; }
-
-    p { font-size: 14px; color: #d5dbe3; margin-bottom: 12px; }
-
-    ul { margin: 10px 0 14px 20px; }
-    li { font-size: 14px; color: #d5dbe3; margin-bottom: 8px; }
-
-    a.inline-link {
-      color: var(--cyan); text-decoration: none; border-bottom: 1px solid rgba(0, 255, 204, 0.4);
-    }
-    a.inline-link:hover { color: var(--gold); border-bottom-color: var(--gold); }
-
-    .notice-box {
-      margin: 20px 0; padding: 16px 18px; border-radius: 12px;
-      background: rgba(255, 215, 0, 0.06); border: 1px solid rgba(255, 215, 0, 0.3);
-    }
-    .notice-box p { color: #f1e6b8; margin-bottom: 0; font-size: 13px; }
-
-    .contact-box {
-      margin-top: 32px; padding: 18px 20px; border-radius: 14px;
-      background: rgba(0, 255, 204, 0.06); border: 1px solid rgba(0, 255, 204, 0.3);
-    }
-    .contact-box p { margin-bottom: 4px; }
-    .contact-box .label { color: var(--text-muted); font-size: 12px; }
-    .contact-box .email { font-size: 15px; font-weight: 700; color: var(--cyan); }
-
-    footer {
-      text-align: center; margin-top: 30px; font-size: 11px; color: var(--text-muted);
-    }
-
-    @media (max-width: 600px) {
-      .page-card { padding: 24px 18px; }
-      h1 { font-size: 21px; }
-    }
-  </style>
+    <title>Terms of Service — LUXA Ecosystem</title>
+    <meta name="description" content="Terms of Service for the LUXA Ecosystem website, Telegram mini app and related services.">
+<base target="_blank">
 </head>
 <body>
 
-  <div class="container">
-    <header class="header">
-      <a href="index.html" class="brand">
-        <img src="assets/images/logoluxa.png" alt="LUXA Logo" onerror="this.src='assets/images/logoluxa.png'">
-        LUXA
-      </a>
-      <a href="index.html" class="back-link">← Back to home</a>
-    </header>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/images/logoluxa.png" alt="LUXA">
+                <span>LUXA</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html">About</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#tokenomics">Tokenomics</a></li>
+                <li><a href="index.html#roadmap">Roadmap</a></li>
+                <li><a href="index.html#whitepaper">White Paper</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="explorer.html" class="btn btn-outline" style="padding: 8px 16px;">
+                    <i class="fas fa-network-wired"></i> <span>Explorer</span>
+                </a>
+                <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">
+                    <i class="fab fa-telegram"></i> <span>Launch App</span>
+                </a>
+                <button class="mobile-menu-toggle" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-    <div class="page-card">
-      <h1>Terms of Service</h1>
-      <div class="last-updated">Last updated: September 12, 2026</div>
-
-      <h2>1. Acceptance of These Terms</h2>
-      <p>These Terms of Service ("Terms") govern your access to and use of the LUXA Ecosystem website, Telegram mini app, bot, and related services (collectively, the "Services"), operated by LUXA Ecosystem SARL ("LUXA", "we", "us", or "our"), a company based in Casablanca, Morocco. By accessing or using the Services, you agree to be bound by these Terms. If you do not agree, please do not use the Services.</p>
-
-      <h2>2. Eligibility</h2>
-      <p>You must be at least 18 years old, or the age of legal majority in your jurisdiction, to use the Services. By using the Services, you represent that you meet this requirement and that your use complies with all laws applicable to you.</p>
-
-      <h2>3. Description of the Services</h2>
-      <p>LUXA provides a Telegram-based mini app that allows users to earn LUXA and Shards through in-app activities such as mining sessions, daily bonuses, referrals, and a rewards system. The Services may also include a non-custodial wallet, an internal ledger with a block explorer, and a peer-to-peer NFT marketplace.</p>
-
-      <div class="notice-box">
-        <p><strong>Important:</strong> LUXA and Shards are currently in-app points/currencies. They do not constitute a listed cryptocurrency, security, or investment instrument, and participating in the Services does not guarantee any profit or future value. Features described as "planned" (including any on-chain migration) are not guaranteed and may change.</p>
-      </div>
-
-      <h2>4. Your Account and Wallet</h2>
-      <ul>
-        <li>Your Telegram account is used to access the mini app. You are responsible for keeping your Telegram account secure.</li>
-        <li>If you use the non-custodial wallet feature, your seed phrase and private keys are generated and encrypted on your device. We do not have access to them and cannot recover them if lost. You are solely responsible for backing up and safeguarding your seed phrase.</li>
-        <li>Any wallet address or on-chain activity you connect to the Services is your responsibility.</li>
-      </ul>
-
-      <h2>5. Acceptable Use</h2>
-      <p>When using the Services, you agree not to:</p>
-      <ul>
-        <li>Use bots, scripts, multiple accounts, or any automated or fraudulent means to gain rewards</li>
-        <li>Attempt to interfere with, disrupt, or gain unauthorized access to the Services or related infrastructure</li>
-        <li>Use the Services for any unlawful purpose, including money laundering or fraud</li>
-        <li>Impersonate any person or entity, or misrepresent your affiliation with LUXA</li>
-        <li>Reverse-engineer, decompile, or attempt to extract the source code of the Services, except as permitted by law</li>
-      </ul>
-      <p>We reserve the right to suspend or terminate accounts that violate these rules, including forfeiting associated in-app balances where permitted by law.</p>
-
-      <h2>6. Rewards, Referrals, and Airdrops</h2>
-      <p>Mining rates, daily bonuses, referral rewards, and any future airdrop are determined at our discretion and may be changed, paused, or discontinued at any time to keep the ecosystem sustainable. Participation in any reward program does not create an entitlement to future rewards of the same kind or amount.</p>
-
-      <h2>7. NFTs and Marketplace</h2>
-      <p>NFTs obtained or traded through the Services are provided "as is." We do not guarantee the value, liquidity, or ongoing utility of any NFT. Peer-to-peer trades are conducted directly between users; LUXA is not a party to such trades and is not responsible for disputes arising from them.</p>
-
-      <h2>8. On-Chain Data</h2>
-      <p>Certain activity within the Services may be recorded on a public or internal ledger. Once confirmed, this data is generally permanent and outside our ability to modify or delete, even upon request.</p>
-
-      <h2>9. Intellectual Property</h2>
-      <p>The Services, including their design, branding, logos, and underlying software, are the property of LUXA Ecosystem SARL or its licensors. You may not copy, modify, distribute, or create derivative works from the Services without our prior written consent.</p>
-
-      <h2>10. Disclaimers</h2>
-      <p>The Services are provided "as is" and "as available," without warranties of any kind, express or implied, including warranties of merchantability, fitness for a particular purpose, or non-infringement. We do not guarantee that the Services will be uninterrupted, error-free, or secure.</p>
-
-      <h2>11. Limitation of Liability</h2>
-      <p>To the fullest extent permitted by applicable law, LUXA Ecosystem SARL, its officers, and its representatives shall not be liable for any indirect, incidental, special, or consequential damages, or for any loss of profits, data, or in-app balances, arising from your use of the Services.</p>
-
-      <h2>12. Changes to the Services and These Terms</h2>
-      <p>We may modify, suspend, or discontinue any part of the Services at any time. We may also update these Terms from time to time; changes will be posted on this page with an updated "Last updated" date. Continued use of the Services after changes are posted constitutes acceptance of the updated Terms.</p>
-
-      <h2>13. Termination</h2>
-      <p>We may suspend or terminate your access to the Services at any time, with or without notice, including for violation of these Terms. You may stop using the Services at any time.</p>
-
-      <h2>14. Governing Law</h2>
-      <p>These Terms are governed by the laws of the Kingdom of Morocco, without regard to conflict-of-law principles. Any dispute arising from these Terms or the Services shall be subject to the exclusive jurisdiction of the competent courts of Casablanca, Morocco.</p>
-
-      <h2>15. Contact Us</h2>
-      <p>If you have questions about these Terms, please contact us:</p>
-
-      <div class="contact-box">
-        <p class="label">Email</p>
-        <p class="email"><a class="inline-link" href="mailto:contact@luxaecosystem.xyz">contact@luxaecosystem.xyz</a></p>
-      </div>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+        <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#tokenomics">Tokenomics</a></li>
+            <li><a href="index.html#roadmap">Roadmap</a></li>
+            <li><a href="index.html#whitepaper">White Paper</a></li>
+            <li><a href="explorer.html" style="color: #22d3ee;"><i class="fas fa-cube"></i> Block Explorer</a></li>
+            <li><a href="terms.html"><i class="fas fa-file-contract" style="font-size:12px;margin-right:4px;"></i> Terms of Service</a></li>
+            <li><a href="privacy-policy.html"><i class="fas fa-user-shield" style="font-size:12px;margin-right:4px;"></i> Privacy Policy</a></li>
+            <li><a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">Launch App</a></li>
+        </ul>
     </div>
 
-    <footer>&copy; 2026 LUXA Ecosystem. All rights reserved.</footer>
-  </div>
 
+    <section class="legal-hero">
+        <span class="section-tag">Legal</span>
+        <h1>Terms of Service</h1>
+        <div class="last-updated">Last updated: September 12, 2026</div>
+    </section>
+
+    <section class="section" style="padding-top: 10px;">
+        <div class="container">
+            <div class="legal-card">
+                <h2>1. Acceptance of These Terms</h2>
+                <p>These Terms of Service ("Terms") govern your access to and use of the LUXA Ecosystem website, Telegram mini app, bot, and related services (collectively, the "Services"), operated by LUXA Ecosystem SARL ("LUXA", "we", "us", or "our"), a company based in Casablanca, Morocco. By accessing or using the Services, you agree to be bound by these Terms. If you do not agree, please do not use the Services.</p>
+
+                <h2>2. Eligibility</h2>
+                <p>You must be at least 18 years old, or the age of legal majority in your jurisdiction, to use the Services. By using the Services, you represent that you meet this requirement and that your use complies with all laws applicable to you.</p>
+
+                <h2>3. Description of the Services</h2>
+                <p>LUXA provides a Telegram-based mini app that allows users to earn LUXA and Shards through in-app activities such as mining sessions, daily bonuses, referrals, and a rewards system. The Services may also include a non-custodial wallet, an internal ledger with a block explorer, and a peer-to-peer NFT marketplace.</p>
+
+                <div class="legal-notice">
+                    <strong>Important:</strong> LUXA and Shards are currently in-app points/currencies. They do not constitute a listed cryptocurrency, security, or investment instrument, and participating in the Services does not guarantee any profit or future value. Features described as "planned" (including any on-chain migration) are not guaranteed and may change.
+                </div>
+
+                <h2>4. Your Account and Wallet</h2>
+                <ul>
+                    <li>Your Telegram account is used to access the mini app. You are responsible for keeping your Telegram account secure.</li>
+                    <li>If you use the non-custodial wallet feature, your seed phrase and private keys are generated and encrypted on your device. We do not have access to them and cannot recover them if lost. You are solely responsible for backing up and safeguarding your seed phrase.</li>
+                    <li>Any wallet address or on-chain activity you connect to the Services is your responsibility.</li>
+                </ul>
+
+                <h2>5. Acceptable Use</h2>
+                <p>When using the Services, you agree not to:</p>
+                <ul>
+                    <li>Use bots, scripts, multiple accounts, or any automated or fraudulent means to gain rewards</li>
+                    <li>Attempt to interfere with, disrupt, or gain unauthorized access to the Services or related infrastructure</li>
+                    <li>Use the Services for any unlawful purpose, including money laundering or fraud</li>
+                    <li>Impersonate any person or entity, or misrepresent your affiliation with LUXA</li>
+                    <li>Reverse-engineer, decompile, or attempt to extract the source code of the Services, except as permitted by law</li>
+                </ul>
+                <p>We reserve the right to suspend or terminate accounts that violate these rules, including forfeiting associated in-app balances where permitted by law.</p>
+
+                <h2>6. Rewards, Referrals, and Airdrops</h2>
+                <p>Mining rates, daily bonuses, referral rewards, and any future airdrop are determined at our discretion and may be changed, paused, or discontinued at any time to keep the ecosystem sustainable. Participation in any reward program does not create an entitlement to future rewards of the same kind or amount.</p>
+
+                <h2>7. NFTs and Marketplace</h2>
+                <p>NFTs obtained or traded through the Services are provided "as is." We do not guarantee the value, liquidity, or ongoing utility of any NFT. Peer-to-peer trades are conducted directly between users; LUXA is not a party to such trades and is not responsible for disputes arising from them.</p>
+
+                <h2>8. On-Chain Data</h2>
+                <p>Certain activity within the Services may be recorded on a public or internal ledger. Once confirmed, this data is generally permanent and outside our ability to modify or delete, even upon request.</p>
+
+                <h2>9. Intellectual Property</h2>
+                <p>The Services, including their design, branding, logos, and underlying software, are the property of LUXA Ecosystem SARL or its licensors. You may not copy, modify, distribute, or create derivative works from the Services without our prior written consent.</p>
+
+                <h2>10. Disclaimers</h2>
+                <p>The Services are provided "as is" and "as available," without warranties of any kind, express or implied, including warranties of merchantability, fitness for a particular purpose, or non-infringement. We do not guarantee that the Services will be uninterrupted, error-free, or secure.</p>
+
+                <h2>11. Limitation of Liability</h2>
+                <p>To the fullest extent permitted by applicable law, LUXA Ecosystem SARL, its officers, and its representatives shall not be liable for any indirect, incidental, special, or consequential damages, or for any loss of profits, data, or in-app balances, arising from your use of the Services.</p>
+
+                <h2>12. Changes to the Services and These Terms</h2>
+                <p>We may modify, suspend, or discontinue any part of the Services at any time. We may also update these Terms from time to time; changes will be posted on this page with an updated "Last updated" date. Continued use of the Services after changes are posted constitutes acceptance of the updated Terms.</p>
+
+                <h2>13. Termination</h2>
+                <p>We may suspend or terminate your access to the Services at any time, with or without notice, including for violation of these Terms. You may stop using the Services at any time.</p>
+
+                <h2>14. Governing Law</h2>
+                <p>These Terms are governed by the laws of the Kingdom of Morocco, without regard to conflict-of-law principles. Any dispute arising from these Terms or the Services shall be subject to the exclusive jurisdiction of the competent courts of Casablanca, Morocco.</p>
+
+                <h2>15. Contact Us</h2>
+                <p>If you have questions about these Terms, please contact us:</p>
+                <div class="legal-contact">
+                    <p class="lbl">Email</p>
+                    <p><a href="mailto:contact@luxaecosystem.xyz">contact@luxaecosystem.xyz</a></p>
+                </div>
+            </div>
+            <p class="legal-footer">© 2026 LUXA Ecosystem. All rights reserved. • <a href="privacy-policy.html" style="color:var(--secondary);">Privacy Policy</a> • <a href="index.html" style="color:var(--secondary);">Back to Home</a></p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="index.html" class="footer-logo">
+                            <img src="assets/images/logoluxa.png" alt="LUXA">
+                            <span>LUXA</span>
+                        </a>
+                        <p>A coin for everyone. Built on community, transparency, and true accessibility.</p>
+                        <div style="margin: 14px 0 16px;">
+                            <a href="mailto:contact@luxaecosystem.xyz" style="color: #22d3ee; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
+                                <i class="fas fa-envelope"></i> contact@luxaecosystem.xyz
+                            </a>
+                        </div>
+                        <div class="footer-social">
+                            <a href="https://t.me/luxatokenofficial" target="_blank" aria-label="Telegram Channel"><i class="fab fa-telegram-plane"></i></a>
+                            <a href="https://t.me/LuxaTokenCommunity" target="_blank" aria-label="Telegram Community"><i class="fas fa-users"></i></a>
+                            <a href="https://t.me/LuxaToken_bot" target="_blank" aria-label="Telegram Bot"><i class="fas fa-robot"></i></a>
+                            <a href="https://github.com/luxatokenofficial" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="https://x.com/luxatoken" target="_blank" aria-label="X/Twitter"><i class="fab fa-x-twitter"></i></a>
+                        </div>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Project</h4>
+                        <ul>
+                            <li><a href="about.html">About Us</a></li>
+                            <li><a href="index.html#features">Features</a></li>
+                            <li><a href="index.html#tokenomics">Tokenomics</a></li>
+                            <li><a href="index.html#roadmap">Roadmap</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="explorer.html" style="color: #22d3ee;"><i class="fas fa-cube" style="font-size: 11px; margin-right: 4px;"></i> Block Explorer</a></li>
+                            <li><a href="assets/docs/LUXA_Whitepaper_EN.pdf" download="LUXA_Whitepaper_EN.pdf">White Paper</a></li>
+                            <li><a href="https://github.com/luxatokenofficial" target="_blank">GitHub</a></li>
+                            <li><a href="mailto:contact@luxaecosystem.xyz"><i class="fas fa-envelope" style="font-size: 11px; margin-right: 4px;"></i> Support &amp; Inquiries</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Legal &amp; Community</h4>
+                        <ul>
+                            <li><a href="terms.html"><i class="fas fa-file-contract" style="font-size: 11px; margin-right: 4px;"></i> Terms of Service</a></li>
+                            <li><a href="privacy-policy.html"><i class="fas fa-user-shield" style="font-size: 11px; margin-right: 4px;"></i> Privacy Policy</a></li>
+                            <li><a href="https://t.me/luxatokenofficial" target="_blank">Telegram Channel</a></li>
+                            <li><a href="https://t.me/LuxaTokenCommunity" target="_blank">Telegram Group</a></li>
+                            <li><a href="https://x.com/luxatoken" target="_blank">X / Twitter</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2026 LUXA Ecosystem SARL — Casablanca, Morocco. All rights reserved. • <a href="terms.html" style="color: #22d3ee; text-decoration: none;">Terms</a> • <a href="privacy-policy.html" style="color: #22d3ee; text-decoration: none;">Privacy</a> • Contact: <a href="mailto:contact@luxaecosystem.xyz" style="color: #22d3ee; text-decoration: none;">contact@luxaecosystem.xyz</a></p>
+                <p class="disclaimer">LUXA and Shards are currently in-app points/currencies and do not constitute a listed cryptocurrency or investment instrument. Participating does not guarantee profit.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+    <script src="js/script.js"></script>
 </body>
 </html>
