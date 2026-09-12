@@ -6,7 +6,7 @@
   <title>LUXA Block Explorer</title>
   <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
 
-  <!-- CSS del sito (navbar, bottoni, ecc.) -->
+  <!-- CSS del sito -->
   <link rel="stylesheet" href="css/style.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,7 +41,7 @@
 
     .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
 
-    /* ---- Hero stile screenshot: LUXA LEDGER / LUXA Block Explorer ---- */
+    /* ---- Hero ---- */
     .explorer-hero {
       text-align: center;
       padding: 70px 20px 46px;
@@ -67,7 +67,47 @@
     }
     .chain-pill::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
 
-    /* Barra di ricerca a pillola, come nello screenshot */
+    /* Pulsante Connect Vault nella Navbar */
+    .btn-connect-vault {
+      background: rgba(0, 255, 204, 0.08);
+      border: 1.5px solid var(--cyan);
+      color: var(--cyan);
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .btn-connect-vault:hover {
+      background: rgba(0, 255, 204, 0.2);
+      box-shadow: 0 0 16px var(--cyan-glow);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .btn-connect-vault.is-connected {
+      background: rgba(13, 16, 32, 0.95);
+      border-color: var(--cyan);
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    .btn-connect-vault.is-connected::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    /* Barra di ricerca */
     .hero-search-bar {
       display: flex; gap: 12px; max-width: 660px; margin: 0 auto;
     }
@@ -88,7 +128,6 @@
       .explorer-hero h1 { font-size: 28px; }
     }
 
-    /* ---- Resto dell'explorer (invariato) ---- */
     #searchStage { margin-bottom: 30px; }
     .status-msg { padding: 14px; border-radius: 12px; font-size: 12.5px; font-family: 'JetBrains Mono', monospace; margin-top: 10px; }
     .status-loading { background: rgba(0, 255, 204, 0.08); color: var(--cyan); border: 1px solid var(--cyan); }
@@ -137,7 +176,6 @@
     .details-val { color: #fff; word-break: break-all; }
     .mono { font-family: 'JetBrains Mono', monospace; }
     .muted-note { color: var(--text-muted); font-size: 11px; }
-    .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 13px; margin: 18px 0 12px; color: #fff; }
 
     .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     @media (max-width: 900px) { .overview-grid { grid-template-columns: 1fr; } }
@@ -163,7 +201,7 @@
 </head>
 <body>
 
-  <!-- Navigation (identica al resto del sito: index.html / about.html) -->
+  <!-- Navigation -->
   <nav id="navbar">
     <div class="nav-container">
       <a href="index.html" target="_self" class="nav-logo">
@@ -178,9 +216,11 @@
         <li><a href="index.html#whitepaper" target="_self">White Paper</a></li>
       </ul>
       <div class="nav-actions">
-        <a href="explorer.html" target="_self" class="btn btn-outline" style="padding: 8px 16px;">
-          <i class="fas fa-network-wired"></i> <span>Explorer</span>
-        </a>
+        <!-- PULSANTE CONNECT SPIDER'S NEST WALLET -->
+        <button type="button" class="btn-connect-vault" id="btnConnectVault">
+          <i class="fas fa-spider"></i> <span id="connectVaultLabel">Connect Vault</span>
+        </button>
+
         <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">
           <i class="fab fa-telegram"></i> <span>Launch App</span>
         </a>
@@ -251,8 +291,107 @@
     </section>
   </div>
 
-  <!-- script.js gestisce la navbar/menu mobile del sito, explorer-pro.js la logica dell'explorer -->
+  <!-- Script del sito e logica explorer -->
   <script src="js/script.js"></script>
   <script src="js/explorer-pro.js"></script>
+
+  <!-- LOGICA DI CONNESSIONE WEB3 CON L'ESTENSIONE CHROME (window.luxa) -->
+  <script>
+    (function () {
+      const connectBtn = document.getElementById('btnConnectVault');
+      const label = document.getElementById('connectVaultLabel');
+
+      let currentAddress = localStorage.getItem('luxa_connected_address') || null;
+
+      function updateUIConnected(address) {
+        currentAddress = address;
+        localStorage.setItem('luxa_connected_address', address);
+        const short = address.slice(0, 8) + '...' + address.slice(-4);
+        label.textContent = short;
+        connectBtn.classList.add('is-connected');
+        connectBtn.title = 'Click to inspect your sovereign account in explorer';
+      }
+
+      function updateUIDisconnected() {
+        currentAddress = null;
+        localStorage.removeItem('luxa_connected_address');
+        label.textContent = 'Connect Vault';
+        connectBtn.classList.remove('is-connected');
+        connectBtn.title = 'Connect LUXA Vault — Spider\'s Nest';
+      }
+
+      async function handleConnectClick() {
+        // Se è già connesso, cliccando sul pulsante esamina direttamente l'account nell'Explorer
+        if (currentAddress) {
+          const action = confirm(
+            "Connected Account:\n" + currentAddress + "\n\n" +
+            "Click [OK] to inspect your account in Explorer.\n" +
+            "Click [Cancel] to disconnect."
+          );
+          if (action) {
+            if (window.LuxaExplorer && typeof window.LuxaExplorer.inspect === 'function') {
+              window.LuxaExplorer.inspect(currentAddress);
+            }
+          } else {
+            updateUIDisconnected();
+          }
+          return;
+        }
+
+        // Verifica se l'estensione Chrome è installata
+        if (!window.luxa) {
+          alert(
+            "🕸️ LUXA Vault — Spider's Nest not detected!\n\n" +
+            "Please install or enable the official LUXA Chrome extension to connect."
+          );
+          return;
+        }
+
+        try {
+          label.textContent = "Connecting... ⏳";
+          
+          // 1. Handshake di connessione
+          const conn = await window.luxa.connect();
+          
+          // 2. Lettura chiave pubblica/indirizzo attivo
+          const key = await window.luxa.getKey();
+          const activeAddr = (key && key.address) ? key.address : conn.address;
+
+          if (activeAddr) {
+            updateUIConnected(activeAddr);
+            // Mostra subito l'account nell'explorer
+            if (window.LuxaExplorer && typeof window.LuxaExplorer.inspect === 'function') {
+              window.LuxaExplorer.inspect(activeAddr);
+            }
+          } else {
+            updateUIDisconnected();
+          }
+        } catch (err) {
+          console.error("[Web3 Connect Error]:", err);
+          alert("Connection refused: " + err.message);
+          updateUIDisconnected();
+        }
+      }
+
+      connectBtn.addEventListener('click', handleConnectClick);
+
+      // Auto-reconnect se era già approvato
+      async function checkAutoConnect() {
+        if (window.luxa && currentAddress) {
+          try {
+            const key = await window.luxa.getKey();
+            if (key && key.address) {
+              updateUIConnected(key.address);
+            }
+          } catch (_) {
+            updateUIDisconnected();
+          }
+        }
+      }
+
+      window.addEventListener('luxa#initialized', checkAutoConnect);
+      setTimeout(checkAutoConnect, 800);
+    })();
+  </script>
 </body>
 </html>
