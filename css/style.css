@@ -356,3 +356,42 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
     .footer-bottom .container { flex-direction: column; text-align: center; }
     .disclaimer { text-align: center; }
 }
+
+/* ===== Legal pages (terms / privacy) ===== */
+.legal-hero { padding: 150px 20px 40px; text-align: center; background: radial-gradient(ellipse at top, rgba(168,85,247,0.10), transparent 60%); }
+.legal-hero h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); color: #fff; }
+.legal-hero .last-updated { margin-top: 10px; color: var(--text-dim); font-size: .8rem; }
+.legal-card { max-width: 860px; margin: 0 auto; padding: 36px 34px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-card); }
+.legal-card h2 { font-size: 1.05rem; color: var(--secondary); margin: 26px 0 10px; }
+.legal-card h2:first-of-type { margin-top: 0; }
+.legal-card p, .legal-card li { color: var(--text-muted); font-size: .88rem; }
+.legal-card ul { margin: 8px 0 12px 20px; list-style: disc; }
+.legal-card li { margin-bottom: 6px; }
+.legal-card li::before { content: none; }
+.legal-notice { margin: 20px 0; padding: 14px 18px; border-radius: 10px; background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.35); color: #f1e6b8; font-size: .82rem; }
+.legal-contact { margin-top: 28px; padding: 18px 20px; border-radius: 12px; background: rgba(34,211,238,0.06); border: 1px solid rgba(34,211,238,0.3); }
+.legal-contact .lbl { font-size: .7rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .1em; }
+.legal-contact a { color: var(--secondary); font-weight: 700; }
+.legal-footer { text-align: center; margin: 26px 0 50px; color: var(--text-dim); font-size: .72rem; }
+
+/* ===== Explorer page ===== */
+.explorer-hero { padding: 150px 20px 40px; text-align: center; background: radial-gradient(ellipse at top, rgba(34,211,238,0.10), transparent 60%); }
+.explorer-hero h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); color: #fff; }
+.explorer-hero p { color: var(--text-muted); font-size: .9rem; margin-top: 8px; }
+.explorer-search { display: flex; max-width: 640px; margin: 26px auto 0; gap: 10px; }
+.explorer-search input { flex: 1; padding: 13px 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-card); color: var(--text); font: 400 .85rem var(--font-body); outline: none; }
+.explorer-search input:focus { border-color: var(--secondary); }
+.explorer-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; max-width: 1000px; margin: 40px auto; }
+.explorer-stat { padding: 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); text-align: center; }
+.explorer-stat .es-label { font-size: .68rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; }
+.explorer-stat .es-value { font: 700 1.25rem var(--font-display); color: var(--secondary); margin-top: 4px; font-variant-numeric: tabular-nums; }
+.explorer-panel { max-width: 1000px; margin: 0 auto 60px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); overflow: hidden; }
+.explorer-panel h3 { padding: 16px 20px; font-size: .95rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.explorer-panel h3 i { color: var(--secondary); font-size: .85rem; }
+.ex-table { width: 100%; border-collapse: collapse; font-size: .78rem; }
+.ex-table th { text-align: left; padding: 12px 20px; color: var(--text-dim); font-weight: 600; font-size: .66rem; text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid var(--border); }
+.ex-table td { padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-muted); }
+.ex-table tr:last-child td { border-bottom: none; }
+.mono { font-family: 'Courier New', monospace; color: var(--secondary); }
+.badge-ok { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: .64rem; font-weight: 700; background: rgba(74,222,128,0.12); color: #4ade80; }
+@media (max-width: 760px) { .explorer-stats { grid-template-columns: repeat(2, 1fr); } .ex-table th:nth-child(3), .ex-table td:nth-child(3) { display: none; } }
