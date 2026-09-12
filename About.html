@@ -1,127 +1,37 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About — LUXA Ecosystem</title>
-    <meta name="description" content="Learn about LUXA Ecosystem: our mission, our team, and the company behind the LUXA token.">
-
     <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
-
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <style>
-        /* Stili aggiuntivi solo per questa pagina, con variabili proprie
-           così il risultato è coerente anche se non tocchiamo style.css */
-        .about-page-hero {
-            padding: 160px 20px 80px;
-            text-align: center;
-            background: radial-gradient(ellipse at top, rgba(0,245,212,0.08), transparent 60%);
-        }
-        .about-page-hero h1 {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 42px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 14px;
-        }
-        .about-page-hero p {
-            font-size: 16px;
-            color: #94a3b8;
-            max-width: 620px;
-            margin: 0 auto;
-            line-height: 1.7;
-        }
-
-        .ap-section { padding: 70px 20px; max-width: 1100px; margin: 0 auto; }
-        .ap-section-tag {
-            display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
-            color: #00f5d4; text-transform: uppercase; margin-bottom: 12px;
-        }
-        .ap-section h2 {
-            font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700;
-            color: #fff; margin-bottom: 18px;
-        }
-        .ap-section p.ap-lead {
-            font-size: 15px; color: #cbd5e1; line-height: 1.8; max-width: 780px; margin-bottom: 10px;
-        }
-
-        .ap-team-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 24px; margin-top: 32px;
-        }
-        .ap-team-card {
-            background: rgba(13,16,32,0.85); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 18px; padding: 28px 22px; text-align: center;
-        }
-        .ap-team-avatar {
-            width: 84px; height: 84px; border-radius: 50%; margin: 0 auto 16px;
-            background: linear-gradient(135deg, #0066FF, #00f5d4);
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; color: #05050e;
-        }
-        .ap-team-card h3 { font-size: 16px; color: #fff; margin-bottom: 4px; }
-        .ap-team-card .ap-role { font-size: 12px; color: #FFD700; font-weight: 600; margin-bottom: 10px; display: block; }
-        .ap-team-card p { font-size: 13px; color: #94a3b8; line-height: 1.6; }
-
-        .ap-info-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 16px; margin-top: 28px;
-        }
-        .ap-info-card {
-            background: rgba(13,16,32,0.85); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 14px; padding: 18px 20px;
-        }
-        .ap-info-card .ap-info-label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
-        .ap-info-card .ap-info-value { font-size: 14px; color: #fff; font-weight: 600; }
-
-        .ap-timeline { position: relative; margin-top: 40px; padding-left: 28px; border-left: 2px solid rgba(0,245,212,0.25); }
-        .ap-timeline-item { position: relative; padding-bottom: 32px; }
-        .ap-timeline-item:last-child { padding-bottom: 0; }
-        .ap-timeline-item::before {
-            content: ''; position: absolute; left: -34px; top: 4px;
-            width: 12px; height: 12px; border-radius: 50%;
-            background: #00f5d4; box-shadow: 0 0 10px rgba(0,245,212,0.6);
-        }
-        .ap-timeline-item.ap-future::before { background: #475569; box-shadow: none; }
-        .ap-timeline-item h4 { font-size: 15px; color: #fff; margin-bottom: 4px; }
-        .ap-timeline-item span.ap-tl-tag {
-            font-size: 11px; color: #00f5d4; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;
-        }
-        .ap-timeline-item.ap-future span.ap-tl-tag { color: #94a3b8; }
-        .ap-timeline-item p { font-size: 13px; color: #94a3b8; margin-top: 6px; line-height: 1.6; }
-
-        .ap-cta {
-            text-align: center; padding: 70px 20px; background: rgba(0,245,212,0.04);
-            border-top: 1px solid rgba(255,255,255,0.06);
-        }
-        .ap-cta h2 { font-family: 'Space Grotesk', sans-serif; font-size: 26px; color: #fff; margin-bottom: 14px; }
-        .ap-cta p { color: #94a3b8; margin-bottom: 24px; }
-    </style>
+    <title>About — LUXA Ecosystem</title>
+    <meta name="description" content="Learn about LUXA Ecosystem: our mission, our team, and the company behind the LUXA token.">
+<base target="_blank">
 </head>
 <body>
 
-    <!-- Navigation (identica al resto del sito) -->
+    <!-- Navigation -->
     <nav id="navbar">
         <div class="nav-container">
-            <a href="index.html" target="_self" class="nav-logo">
+            <a href="index.html" class="nav-logo">
                 <img src="assets/images/logoluxa.png" alt="LUXA">
                 <span>LUXA</span>
             </a>
             <ul class="nav-links">
-                <li><a href="index.html#about" target="_self">About</a></li>
-                <li><a href="index.html#features" target="_self">Features</a></li>
-                <li><a href="index.html#tokenomics" target="_self">Tokenomics</a></li>
-                <li><a href="index.html#roadmap" target="_self">Roadmap</a></li>
-                <li><a href="index.html#whitepaper" target="_self">White Paper</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="index.html#tokenomics">Tokenomics</a></li>
+                <li><a href="index.html#roadmap">Roadmap</a></li>
+                <li><a href="index.html#whitepaper">White Paper</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="explorer.html" target="_self" class="btn btn-outline" style="padding: 8px 16px;">
+                <a href="explorer.html" class="btn btn-outline" style="padding: 8px 16px;">
                     <i class="fas fa-network-wired"></i> <span>Explorer</span>
                 </a>
                 <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">
@@ -134,128 +44,148 @@
         </div>
     </nav>
 
+    <!-- Mobile Menu -->
     <div class="mobile-menu">
         <ul>
-            <li><a href="index.html#about" target="_self">About</a></li>
-            <li><a href="index.html#features" target="_self">Features</a></li>
-            <li><a href="index.html#tokenomics" target="_self">Tokenomics</a></li>
-            <li><a href="index.html#roadmap" target="_self">Roadmap</a></li>
-            <li><a href="index.html#whitepaper" target="_self">White Paper</a></li>
-            <li><a href="explorer.html" target="_self" style="color: #00f5d4;"><i class="fas fa-cube"></i> L1 Explorer</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#tokenomics">Tokenomics</a></li>
+            <li><a href="index.html#roadmap">Roadmap</a></li>
+            <li><a href="index.html#whitepaper">White Paper</a></li>
+            <li><a href="explorer.html" style="color: #22d3ee;"><i class="fas fa-cube"></i> Block Explorer</a></li>
+            <li><a href="terms.html"><i class="fas fa-file-contract" style="font-size:12px;margin-right:4px;"></i> Terms of Service</a></li>
+            <li><a href="privacy-policy.html"><i class="fas fa-user-shield" style="font-size:12px;margin-right:4px;"></i> Privacy Policy</a></li>
             <li><a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">Launch App</a></li>
         </ul>
     </div>
 
-    <!-- Hero -->
-    <section class="about-page-hero">
+
+    <section class="legal-hero" style="background: radial-gradient(ellipse at top, rgba(168,85,247,0.10), transparent 60%);">
+        <span class="section-tag">About Us</span>
         <h1>About LUXA Ecosystem</h1>
-        <p>A community-first digital token platform built to make crypto accessible to anyone with a smartphone and a Telegram account — no barriers, no upfront capital, no technical skills required.</p>
+        <p style="color: var(--text-muted); max-width: 620px; margin: 14px auto 0; font-size: .92rem;">
+            A community-first digital token platform built to make crypto accessible to anyone with a smartphone and a Telegram account — no barriers, no upfront capital, no technical skills required.
+        </p>
     </section>
 
-    <!-- Mission -->
-    <section class="ap-section">
-        <span class="ap-section-tag">Our Mission</span>
-        <h2>Built for the People, Not the Privileged</h2>
-        <p class="ap-lead">LUXA was born from a simple idea: everyone should be able to take part in the crypto world, regardless of technical background or financial means. We removed the traditional barriers — no KYC to start, no gas fees, no complex wallet setup — and built an experience that lives entirely inside Telegram, the app billions of people already use every day.</p>
-        <p class="ap-lead">Our long-term vision is an ecosystem where value comes from the size and commitment of a real community, not artificial scarcity or speculation — supported by a non-custodial wallet, a transparent ledger, and an economy whose parameters are open for everyone to see.</p>
-    </section>
-
-    <!-- Team -->
-    <section class="ap-section">
-        <span class="ap-section-tag">Our Team</span>
-        <h2>The People Behind LUXA</h2>
-        <p class="ap-lead">LUXA is developed and operated by a small, focused team based in Casablanca, Morocco, working directly with the community that uses the product every day.</p>
-        <div class="ap-team-grid">
-            <div class="ap-team-card">
-                <div class="ap-team-avatar">YO</div>
-                <h3>Yassine Ouaadil</h3>
-                <span class="ap-role">Founder &amp; Managing Director</span>
-                <p>Leads product, engineering, and operations for the LUXA ecosystem, from the mining engine to the on-chain roadmap.</p>
+    <section class="section" style="padding-top: 30px;">
+        <div class="container" style="max-width: 1100px;">
+            <div class="section-header" style="text-align:left; margin: 0 0 40px;">
+                <span class="section-tag">Our Mission</span>
+                <h2 style="text-align:left;">Built for the People,<br>Not the Privileged</h2>
+                <p style="margin-left:0;">LUXA was born from a simple idea: everyone should be able to take part in the crypto world, regardless of technical background or financial means. We removed the traditional barriers — no KYC to start, no gas fees, no complex wallet setup — and built an experience that lives entirely inside Telegram, the app billions of people already use every day.</p>
             </div>
-            <div class="ap-team-card">
-                <div class="ap-team-avatar"><i class="fas fa-users" style="font-size:22px;"></i></div>
-                <h3>The Community</h3>
-                <span class="ap-role">Contributors &amp; Validators</span>
-                <p>Community members shape LUXA through feedback, referrals, and participation — the ecosystem grows with the people who use it.</p>
+
+            <div class="about-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 60px;">
+                <div class="about-card">
+                    <div class="about-icon"><i class="fas fa-bullseye"></i></div>
+                    <h3>The Mission</h3>
+                    <p>Make crypto participation accessible to everyone through free mining, transparent economics, and a community-driven model.</p>
+                </div>
+                <div class="about-card">
+                    <div class="about-icon"><i class="fas fa-eye"></i></div>
+                    <h3>The Vision</h3>
+                    <p>An ecosystem where value comes from the size and commitment of a real community — not artificial scarcity or speculation.</p>
+                </div>
+            </div>
+
+            <div class="section-header" style="text-align:left; margin: 0 0 30px;">
+                <span class="section-tag">Our Team</span>
+                <h2 style="text-align:left;">The People Behind LUXA</h2>
+                <p style="margin-left:0;">LUXA is developed and operated by a small, focused team based in Casablanca, Morocco, working directly with the community that uses the product every day.</p>
+            </div>
+            <div class="about-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 60px;">
+                <div class="about-card" style="text-align:center;">
+                    <div style="width:84px; height:84px; border-radius:50%; margin:0 auto 16px; background: var(--gradient-1); display:flex; align-items:center; justify-content:center; font:700 1.6rem var(--font-display); color:#05050e;">YO</div>
+                    <h3>Yassine Ouaadil</h3>
+                    <span style="font-size:.75rem; color: var(--accent); font-weight:700;">Founder &amp; Managing Director</span>
+                    <p style="margin-top:8px;">Leads product, engineering, and operations for the LUXA ecosystem, from the mining engine to the on-chain roadmap.</p>
+                </div>
+                <div class="about-card" style="text-align:center;">
+                    <div style="width:84px; height:84px; border-radius:50%; margin:0 auto 16px; background: var(--gradient-2); display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:#fff;"><i class="fas fa-users"></i></div>
+                    <h3>The Community</h3>
+                    <span style="font-size:.75rem; color: var(--accent); font-weight:700;">Contributors &amp; Validators</span>
+                    <p style="margin-top:8px;">Community members shape LUXA through feedback, referrals, and participation — the ecosystem grows with the people who use it.</p>
+                </div>
+            </div>
+
+            <div class="section-header" style="text-align:left; margin: 0 0 30px;">
+                <span class="section-tag">The Company</span>
+                <h2 style="text-align:left;">LUXA Ecosystem SARL</h2>
+            </div>
+            <div class="tokenomics-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 60px;">
+                <div class="token-card">
+                    <span class="t-label">Company Name</span>
+                    <p style="color:#fff; font-weight:600; margin-top:6px; font-size:.85rem;">LUXA ECOSYSTEM SARL</p>
+                </div>
+                <div class="token-card">
+                    <span class="t-label">Legal Form</span>
+                    <p style="color:#fff; font-weight:600; margin-top:6px; font-size:.85rem;">Société à Responsabilité Limitée</p>
+                </div>
+                <div class="token-card">
+                    <span class="t-label">Registered Office</span>
+                    <p style="color:#fff; font-weight:600; margin-top:6px; font-size:.85rem;">Casablanca, Morocco</p>
+                </div>
+                <div class="token-card">
+                    <span class="t-label">Contact</span>
+                    <p style="color:#fff; font-weight:600; margin-top:6px; font-size:.85rem;">contact@luxaecosystem.xyz</p>
+                </div>
+            </div>
+
+            <div class="section-header" style="text-align:left; margin: 0 0 30px;">
+                <span class="section-tag">Our Journey</span>
+                <h2 style="text-align:left;">Milestones So Far</h2>
+            </div>
+            <div style="position:relative; padding-left:30px; border-left:2px solid var(--border); margin-bottom: 60px;">
+                <div style="position:relative; padding-bottom:32px;">
+                    <div style="position:absolute; left:-38px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--secondary); box-shadow:0 0 10px rgba(34,211,238,.6);"></div>
+                    <span style="font-size:.72rem; color:var(--secondary); font-weight:800; text-transform:uppercase;">Foundations</span>
+                    <h3 style="font-size:1.05rem; margin:6px 0 4px;">Telegram Bot &amp; Community Launch</h3>
+                    <p style="color:var(--text-muted); font-size:.85rem;">Creation of the LUXA Telegram bot and the first community channel and group.</p>
+                </div>
+                <div style="position:relative; padding-bottom:32px;">
+                    <div style="position:absolute; left:-38px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--secondary); box-shadow:0 0 10px rgba(34,211,238,.6);"></div>
+                    <span style="font-size:.72rem; color:var(--secondary); font-weight:800; text-transform:uppercase;">Phase 1</span>
+                    <h3 style="font-size:1.05rem; margin:6px 0 4px;">Mining Engine &amp; Mini App</h3>
+                    <p style="color:var(--text-muted); font-size:.85rem;">Launch of the LUXA Telegram Mini App with free passive mining, daily rewards, and a non-custodial wallet.</p>
+                </div>
+                <div style="position:relative; padding-bottom:32px;">
+                    <div style="position:absolute; left:-38px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--secondary); box-shadow:0 0 10px rgba(34,211,238,.6);"></div>
+                    <span style="font-size:.72rem; color:var(--secondary); font-weight:800; text-transform:uppercase;">Phase 1–2</span>
+                    <h3 style="font-size:1.05rem; margin:6px 0 4px;">Ledger &amp; NFT Marketplace</h3>
+                    <p style="color:var(--text-muted); font-size:.85rem;">Closed-chain ledger with a built-in Block Explorer, plus a peer-to-peer NFT marketplace for Hero collectibles.</p>
+                </div>
+                <div style="position:relative;">
+                    <div style="position:absolute; left:-38px; top:4px; width:12px; height:12px; border-radius:50%; background:var(--text-dim);"></div>
+                    <span style="font-size:.72rem; color:var(--text-dim); font-weight:800; text-transform:uppercase;">Phase 3 — Planned</span>
+                    <h3 style="font-size:1.05rem; margin:6px 0 4px;">On-Chain Bridge</h3>
+                    <p style="color:var(--text-muted); font-size:.85rem;">External wallet connections, Smart Chain integration, and full tokenomics disclosure ahead of the on-chain migration.</p>
+                </div>
+            </div>
+
+            <div class="cta-wrapper" style="margin-bottom: 70px;">
+                <h2 style="font-size:1.6rem;">Join the LUXA Community</h2>
+                <p style="margin:12px auto 22px;">Start mining for free, directly inside Telegram — no investment required.</p>
+                <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary btn-large">
+                    <i class="fab fa-telegram"></i> <span>Launch LUXA Mini App</span>
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- Company Info -->
-    <section class="ap-section">
-        <span class="ap-section-tag">The Company</span>
-        <h2>LUXA Ecosystem SARL</h2>
-        <p class="ap-lead">LUXA Ecosystem is developed under a company based in Casablanca, Morocco.</p>
-        <div class="ap-info-grid">
-            <div class="ap-info-card">
-                <span class="ap-info-label">Company Name</span>
-                <span class="ap-info-value">LUXA ECOSYSTEM SARL</span>
-            </div>
-            <div class="ap-info-card">
-                <span class="ap-info-label">Legal Form</span>
-                <span class="ap-info-value">Société à Responsabilité Limitée</span>
-            </div>
-            <div class="ap-info-card">
-                <span class="ap-info-label">Registered Office</span>
-                <span class="ap-info-value">Casablanca, Morocco</span>
-            </div>
-            <div class="ap-info-card">
-                <span class="ap-info-label">Contact</span>
-                <span class="ap-info-value">contact@luxaecosystem.xyz</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Timeline -->
-    <section class="ap-section">
-        <span class="ap-section-tag">Our Journey</span>
-        <h2>Milestones So Far</h2>
-        <div class="ap-timeline">
-            <div class="ap-timeline-item">
-                <span class="ap-tl-tag">Foundations</span>
-                <h4>Telegram Bot &amp; Community Launch</h4>
-                <p>Creation of the LUXA Telegram bot and the first community channel and group.</p>
-            </div>
-            <div class="ap-timeline-item">
-                <span class="ap-tl-tag">Phase 1</span>
-                <h4>Mining Engine &amp; Mini App</h4>
-                <p>Launch of the LUXA Telegram Mini App with free passive mining, daily rewards, and a non-custodial wallet.</p>
-            </div>
-            <div class="ap-timeline-item">
-                <span class="ap-tl-tag">Phase 1–2</span>
-                <h4>Ledger &amp; NFT Marketplace</h4>
-                <p>Closed-chain ledger with a built-in Block Explorer, plus a peer-to-peer NFT marketplace for Hero collectibles.</p>
-            </div>
-            <div class="ap-timeline-item ap-future">
-                <span class="ap-tl-tag">Phase 3 — Planned</span>
-                <h4>On-Chain Bridge</h4>
-                <p>External wallet connections, Smart Chain integration, and full tokenomics disclosure ahead of the on-chain migration.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="ap-cta">
-        <h2>Join the LUXA Community</h2>
-        <p>Start mining for free, directly inside Telegram — no investment required.</p>
-        <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary btn-large">
-            <i class="fab fa-telegram"></i> <span>Launch LUXA Mini App</span>
-        </a>
-    </section>
-
-    <!-- Footer (identico al resto del sito) -->
+    <!-- Footer -->
     <footer id="footer">
         <div class="footer-top">
             <div class="container">
                 <div class="footer-grid">
                     <div class="footer-brand">
-                        <a href="index.html" target="_self" class="footer-logo">
+                        <a href="index.html" class="footer-logo">
                             <img src="assets/images/logoluxa.png" alt="LUXA">
                             <span>LUXA</span>
                         </a>
                         <p>A coin for everyone. Built on community, transparency, and true accessibility.</p>
-                        <div class="footer-email-box" style="margin: 14px 0 16px;">
-                            <a href="mailto:contact@luxaecosystem.xyz" style="color: #00f5d4; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
+                        <div style="margin: 14px 0 16px;">
+                            <a href="mailto:contact@luxaecosystem.xyz" style="color: #22d3ee; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
                                 <i class="fas fa-envelope"></i> contact@luxaecosystem.xyz
                             </a>
                         </div>
@@ -270,28 +200,28 @@
                     <div class="footer-links">
                         <h4>Project</h4>
                         <ul>
-                            <li><a href="about.html" target="_self">About</a></li>
-                            <li><a href="index.html#features" target="_self">Features</a></li>
-                            <li><a href="index.html#tokenomics" target="_self">Tokenomics</a></li>
-                            <li><a href="index.html#roadmap" target="_self">Roadmap</a></li>
+                            <li><a href="about.html">About Us</a></li>
+                            <li><a href="index.html#features">Features</a></li>
+                            <li><a href="index.html#tokenomics">Tokenomics</a></li>
+                            <li><a href="index.html#roadmap">Roadmap</a></li>
                         </ul>
                     </div>
                     <div class="footer-links">
                         <h4>Resources</h4>
                         <ul>
-                            <li><a href="explorer.html" target="_self" style="color: #00f5d4;"><i class="fas fa-cube" style="font-size: 11px; margin-right: 4px;"></i> Block Explorer</a></li>
+                            <li><a href="explorer.html" style="color: #22d3ee;"><i class="fas fa-cube" style="font-size: 11px; margin-right: 4px;"></i> Block Explorer</a></li>
                             <li><a href="assets/docs/LUXA_Whitepaper_EN.pdf" download="LUXA_Whitepaper_EN.pdf">White Paper</a></li>
-                            <li><a href="privacy-policy.html" target="_self"><i class="fas fa-user-shield" style="font-size: 11px; margin-right: 4px;"></i> Privacy Policy</a></li>
                             <li><a href="https://github.com/luxatokenofficial" target="_blank">GitHub</a></li>
-                            <li><a href="mailto:contact@luxaecosystem.xyz"><i class="fas fa-envelope" style="font-size: 11px; margin-right: 4px;"></i> Support & Inquiries</a></li>
+                            <li><a href="mailto:contact@luxaecosystem.xyz"><i class="fas fa-envelope" style="font-size: 11px; margin-right: 4px;"></i> Support &amp; Inquiries</a></li>
                         </ul>
                     </div>
                     <div class="footer-links">
-                        <h4>Community</h4>
+                        <h4>Legal &amp; Community</h4>
                         <ul>
+                            <li><a href="terms.html"><i class="fas fa-file-contract" style="font-size: 11px; margin-right: 4px;"></i> Terms of Service</a></li>
+                            <li><a href="privacy-policy.html"><i class="fas fa-user-shield" style="font-size: 11px; margin-right: 4px;"></i> Privacy Policy</a></li>
                             <li><a href="https://t.me/luxatokenofficial" target="_blank">Telegram Channel</a></li>
                             <li><a href="https://t.me/LuxaTokenCommunity" target="_blank">Telegram Group</a></li>
-                            <li><a href="https://t.me/LuxaToken_bot" target="_blank">Telegram Bot</a></li>
                             <li><a href="https://x.com/luxatoken" target="_blank">X / Twitter</a></li>
                         </ul>
                     </div>
@@ -300,7 +230,7 @@
         </div>
         <div class="footer-bottom">
             <div class="container">
-                <p>© 2026 LUXA Ecosystem. All rights reserved. • <a href="privacy-policy.html" target="_self" style="color: #00f5d4; text-decoration: none;">Privacy Policy</a> • Contact: <a href="mailto:contact@luxaecosystem.xyz" style="color: #00f5d4; text-decoration: none;">contact@luxaecosystem.xyz</a></p>
+                <p>© 2026 LUXA Ecosystem SARL — Casablanca, Morocco. All rights reserved. • <a href="terms.html" style="color: #22d3ee; text-decoration: none;">Terms</a> • <a href="privacy-policy.html" style="color: #22d3ee; text-decoration: none;">Privacy</a> • Contact: <a href="mailto:contact@luxaecosystem.xyz" style="color: #22d3ee; text-decoration: none;">contact@luxaecosystem.xyz</a></p>
                 <p class="disclaimer">LUXA and Shards are currently in-app points/currencies and do not constitute a listed cryptocurrency or investment instrument. Participating does not guarantee profit.</p>
             </div>
         </div>
