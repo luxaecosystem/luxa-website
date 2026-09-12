@@ -22,17 +22,24 @@
     });
   }
 
-  function b64Decode(str) {
-    if (typeof str !== 'string' || str.length === 0) return str;
-    try {
-      const decoded = atob(str);
-      if (/^[\x20-\x7E\s\r\n\t]+$/.test(decoded) && btoa(decoded) === str) {
-        return decoded;
-      }
-      return str;
-    } catch (_) {
+  // Decodifica intelligente: NON tocca ciò che è già in chiaro
+  function smartDecode(str) {
+    if (typeof str !== 'string' || str.length === 0) return '';
+    
+    // Se è già un indirizzo o contiene già uluxa, non toccarlo!
+    if (str.startsWith('luxa1') || str.indexOf('uluxa') !== -1 || str.indexOf(' ') !== -1) {
       return str;
     }
+
+    try {
+      const decoded = atob(str);
+      // Accetta la decodifica solo se produce testo alfanumerico pulito
+      if (/^[a-zA-Z0-9_\-\.\:\/]+$/.test(decoded)) {
+        return decoded;
+      }
+    } catch (_) {}
+
+    return str;
   }
 
   function isCleanAddress(addr) {
@@ -73,7 +80,7 @@
     }
   }
 
-  // --- Parser Eventi Reali Cosmos SDK (Zero Dati Fittizi) ---
+  // --- Parser Eventi Reali Cosmos SDK ---
   function parseCosmosEvents(events, rawTxB64) {
     events = events || [];
     const transfers = [];
@@ -82,7 +89,7 @@
 
     for (let i = 0; i < events.length; i++) {
       const ev = events[i];
-      const evType = b64Decode(ev.type);
+      const evType = smartDecode(ev.type);
       const attrs = ev.attributes || [];
 
       let evSender = '';
@@ -90,8 +97,8 @@
       let evAmount = '';
 
       for (let j = 0; j < attrs.length; j++) {
-        const k = b64Decode(attrs[j].key);
-        const v = b64Decode(attrs[j].value);
+        const k = smartDecode(attrs[j].key);
+        const v = smartDecode(attrs[j].value);
 
         if (k === 'sender' || k === 'spender') evSender = v;
         if (k === 'recipient' || k === 'receiver') evRecipient = v;
@@ -129,18 +136,17 @@
 
     let sender = 'luxa1...';
     let recipient = 'luxa1...';
-    let amountStr = '0 LUXA';
+    let amountStr = '0.0000 LUXA';
 
     if (transfers.length > 0) {
-      // Ordina in modo decrescente: il trasferimento reale ha sempre la priorità rispetto alla gas fee
+      // Ordine decrescente: il trasferimento principale vince sempre
       transfers.sort(function (a, b) { return b.uAmount - a.uAmount; });
 
       const mainTx = transfers[0];
       if (isCleanAddress(mainTx.sender)) sender = mainTx.sender;
       if (isCleanAddress(mainTx.recipient)) recipient = mainTx.recipient;
 
-      const val = mainTx.luxa;
-      amountStr = (val % 1 === 0 ? val.toString() : val.toFixed(4)) + ' LUXA';
+      amountStr = mainTx.luxa.toFixed(4) + ' LUXA';
 
       if (transfers.length > 1 && detectedFee === 0) {
         const minor = transfers[transfers.length - 1];
