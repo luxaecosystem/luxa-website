@@ -60,14 +60,15 @@
     </div>
 
 
-    <section class="explorer-hero">
+<section class="explorer-hero">
         <span class="section-tag">LUXA Ledger</span>
         <h1><i class="fas fa-cube" style="margin-right:10px;"></i>LUXA Block Explorer</h1>
-        <p>Explore blocks, transactions and activity on the LUXA closed-chain ledger.</p>
-        <form class="explorer-search" id="explorerSearchForm">
-            <input type="text" placeholder="Search by block height, transaction hash or address…" aria-label="Search">
-            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> <span>Search</span></button>
+        <p>Explore real-time blocks, on-chain transactions and activity on the LUXA sovereign ledger.</p>
+        <form class="explorer-search" id="explorerSearchForm" onsubmit="event.preventDefault(); window.triggerSearch();">
+            <input type="text" id="explorerSearchInput" placeholder="Search by block height, transaction hash or address…" aria-label="Search">
+            <button type="button" class="btn btn-primary" onclick="window.triggerSearch()"><i class="fas fa-search"></i> <span>Search</span></button>
         </form>
+        <div id="explorerSearchResult" style="max-width: 640px; margin: 0 auto;"></div>
     </section>
 
     <section class="section" style="padding-top: 0;">
