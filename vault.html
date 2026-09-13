@@ -1,1 +1,324 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUXA Vault — Spider's Nest · Source Code Archive</title>
+<style>
+  :root{
+    --bg-0:#050a12;
+    --bg-1:#0a1420;
+    --line:#173047;
+    --cyan:#5be9ff;
+    --cyan-dim:#2c8ba8;
+    --violet:#8b6bff;
+    --ink:#dfeef5;
+    --ink-dim:#8fa9ba;
+    --mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+    --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(91,233,255,.08), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 20%, rgba(139,107,255,.07), transparent 60%),
+      var(--bg-0);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{max-width:760px;margin:0 auto;padding:64px 24px 120px;}
+
+  header.hero{
+    border-bottom:1px solid var(--line);
+    padding-bottom:36px;
+    margin-bottom:48px;
+  }
+  .brand-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:22px;
+  }
+  .brand-row img{
+    width:40px;height:40px;
+    border-radius:10px;
+    box-shadow:0 0 0 1px var(--line), 0 0 24px rgba(91,233,255,.15);
+  }
+  .brand-row span{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--ink-dim);
+    letter-spacing:.03em;
+  }
+  .kicker{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:.02em;
+    color:var(--cyan-dim);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:18px;
+  }
+  .kicker svg{flex:none;}
+  h1{
+    font-size:clamp(28px,4.2vw,40px);
+    line-height:1.15;
+    margin:0 0 14px;
+    font-weight:600;
+    letter-spacing:-.01em;
+  }
+  h1 .accent{color:var(--cyan);}
+  .lede{
+    color:var(--ink-dim);
+    font-size:16.5px;
+    max-width:56ch;
+    margin:0;
+  }
+
+  section{margin-bottom:44px;}
+  section h2{
+    font-size:13px;
+    font-family:var(--mono);
+    color:var(--cyan-dim);
+    text-transform:none;
+    letter-spacing:.01em;
+    margin:0 0 4px;
+  }
+  section h3{
+    font-size:20px;
+    font-weight:600;
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+  section p{color:var(--ink-dim);margin:0 0 14px;font-size:15.5px;}
+  section p:last-child{margin-bottom:0;}
+
+  ol,ul{padding-left:22px;color:var(--ink-dim);font-size:15.5px;}
+  li{margin-bottom:6px;}
+  li::marker{color:var(--cyan-dim);}
+
+  code{
+    font-family:var(--mono);
+    background:rgba(91,233,255,.08);
+    color:var(--cyan);
+    padding:2px 6px;
+    border-radius:4px;
+    font-size:.9em;
+  }
+
+  pre{
+    background:var(--bg-1);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:16px 18px;
+    overflow-x:auto;
+    margin:0 0 14px;
+  }
+  pre code{
+    background:none;
+    padding:0;
+    color:#c9f4ff;
+    font-size:14px;
+    line-height:1.6;
+  }
+
+  .req-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+    margin-top:8px;
+  }
+  .req-grid div{
+    background:var(--bg-1);
+    padding:14px 16px;
+  }
+  .req-grid .k{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--ink-dim);
+    letter-spacing:.02em;
+    margin-bottom:4px;
+  }
+  .req-grid .v{font-size:14.5px;color:var(--ink);}
+
+  .callout{
+    border:1px solid var(--line);
+    border-left:2px solid var(--cyan);
+    border-radius:0 8px 8px 0;
+    background:rgba(91,233,255,.04);
+    padding:16px 20px;
+    font-size:14.5px;
+    color:var(--ink-dim);
+  }
+  .callout strong{color:var(--ink);font-weight:600;}
+
+  .publisher{
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:24px 26px;
+    background:linear-gradient(180deg, rgba(139,107,255,.06), transparent 60%);
+  }
+  .publisher .name{
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .publisher .name::before{
+    content:"";
+    width:8px;height:8px;
+    border-radius:50%;
+    background:var(--cyan);
+    box-shadow:0 0 8px var(--cyan);
+  }
+  dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0 0 16px;}
+  dt{font-family:var(--mono);font-size:12px;color:var(--ink-dim);align-self:start;padding-top:2px;}
+  dd{margin:0;font-size:14.5px;}
+  .publisher p{margin-top:12px;}
+
+  .shots{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-top:16px;
+  }
+  .shots figure{
+    margin:0;
+    border:1px solid var(--line);
+    border-radius:12px;
+    overflow:hidden;
+    background:var(--bg-1);
+  }
+  .shots img{
+    display:block;
+    width:100%;
+    height:auto;
+  }
+  .shots figcaption{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--ink-dim);
+    padding:10px 14px;
+    border-top:1px solid var(--line);
+  }
+  @media (max-width:560px){
+    .shots{grid-template-columns:1fr;}
+  }
+
+  footer{
+    margin-top:60px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--ink-dim);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  @media (max-width:520px){
+    .req-grid{grid-template-columns:1fr;}
+    dl{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="brand-row">
+      <img src="assets/logo.png" alt="LUXA logo">
+      <span>LUXA ECOSYSTEM</span>
+    </div>
+    <div class="kicker">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4z" stroke="#5be9ff" stroke-width="1.6"/></svg>
+      SOURCE CODE ARCHIVE — MOZILLA ADD-ONS REVIEW
+    </div>
+    <h1>LUXA Vault — <span class="accent">Spider's Nest</span></h1>
+    <p class="lede">Technical documentation accompanying the extension's source code review, with instructions to reproduce the single bundled artifact included in the package.</p>
+  </header>
+
+  <section>
+    <h2>01 — CONTEXT</h2>
+    <h3>Overview</h3>
+    <p>"Spider's Nest" is the non-custodial wallet extension for the LUXA ecosystem (<code>luxa-1</code> chain). This document accompanies the source code archive submitted for review and explains how to reproduce the third-party library included in the package.</p>
+    <div class="shots">
+      <figure>
+        <img src="assets/screenshot-import.png" alt="Spider's Nest — import or create vault screen">
+        <figcaption>Vault creation / seed import screen</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/screenshot-dashboard.png" alt="Spider's Nest — on-chain ledger dashboard">
+        <figcaption>Sovereign on-chain ledger dashboard</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>02 — ENVIRONMENT</h2>
+    <h3>Requirements</h3>
+    <div class="req-grid">
+      <div><div class="k">OPERATING SYSTEM</div><div class="v">Cross-platform (Linux, macOS, Windows)</div></div>
+      <div><div class="k">NODE.JS</div><div class="v">≥ 18.0.0 — nodejs.org</div></div>
+      <div><div class="k">NPM</div><div class="v">≥ 9.0.0 (included with Node.js)</div></div>
+      <div><div class="k">BROWSER TARGET</div><div class="v">Mozilla Firefox</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>03 — SETUP</h2>
+    <h3>Installation</h3>
+    <ol>
+      <li>Extract the source code archive.</li>
+      <li>Open a terminal in the root directory.</li>
+      <li>Install the required npm packages:</li>
+    </ol>
+    <pre><code>npm install</code></pre>
+  </section>
+
+  <section>
+    <h2>04 — BUILD</h2>
+    <h3>Reproducing the bundled library</h3>
+    <p>The extension bundles <strong>CosmJS</strong> for offline, browser-only execution (no network call fetches or updates it at runtime). To reproduce the exact bundle included in the package:</p>
+    <pre><code>npm run build</code></pre>
+    <p>This script invokes <code>esbuild</code> using <code>bundle-entry.js</code> as the entry point and produces the artifact <code>libs/cosmjs.bundle.js</code>, identical to the one shipped inside the package. No transformation is applied after the build step — the shipped artifact is the direct build output.</p>
+    <div class="callout"><strong>What the bundle is used for:</strong> CosmJS is used exclusively client-side to derive keys/addresses from a locally generated BIP-39 seed phrase, sign outgoing transactions on the luxa-1 chain before broadcasting, and read on-chain balances via public RPC endpoints. No seed phrase, private key, or derived material is ever transmitted off-device.</div>
+  </section>
+
+  <section>
+    <h2>05 — PUBLISHER</h2>
+    <h3>Publisher information</h3>
+    <div class="publisher">
+      <div class="name">LUXA Ecosystem</div>
+      <dl>
+        <dt>Profession</dt><dd>Decentralized Protocol &amp; Web3 Infrastructure Developer</dd>
+        <dt>User since</dt><dd>September 13, 2026</dd>
+      </dl>
+      <p>LUXA Protocol Engineering Group. Dedicated to developing sovereign, non-custodial Web3 tools, zero-fee Layer 1 infrastructure, and decentralized sovereign enclaves on the luxa-1 blockchain network.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>LUXA VAULT · SPIDER'S NEST</span>
+    <span>DOC v1.0 · SEPTEMBER 2026</span>
+  </footer>
+
+</div>
+</body>
+</html>
