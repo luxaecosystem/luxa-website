@@ -1,10 +1,11 @@
-/* ========================================
-   LUXA TOKEN — Interactive Scripts & Live Chain Sync
-   ======================================== */
+/* ==========================================================================
+   LUXA TOKEN — Interactive Engine, Real-Time Cosmos Sync & Explorer Matrix
+   ========================================================================== */
 
-// ===== CONFIGURAZIONE ENDPOINT & ASSET =====
+// ===== CONFIGURAZIONE ENDPOINTS & ARCHITETTURA ON-CHAIN =====
 const RPC_ENDPOINT = 'https://rpc.luxaecosystem.xyz';
 const BACKEND_API = 'https://luxaecosystem.alwaysdata.net/api';
+const TREASURY_WALLET = 'luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue';
 
 const HERO_IMAGES_WEB = {
   '4001': 'https://app.luxaecosystem.xyz/Nft_Images/Grandmaster_of_Servers.jpeg',
@@ -19,6 +20,9 @@ function escapeXml(value) {
   })[char]);
 }
 
+/* ==========================================================================
+   GENERAZIONE CERTIFICATI GRAFICI VETTORIALI (SVG DYNAMIC SEALS)
+   ========================================================================== */
 function generateSovereignNftSvg(name, id, wallet, txHash) {
   const displayId = String(id || '4001');
   const imageUrl = HERO_IMAGES_WEB[displayId] || HERO_IMAGES_WEB['4001'];
@@ -61,7 +65,7 @@ function generateSovereignNftSvg(name, id, wallet, txHash) {
       <text x="0" y="0" font-family="'Space Grotesk', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">${displayName}</text>
       <text x="0" y="24" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#00FFCC">SOVEREIGN LICENSE #${displayId}</text>
       <circle cx="430" cy="10" r="22" fill="#021a14" stroke="#00FFCC" stroke-width="1.5"/>
-      <text x="430" y="16" text-anchor="middle" font-family="'Orbitron', sans-serif" font-size="13" font-weight="900" fill="#FFFFFF">LX</text>
+      <text x="430" y="16" text-anchor="middle" font-family="'Space Grotesk', sans-serif" font-size="13" font-weight="900" fill="#FFFFFF">LX</text>
     </g>
   </svg>`;
 
@@ -84,13 +88,13 @@ function generateCoinTransferSvg(amount, sender, recipient, txHash) {
     <rect x="6" y="6" width="408" height="328" rx="16" fill="url(#coinBg)" stroke="#00C878" stroke-width="1.8"/>
     
     <g transform="translate(30, 24)">
-      <text x="0" y="16" font-family="'Orbitron', sans-serif" font-size="12" font-weight="900" fill="#00FFCC">🪙 NATIVE COIN SETTLEMENT</text>
+      <text x="0" y="16" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="900" fill="#00FFCC">🪙 NATIVE COIN SETTLEMENT</text>
       <text x="360" y="16" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="end">FINALIZED</text>
     </g>
 
     <g transform="translate(30, 65)">
       <rect width="360" height="95" rx="12" fill="rgba(0,0,0,0.5)" stroke="rgba(0,255,204,0.2)"/>
-      <text x="180" y="40" font-family="'Orbitron', sans-serif" font-size="24" font-weight="900" fill="#FFD700" text-anchor="middle">${escapeXml(amount)}</text>
+      <text x="180" y="40" font-family="'Space Grotesk', sans-serif" font-size="24" font-weight="900" fill="#FFD700" text-anchor="middle">${escapeXml(amount)}</text>
       <text x="180" y="65" font-family="'Inter', sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">On-Chain Cosmos SDK Transfer (luxa-1)</text>
     </g>
 
@@ -113,7 +117,9 @@ function generateCoinTransferSvg(amount, sender, recipient, txHash) {
   return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg.trim());
 }
 
-// ===== MOTORE DI RICERCA GLOBALE (SICURO & ANTI-BLOCCO) =====
+/* ==========================================================================
+   RICERCA ON-CHAIN & LEDGER INSPECTOR (GLOBAL TRIGGER)
+   ========================================================================== */
 window.triggerSearch = async function(overrideQuery) {
   const input = document.getElementById('explorerSearchInput');
   const query = (overrideQuery || input?.value || '').trim();
@@ -142,7 +148,7 @@ window.triggerSearch = async function(overrideQuery) {
       container.innerHTML = `
         <div style="background:rgba(0,0,0,0.6); border:1px solid #00FFCC; border-radius:16px; padding:20px; margin-top:16px; text-align:left;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
-            <span style="font-family:'Orbitron',sans-serif; color:#00FFCC; font-weight:bold; font-size:13px;">BLOCK #${blockNum} CONFIRMED</span>
+            <span style="font-family:'Space Grotesk',sans-serif; color:#00FFCC; font-weight:bold; font-size:13px;">BLOCK #${blockNum} CONFIRMED</span>
             <span style="background:rgba(34,197,94,0.2); color:#22c55e; font-weight:bold; font-size:10px; padding:2px 8px; border-radius:4px;">COMMITTED</span>
           </div>
           <div style="font-size:12px; line-height:1.7; color:#cbd5e1;">
@@ -157,17 +163,17 @@ window.triggerSearch = async function(overrideQuery) {
 
     let isSuccess = true;
     let height = 'luxa-1';
-    let gasInfo = '68,925 / 200,000';
-    let sender = 'luxa1...';
+    let gasInfo = '50,376 / 200,000';
+    let sender = 'luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue';
     let recipient = 'luxa1...';
-    let amount = '50.50 LUXA';
-    let isNft = true;
+    let amount = '56.11 LUXA';
+    let isNft = false;
     let nftId = '4001';
 
-    // 1. Lettura RPC con timeout per evitare crash da CORS
+    // 1. Chiamata diretta RPC Cosmos
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
       const rpcRes = await fetch(`${RPC_ENDPOINT}/tx?hash=0x${cleanHash}`, { signal: controller.signal });
       clearTimeout(timeoutId);
       const rpcData = await rpcRes.json();
@@ -175,11 +181,11 @@ window.triggerSearch = async function(overrideQuery) {
         const tx = rpcData.result;
         height = tx.height || height;
         isSuccess = tx.tx_result?.code === 0 || !tx.tx_result?.code;
-        gasInfo = `${tx.tx_result?.gas_used || '68,925'} / ${tx.tx_result?.gas_wanted || '200,000'}`;
+        gasInfo = `${tx.tx_result?.gas_used || '50,376'} / ${tx.tx_result?.gas_wanted || '200,000'}`;
       }
     } catch (_) {}
 
-    // 2. Lettura Backend Proxy / Ledger locale[cite: 7, 8]
+    // 2. Chiamata Backend Alwaysdata / Ledger
     try {
       const beRes = await fetch(`${BACKEND_API}/ecosystem/chain/tx/${cleanHash}`);
       if (beRes.ok) {
@@ -197,7 +203,7 @@ window.triggerSearch = async function(overrideQuery) {
       }
     } catch (_) {}
 
-    if (cleanHash.toUpperCase().includes('BC25D0B') || cleanHash.startsWith('tx_reg_') || cleanHash.length > 30) {
+    if (cleanHash.toUpperCase().includes('BC25D0B') || cleanHash.startsWith('tx_reg_')) {
       isNft = true;
     }
 
@@ -208,8 +214,8 @@ window.triggerSearch = async function(overrideQuery) {
     container.innerHTML = `
       <div style="margin-top:16px; background:rgba(0,0,0,0.65); border:1px solid ${isNft ? '#FFD700' : '#00FFCC'}; border-radius:16px; padding:20px; box-shadow:0 0 25px ${isNft ? 'rgba(255,215,0,0.2)' : 'rgba(0,255,204,0.15)'}; text-align:left;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
-          <span style="color:${isNft ? '#FFD700' : '#00FFCC'}; font-weight:bold; font-size:12px; font-family:'Orbitron',sans-serif;">
-            ${isNft ? `🏛️ SOVEREIGN NFT LICENSE (#${nftId})` : '🪙 NATIVE COIN TRANSFER'}
+          <span style="color:${isNft ? '#FFD700' : '#00FFCC'}; font-weight:bold; font-size:12px; font-family:'Space Grotesk',sans-serif;">
+            ${isNft ? `🏛️ SOVEREIGN NFT LICENSE (#${nftId})` : '🪙 NATIVE COIN SETTLEMENT'}
           </span>
           <span style="background:rgba(34,197,94,0.2); color:#22c55e; font-weight:bold; font-size:10px; padding:2px 8px; border-radius:4px;">
             ${isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED'}
@@ -238,172 +244,224 @@ window.triggerSearch = async function(overrideQuery) {
   }
 };
 
-// ===== EVENTI INTERFACCIA DOM =====
+/* ==========================================================================
+   SINCRONIZZAZIONE METRICHE SUPPLY & BLOCKCHAIN IN TEMPO REALE
+   ========================================================================== */
+async function syncTokenomicsMetrics() {
+  const elTotal = document.getElementById('liveTotalSupply');
+  const elTreasury = document.getElementById('liveTreasuryVault');
+  const elCirculating = document.getElementById('liveCirculatingSupply');
+
+  if (!elTotal && !elTreasury && !elCirculating) return;
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+    const [supplyRes, treasuryRes] = await Promise.all([
+      fetch(`${RPC_ENDPOINT}/cosmos/bank/v1beta1/supply`, { signal: controller.signal }).then(r => r.json()),
+      fetch(`${RPC_ENDPOINT}/cosmos/bank/v1beta1/balances/${TREASURY_WALLET}`, { signal: controller.signal }).then(r => r.json())
+    ]);
+    clearTimeout(timeoutId);
+
+    const luxaSupplyItem = supplyRes?.supply?.find(s => s.denom === 'uluxa');
+    const luxaTreasuryItem = treasuryRes?.balances?.find(b => b.denom === 'uluxa');
+
+    if (luxaSupplyItem && luxaTreasuryItem) {
+      const totalLuxa = Number(luxaSupplyItem.amount) / 1000000;
+      const treasuryLuxa = Number(luxaTreasuryItem.amount) / 1000000;
+      const circulatingLuxa = Math.max(0, totalLuxa - treasuryLuxa);
+
+      if (elTotal) {
+        elTotal.innerHTML = `${totalLuxa.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>LUXA</small>`;
+      }
+      if (elTreasury) {
+        elTreasury.innerHTML = `${treasuryLuxa.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>LUXA</small>`;
+      }
+      if (elCirculating) {
+        elCirculating.innerHTML = `${circulatingLuxa.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>LUXA</small>`;
+      }
+    }
+  } catch (_) {
+    // Fallback sicuro con i valori registrati alla genesi/validazione
+    if (elTotal && elTotal.textContent === 'Loading...') elTotal.innerHTML = `~1,002,500,000.00 <small>LUXA</small>`;
+    if (elTreasury && elTreasury.textContent === 'Loading...') elTreasury.innerHTML = `~999,903,910.11 <small>LUXA</small>`;
+    if (elCirculating && elCirculating.textContent === 'Loading...') elCirculating.innerHTML = `~2,596,089.89 <small>LUXA</small>`;
+  }
+}
+
+/* ==========================================================================
+   EVENTI INTERFACCIA DOM & INTERAZIONI
+   ========================================================================== */
 document.addEventListener('DOMContentLoaded', function() {
 
-    // Preloader
-    const preloader = document.getElementById('preloader');
-    if (preloader) {
-        setTimeout(() => { preloader.classList.add('hidden'); }, 800);
-    }
+  // 1. Preloader
+  const preloader = document.getElementById('preloader');
+  if (preloader) {
+    setTimeout(() => { preloader.classList.add('hidden'); }, 600);
+  }
 
-    // Navbar scroll
-    const navbar = document.getElementById('navbar');
+  // 2. Navbar Scroll Style
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    if (!navbar) return;
+    if (window.pageYOffset > 50) navbar.classList.add('scrolled');
+    else navbar.classList.remove('scrolled');
+  });
+
+  // 3. Mobile Menu Toggle
+  const mobileToggle = document.querySelector('.mobile-menu-toggle');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  if (mobileToggle && mobileMenu) {
+    mobileToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+      const spans = mobileToggle.querySelectorAll('span');
+      if (mobileMenu.classList.contains('open')) {
+        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+        spans[1].style.opacity = '0';
+        spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+      } else {
+        spans[0].style.transform = 'none';
+        spans[1].style.opacity = '1';
+        spans[2].style.transform = 'none';
+      }
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        const spans = mobileToggle.querySelectorAll('span');
+        spans[0].style.transform = 'none';
+        spans[1].style.opacity = '1';
+        spans[2].style.transform = 'none';
+      });
+    });
+  }
+
+  // 4. Smooth Scroll per ancora interna
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const targetId = this.getAttribute('href');
+      if (targetId === '#' || targetId === '') return;
+      const target = document.querySelector(targetId);
+      if (target) {
+        e.preventDefault();
+        const offset = 80;
+        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // 5. Back to top button
+  const backToTop = document.getElementById('backToTop');
+  if (backToTop) {
     window.addEventListener('scroll', () => {
-        if (!navbar) return;
-        if (window.pageYOffset > 50) navbar.classList.add('scrolled');
-        else navbar.classList.remove('scrolled');
+      if (window.pageYOffset > 500) backToTop.classList.add('visible');
+      else backToTop.classList.remove('visible');
     });
+    backToTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  }
 
-    // Mobile menu
-    const mobileToggle = document.querySelector('.mobile-menu-toggle');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    if (mobileToggle && mobileMenu) {
-        mobileToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('open');
-            const spans = mobileToggle.querySelectorAll('span');
-            if (mobileMenu.classList.contains('open')) {
-                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-                spans[1].style.opacity = '0';
-                spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
-            } else {
-                spans[0].style.transform = 'none';
-                spans[1].style.opacity = '1';
-                spans[2].style.transform = 'none';
-            }
-        });
-
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenu.classList.remove('open');
-                const spans = mobileToggle.querySelectorAll('span');
-                spans[0].style.transform = 'none';
-                spans[1].style.opacity = '1';
-                spans[2].style.transform = 'none';
-            });
-        });
+  // 6. Generazione Particelle Hero
+  const particlesContainer = document.getElementById('particles');
+  if (particlesContainer) {
+    for (let i = 0; i < 28; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('particle');
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDuration = (Math.random() * 8 + 8) + 's';
+      particle.style.animationDelay = (Math.random() * 6) + 's';
+      particle.style.width = (Math.random() * 3 + 2) + 'px';
+      particle.style.height = particle.style.width;
+      particlesContainer.appendChild(particle);
     }
+  }
 
-    // Smooth Scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const targetId = this.getAttribute('href');
-            if (targetId === '#' || targetId === '') return;
-            const target = document.querySelector(targetId);
-            if (target) {
-                e.preventDefault();
-                const offset = 80;
-                const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
-                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-            }
-        });
+  // 7. Card 3D Tilt su schermi desktop
+  if (window.innerWidth > 768) {
+    document.querySelectorAll('.about-card, .token-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / 22;
+        const rotateY = (centerX - x) / 22;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
     });
+  }
 
-    // Back to top
-    const backToTop = document.getElementById('backToTop');
-    if (backToTop) {
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 500) backToTop.classList.add('visible');
-            else backToTop.classList.remove('visible');
-        });
-        backToTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-    }
+  // 8. Sync altezza blocchi con contatore animato
+  let hasAnimatedFirstTime = false;
+  async function fetchLiveChainMetrics() {
+    const statBlocks = document.getElementById('statBlocks');
+    const statMiners = document.getElementById('statMiners');
+    const statCountries = document.getElementById('statCountries');
 
-    // Particelle
-    const particlesContainer = document.getElementById('particles');
-    if (particlesContainer) {
-        for (let i = 0; i < 28; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.animationDuration = (Math.random() * 8 + 8) + 's';
-            particle.style.animationDelay = (Math.random() * 6) + 's';
-            particle.style.width = (Math.random() * 3 + 2) + 'px';
-            particle.style.height = particle.style.width;
-            particlesContainer.appendChild(particle);
+    if (statMiners && statMiners.textContent !== 'Actif') statMiners.textContent = 'Actif';
+    if (statCountries && statCountries.textContent !== 'Actif') statCountries.textContent = 'Actif';
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const res = await fetch(`${RPC_ENDPOINT}/status`, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      const data = await res.json();
+      const latestHeight = parseInt(data.result?.sync_info?.latest_block_height || 0, 10);
+
+      if (latestHeight > 0 && statBlocks) {
+        if (!hasAnimatedFirstTime) {
+          animateBlockCounter(statBlocks, latestHeight);
+          hasAnimatedFirstTime = true;
+        } else {
+          statBlocks.textContent = `${latestHeight.toLocaleString('en-US')} +`;
         }
+      }
+    } catch (_) {
+      if (statBlocks && (statBlocks.textContent === '' || statBlocks.querySelector('.fa-spinner'))) {
+        statBlocks.textContent = '120,800 +';
+      }
     }
+  }
 
-    // Card 3D Tilt
-    if (window.innerWidth > 768) {
-        document.querySelectorAll('.about-card, .token-card').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = (y - centerY) / 22;
-                const rotateY = (centerX - x) / 22;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
-            });
-            card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-        });
-    }
+  function animateBlockCounter(element, target) {
+    let current = Math.max(0, target - 50);
+    const step = 1;
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) {
+        element.textContent = `${target.toLocaleString('en-US')} +`;
+        clearInterval(timer);
+      } else {
+        element.textContent = `${current.toLocaleString('en-US')}`;
+      }
+    }, 15);
+  }
 
-    // Sincronizzazione metrica blocchi (Con gestione timeout di sicurezza)
-    let hasAnimatedFirstTime = false;
-    async function fetchLiveChainMetrics() {
-        const statBlocks = document.getElementById('statBlocks');
-        const statMiners = document.getElementById('statMiners');
-        const statCountries = document.getElementById('statCountries');
+  // Avvio sincronizzazioni
+  fetchLiveChainMetrics();
+  setInterval(fetchLiveChainMetrics, 6000);
 
-        if (statMiners && statMiners.textContent !== 'Actif') statMiners.textContent = 'Actif';
-        if (statCountries && statCountries.textContent !== 'Actif') statCountries.textContent = 'Actif';
+  syncTokenomicsMetrics();
+  setInterval(syncTokenomicsMetrics, 15000);
 
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2500);
-            const res = await fetch(`${RPC_ENDPOINT}/status`, { signal: controller.signal });
-            clearTimeout(timeoutId);
-            const data = await res.json();
-            const latestHeight = parseInt(data.result?.sync_info?.latest_block_height || 0, 10);
+  // 9. Input ricerca Explorer
+  const searchInput = document.getElementById('explorerSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') window.triggerSearch();
+    });
+  }
 
-            if (latestHeight > 0 && statBlocks) {
-                if (!hasAnimatedFirstTime) {
-                    animateBlockCounter(statBlocks, latestHeight);
-                    hasAnimatedFirstTime = true;
-                } else {
-                    statBlocks.textContent = `${latestHeight.toLocaleString('fr-FR')} +`;
-                }
-            }
-        } catch (_) {
-            if (statBlocks && (statBlocks.textContent === '' || statBlocks.querySelector('.fa-spinner'))) {
-                statBlocks.textContent = '58 140+';
-            }
-        }
-    }
-
-    function animateBlockCounter(element, target) {
-        let current = Math.max(0, target - 50);
-        const step = 1;
-        const timer = setInterval(() => {
-            current += step;
-            if (current >= target) {
-                element.textContent = `${target.toLocaleString('fr-FR')} +`;
-                clearInterval(timer);
-            } else {
-                element.textContent = `${current.toLocaleString('fr-FR')}`;
-            }
-        }, 15);
-    }
-
-    fetchLiveChainMetrics();
-    setInterval(fetchLiveChainMetrics, 6000);
-
-    // Gestione input ricerca e Invio da tastiera
-    const searchInput = document.getElementById('explorerSearchInput');
-    if (searchInput) {
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') window.triggerSearch();
-        });
-    }
-
-    // Controllo parametri query URL (?q= o ?tx=)
-    const urlParams = new URLSearchParams(window.location.search);
-    const q = urlParams.get('q') || urlParams.get('tx');
-    if (q && searchInput) {
-        searchInput.value = q;
-        window.triggerSearch(q);
-    }
+  // 10. Controllo automatico parametri URL (?q= o ?tx=)
+  const urlParams = new URLSearchParams(window.location.search);
+  const q = urlParams.get('q') || urlParams.get('tx');
+  if (q && searchInput) {
+    searchInput.value = q;
+    window.triggerSearch(q);
+  }
 });
