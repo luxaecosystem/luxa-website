@@ -301,15 +301,20 @@ async function syncTokenomicsMetrics() {
 /* ==========================================================================
    EVENTI INTERFACCIA DOM & INTERAZIONI
    ========================================================================== */
-document.addEventListener('DOMContentLoaded', function() {
+/* ==========================================================================
+   COMPONENTI CONDIVISI (navbar / mobile menu / back-to-top)
+   Questi elementi arrivano nel DOM in modo asincrono, iniettati da
+   js/include.js dentro <div data-include="nav"> e <div data-include="footer">.
+   Per questo la loro inizializzazione NON parte su DOMContentLoaded (che
+   potrebbe scattare prima che nav/footer siano stati caricati), ma
+   sull'evento "luxa:components-ready" lanciato da include.js quando ha
+   finito di iniettarli. Se una pagina non usa include.js (es. pagine
+   standalone con nav/footer già presenti nell'HTML), questa funzione può
+   comunque essere richiamata a mano: initComponentDependentUI().
+   ========================================================================== */
+function initComponentDependentUI() {
 
-  // 1. Preloader
-  const preloader = document.getElementById('preloader');
-  if (preloader) {
-    setTimeout(() => { preloader.classList.add('hidden'); }, 600);
-  }
-
-  // 2. Navbar Scroll Style
+  // Navbar Scroll Style
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
     if (!navbar) return;
@@ -317,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
     else navbar.classList.remove('scrolled');
   });
 
-  // 3. Mobile Menu Toggle
+  // Mobile Menu Toggle
   const mobileToggle = document.querySelector('.mobile-menu-toggle');
   const mobileMenu = document.querySelector('.mobile-menu');
   if (mobileToggle && mobileMenu) {
@@ -346,7 +351,33 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // 4. Smooth Scroll per ancora interna
+  // Back to top button
+  const backToTop = document.getElementById('backToTop');
+  if (backToTop) {
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 500) backToTop.classList.add('visible');
+      else backToTop.classList.remove('visible');
+    });
+    backToTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  }
+}
+
+// Pagine con include.js: aspetta che nav/footer siano stati iniettati.
+document.addEventListener('luxa:components-ready', initComponentDependentUI);
+// Pagine senza include.js (nav/footer già presenti nell'HTML): fallback diretto.
+if (!document.querySelector('[data-include]')) {
+  document.addEventListener('DOMContentLoaded', initComponentDependentUI);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+  // 1. Preloader
+  const preloader = document.getElementById('preloader');
+  if (preloader) {
+    setTimeout(() => { preloader.classList.add('hidden'); }, 600);
+  }
+
+  // 2. Smooth Scroll per ancora interna
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const targetId = this.getAttribute('href');
@@ -361,17 +392,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // 5. Back to top button
-  const backToTop = document.getElementById('backToTop');
-  if (backToTop) {
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 500) backToTop.classList.add('visible');
-      else backToTop.classList.remove('visible');
-    });
-    backToTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-  }
-
-  // 6. Generazione Particelle Hero
+  // 3. Generazione Particelle Hero
   const particlesContainer = document.getElementById('particles');
   if (particlesContainer) {
     for (let i = 0; i < 28; i++) {
@@ -386,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // 7. Card 3D Tilt su schermi desktop
+  // 4. Card 3D Tilt su schermi desktop
   if (window.innerWidth > 768) {
     document.querySelectorAll('.about-card, .token-card').forEach(card => {
       card.addEventListener('mousemove', (e) => {
@@ -403,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // 8. Sync altezza blocchi con contatore animato via CometBFT /status
+  // 5. Sync altezza blocchi con contatore animato via CometBFT /status
   let hasAnimatedFirstTime = false;
   async function fetchLiveChainMetrics() {
     const statBlocks = document.getElementById('statBlocks');
@@ -460,7 +481,7 @@ document.addEventListener('DOMContentLoaded', function() {
   syncTokenomicsMetrics();
   setInterval(syncTokenomicsMetrics, 15000);
 
-  // 9. Input ricerca Explorer
+  // 6. Input ricerca Explorer
   const searchInput = document.getElementById('explorerSearchInput');
   if (searchInput) {
     searchInput.addEventListener('keydown', (e) => {
@@ -468,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // 10. Controllo automatico parametri URL (?q= o ?tx=)
+  // 7. Controllo automatico parametri URL (?q= o ?tx=)
   const urlParams = new URLSearchParams(window.location.search);
   const q = urlParams.get('q') || urlParams.get('tx');
   if (q && searchInput) {
