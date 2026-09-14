@@ -249,7 +249,7 @@ window.triggerSearch = async function(overrideQuery) {
 };
 
 /* ==========================================================================
-   SINCRONIZZAZIONE SUPPLY IN TEMPO REALE (PROTETTA DA ERRORI 404)
+   SINCRONIZZAZIONE SUPPLY PULITA (ZERO ERRORI 404 IN CONSOLE)
    ========================================================================== */
 async function syncTokenomicsMetrics() {
   const elTotal = document.getElementById('liveTotalSupply');
@@ -258,7 +258,7 @@ async function syncTokenomicsMetrics() {
 
   if (!elTotal && !elTreasury && !elCirculating) return;
 
-  // Valori ufficiali certificati dal nodo CometBFT
+  // Valori certi consolidati on-chain (luxa-1)
   let totalLuxa = 1002500000.00;
   let treasuryLuxa = 999903910.11;
 
@@ -266,9 +266,9 @@ async function syncTokenomicsMetrics() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-    // Interroga il backend Alwaysdata (che ha accesso diretto alla chain)
+    // Chiamata sicura al backend Node.js (Alwaysdata)
     const beRes = await fetch(`${BACKEND_API}/admin/stats`, { signal: controller.signal })
-      .then(r => r.ok ? r.json() : null)
+      .then(r => (r.ok ? r.json() : null))
       .catch(() => null);
 
     clearTimeout(timeoutId);
