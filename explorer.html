@@ -201,47 +201,8 @@
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav id="navbar">
-    <div class="nav-container">
-      <a href="index.html" target="_self" class="nav-logo">
-        <img src="assets/images/logoluxa.png" alt="LUXA">
-        <span>LUXA</span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="index.html#about" target="_self">About</a></li>
-        <li><a href="index.html#features" target="_self">Features</a></li>
-        <li><a href="index.html#tokenomics" target="_self">Tokenomics</a></li>
-        <li><a href="index.html#roadmap" target="_self">Roadmap</a></li>
-        <li><a href="index.html#whitepaper" target="_self">White Paper</a></li>
-      </ul>
-      <div class="nav-actions">
-        <!-- PULSANTE CONNECT SPIDER'S NEST WALLET -->
-        <button type="button" class="btn-connect-vault" id="btnConnectVault">
-          <i class="fas fa-spider"></i> <span id="connectVaultLabel">Connect Vault</span>
-        </button>
-
-        <a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">
-          <i class="fab fa-telegram"></i> <span>Launch App</span>
-        </a>
-        <button class="mobile-menu-toggle" aria-label="Menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-    </div>
-  </nav>
-
-  <div class="mobile-menu">
-    <ul>
-      <li><a href="index.html#about" target="_self">About</a></li>
-      <li><a href="index.html#features" target="_self">Features</a></li>
-      <li><a href="index.html#tokenomics" target="_self">Tokenomics</a></li>
-      <li><a href="index.html#roadmap" target="_self">Roadmap</a></li>
-      <li><a href="index.html#whitepaper" target="_self">White Paper</a></li>
-      <li><a href="explorer.html" target="_self" style="color: #00f5d4;"><i class="fas fa-cube"></i> L1 Explorer</a></li>
-      <li><a href="https://t.me/LuxaToken_bot" target="_blank" class="btn btn-primary">Launch App</a></li>
-    </ul>
-  </div>
+  <!-- NAV + MOBILE MENU (componente condiviso: partials/nav.html) -->
+  <div data-include="nav"></div>
 
   <!-- Hero: LUXA LEDGER / LUXA Block Explorer -->
   <section class="explorer-hero">
@@ -291,15 +252,37 @@
     </section>
   </div>
 
+  <!-- FOOTER (componente condiviso: partials/footer.html) -->
+  <div data-include="footer"></div>
+
   <!-- Script del sito e logica explorer -->
+  <script src="js/include.js"></script>
   <script src="js/script.js"></script>
   <script src="js/explorer-pro.js"></script>
 
-  <!-- LOGICA DI CONNESSIONE WEB3 CON L'ESTENSIONE CHROME (window.luxa) -->
+  <!-- LOGICA DI CONNESSIONE WEB3 CON L'ESTENSIONE CHROME (window.luxa)
+       Il pulsante "Connect Vault" non fa parte della nav condivisa (è specifico
+       di questa pagina), quindi viene iniettato in .nav-actions subito dopo che
+       la nav è stata caricata da include.js (evento luxa:components-ready). -->
   <script>
-    (function () {
+    document.addEventListener('luxa:components-ready', () => {
+      const navActions = document.querySelector('#navbar .nav-actions');
+      if (navActions && !document.getElementById('btnConnectVault')) {
+        const launchBtn = navActions.querySelector('a.btn-primary');
+        const connectBtnHtml = `<button type="button" class="btn-connect-vault" id="btnConnectVault"><i class="fas fa-spider"></i> <span id="connectVaultLabel">Connect Vault</span></button>`;
+        if (launchBtn) {
+          launchBtn.insertAdjacentHTML('beforebegin', connectBtnHtml);
+        } else {
+          navActions.insertAdjacentHTML('afterbegin', connectBtnHtml);
+        }
+      }
+      initVaultConnect();
+    });
+
+    function initVaultConnect() {
       const connectBtn = document.getElementById('btnConnectVault');
       const label = document.getElementById('connectVaultLabel');
+      if (!connectBtn || !label) return;
 
       let currentAddress = localStorage.getItem('luxa_connected_address') || null;
 
@@ -349,10 +332,10 @@
 
         try {
           label.textContent = "Connecting... ⏳";
-          
+
           // 1. Handshake di connessione
           const conn = await window.luxa.connect();
-          
+
           // 2. Lettura chiave pubblica/indirizzo attivo
           const key = await window.luxa.getKey();
           const activeAddr = (key && key.address) ? key.address : conn.address;
@@ -391,7 +374,7 @@
 
       window.addEventListener('luxa#initialized', checkAutoConnect);
       setTimeout(checkAutoConnect, 800);
-    })();
+    }
   </script>
 </body>
 </html>
