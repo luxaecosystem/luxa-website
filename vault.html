@@ -39,7 +39,7 @@
     -webkit-font-smoothing:antialiased;
   }
 
-  .wrap{max-width:780px;margin:0 auto;padding:64px 24px 120px;}
+  .wrap{max-width:780px;margin:0 auto;padding:64px 24px 80px;}
 
   header.hero{
     border-bottom:1px solid var(--line);
@@ -85,8 +85,16 @@
     color:var(--ink-dim);
     font-size:17px;
     max-width:60ch;
-    margin:0;
+    margin:0 0 24px;
     line-height:1.7;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 10px;
   }
 
   section{margin-bottom:48px;}
@@ -198,19 +206,6 @@
   }
   .publisher p{margin:0;font-size:14.5px;color:var(--ink-dim);line-height:1.6;}
 
-  footer{
-    margin-top:64px;
-    padding-top:24px;
-    border-top:1px solid var(--line);
-    font-family:var(--mono);
-    font-size:12px;
-    color:var(--ink-dim);
-    display:flex;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    gap:8px;
-  }
-
   @media (max-width:600px){
     .feature-grid{grid-template-columns:1fr;}
     .spec-table td.tag{width:45%;}
@@ -218,6 +213,7 @@
 </style>
 </head>
 <body>
+
 <!-- NAV + MOBILE MENU (componente condiviso: partials/nav.html) -->
 <div data-include="nav"></div>
 
@@ -234,6 +230,15 @@
     </div>
     <h1>LUXA Vault — <span class="accent">Spider's Nest</span></h1>
     <p class="lede">The next evolutionary leap in sovereign asset management: an interconnected multi-vault network designed for instant, zero-friction global settlements with zero client-side compromise.</p>
+    
+    <div class="hero-cta">
+      <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; font-weight: 600;">
+        <i class="fab fa-chrome"></i> <span>Get Extension on Chrome</span>
+      </a>
+      <a href="index.html" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px;">
+        <i class="fas fa-home"></i> <span>Back to Home</span>
+      </a>
+    </div>
   </header>
 
   <section>
@@ -307,11 +312,6 @@
       <p>Dedicated to creating sovereign, non-custodial financial infrastructure, zero-fee Layer 1 blockchain networks, and permissionless economic tools that divide profits fairly across the entire community.</p>
     </div>
   </section>
-
-  <footer>
-    <span>LUXA VAULT · SPIDER'S NEST SPECIFICATION</span>
-    <span>SOVEREIGN COMMERCE PROTOCOL · 2026</span>
-  </footer>
 
 </div>
 
