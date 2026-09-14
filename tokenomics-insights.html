@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>What "Price Per Token" Doesn't Tell You | LUXA Ecosystem</title>
+    <meta name="description" content="Comparing tokens on price or market cap alone hides what actually matters: real supply, treasury, emission rules and liquidity. Here's how to read a token like LUXA.">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav id="navbar" class="scrolled">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <img src="assets/images/logoluxa.png" alt="LUXA" onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/luxatokenofficial/luxa-website/main/images/logoluxa.png';">
+                <span>LUXA</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="about.html">About</a></li>
+                <li><a href="index.html#spider-wallet">Spider Wallet</a></li>
+                <li><a href="index.html#shared-wealth">Shared Wealth</a></li>
+                <li><a href="index.html#tokenomics">Tokenomics &amp; Fees</a></li>
+                <li><a href="explorer.html">Explorer</a></li>
+                <li><a href="index.html#roadmap">Roadmap</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="https://t.me/LuxaToken_bot" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                    <i class="fab fa-telegram"></i> <span>Launch App</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section class="legal-hero">
+        <span class="section-tag">Insights · Tokenomics</span>
+        <h1>What "Price Per Token" Doesn't Tell You</h1>
+        <p class="last-updated">And how you should actually evaluate a sovereign asset like LUXA · 7 min read</p>
+    </section>
+
+    <!-- Article Content -->
+    <section class="section" style="padding-top: 20px;">
+        <div class="container">
+            <div class="legal-card">
+
+                <p>If you're evaluating a token — whether to mine it, trade it, or understand its fundamentals — you probably look at two superficial numbers: unit price and market cap. That feels like enough. It isn't.</p>
+
+                <p>Two tokens can share the exact same unit price and tell completely opposite economic stories. Price per token is an arbitrary visual metric; it is rarely sufficient to understand what you're actually holding or whether the underlying economy is built to last.</p>
+
+                <h2>What goes wrong</h2>
+                <p>The pattern repeats itself across crypto markets. One project shows a fraction-of-a-cent price with an astronomical supply and looks "cheap". Another shows a higher price with a tiny supply and looks "expensive". Judging solely by nominal price ignores basic mathematics: a token with 1,000,000,000 units at $0.001 and one with 1,000 units at $1,000 share the exact same market cap.</p>
+                <p>The problem isn't the price itself. It's treating it as the primary signal while ignoring treasury mechanics, real market availability, and protocol distribution.</p>
+
+                <h2>Five things that matter more than price</h2>
+
+                <p><strong>1. Total Supply vs. Circulating Supply.</strong> Total supply represents the aggregate tokens minted on the protocol. Circulating supply is what is actually moving on the market and available to users. The gap between the two — typically held in a Treasury reserve or locked in contracts — can dilute holders if dumped without governance rules. On LUXA, this gap is verifiable on-chain in real time:</p>
+                
+                <div class="legal-notice" style="margin: 14px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
+                    Circulating Supply = Total Supply − Treasury Reserve
+                </div>
+
+                <p>This is read directly from the <code>bank</code> module of the <code>luxa-1</code> chain, not self-reported on a centralized spreadsheet.</p>
+
+                <p><strong>2. Where the reserve sits.</strong> An on-chain Treasury, inspectable by anyone via a public CometBFT block explorer, provides mathematical proof. A project that keeps funds in private, undisclosed accounts relies purely on "trust us, the team won't dump". The first is cryptographic verification; the second is an unverified promise.</p>
+
+                <p><strong>3. Transparent emission rules.</strong> A token earned daily through a documented mining engine with calibrated halving rules behaves completely differently from one minted arbitrarily by administrators. If the minting algorithm isn't locked on-chain or published, today's price provides zero certainty about tomorrow's purchasing power.</p>
+
+                <p><strong>4. Settlement fees and revenue sharing.</strong> When moving balances from the in-app ledger to on-chain Mainnet vaults, LUXA retains a standard 8% protocol settlement fee. Rather than disappearing into private pockets, these fees are redirected into ecosystem reserves, backing liquidity, funding community airdrops, and powering staking rewards. It is an economic sustainability mechanism, not a hidden surcharge.</p>
+
+                <p><strong>5. Ledger transparency.</strong> A sovereign token ecosystem where every transaction is verifiable (transaction hash, block height, sender, recipient, and gas consumption) allows independent auditability. If you have to rely solely on an internal database counter without an underlying blockchain, you do not have cryptographic sovereignty.</p>
+
+                <h2>The questions worth asking</h2>
+                <p>Before checking a token's price chart, ask:</p>
+                <ul>
+                    <li>"What is the <em>circulating</em> supply right now, verified against the treasury balance?"</li>
+                    <li>"Where does the reserve sit, and can I audit the treasury address on a block explorer?"</li>
+                    <li>"Are the emission rates, halving schedules, and protocol fees transparent and immutable?"</li>
+                    <li>"Can I verify transactions directly via JSON-RPC, or must I trust an internal dashboard?"</li>
+                </ul>
+                <p>A project that answers with verifiable block explorer links instead of verbal assurances is built on sound architectural foundations.</p>
+
+                <h2>Why this matters now</h2>
+                <p>With thousands of "tap-to-earn" mini apps promising airdrops and phantom valuations, nominal prices mean less than ever. What distinguishes genuine protocols is structural integrity: how much supply is locked, how transparently the rules are executed, and whether profits are shared democratically with active participants.</p>
+                <p>Stop comparing unit price alone. Evaluate the protocol architecture behind it.</p>
+
+                <div class="legal-contact">
+                    <span class="lbl">Verify It On-Chain</span><br>
+                    Every supply figure, block height, and transaction on LUXA is publicly verifiable on our <a href="explorer.html">Block Explorer</a> and detailed in the <a href="index.html#tokenomics">Tokenomics &amp; Fees</a> section.
+                </div>
+
+            </div>
+
+            <p class="legal-footer">LUXA Ecosystem Insights · Protocol Research &amp; Economics Working Group</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="footer-bottom">
+            <div class="container">
+                <p>© 2026 LUXA Ecosystem SARL. All rights reserved. • <a href="terms.html" style="color: #22d3ee; text-decoration: none;">Terms</a> • <a href="privacy-policy.html" style="color: #22d3ee; text-decoration: none;">Privacy</a> • <a href="index.html" style="color: #22d3ee; text-decoration: none;">Home</a></p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
