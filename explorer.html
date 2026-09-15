@@ -269,207 +269,187 @@
   <script src="js/script.js"></script>
   <script src="js/explorer-pro.js"></script>
 
-  <!-- Modale Vault Info / Installazione (Iniettato dinamicamente) -->
-  <div id="luxaModalBackdrop" class="luxa-modal-backdrop">
-    <div class="luxa-modal-card">
-      <div class="luxa-modal-header">
-        <h3 id="modalTitle"><i class="fas fa-spider"></i> LUXA Sovereign Vault</h3>
-        <button type="button" class="luxa-modal-close" id="modalCloseBtn" aria-label="Close modal">&times;</button>
+  <!-- ============================================================ -->
+  <!-- LUXA WEB3 CYBER MODAL SYSTEM                                  -->
+  <!-- ============================================================ -->
+  <div id="luxa-web3-modal" class="web3-modal-backdrop" style="display:none;">
+    <div class="web3-modal-window">
+      <div class="web3-modal-header">
+        <div class="web3-modal-title" id="web3ModalTitle">LUXA Web3 Portal</div>
+        <button type="button" class="web3-modal-close" id="btnWeb3ModalClose" aria-label="Close modal">&times;</button>
       </div>
-      <div id="modalBody"></div>
+      <div class="web3-modal-body" id="web3ModalBody"></div>
     </div>
   </div>
+
+  <style>
+    .web3-modal-backdrop { position:fixed; inset:0; background:rgba(4,5,13,.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:100000; }
+    .web3-modal-window { background:#090c1a; border:1.5px solid var(--cyan); box-shadow:0 0 35px rgba(0,255,204,.25); border-radius:18px; width:90%; max-width:440px; padding:24px; color:#fff; font-family:'Inter',sans-serif; animation:modalScale .2s cubic-bezier(.16,1,.3,1); }
+    @keyframes modalScale { from { transform:scale(.92); opacity:0; } to { transform:scale(1); opacity:1; } }
+    .web3-modal-header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,.08); padding-bottom:12px; margin-bottom:18px; }
+    .web3-modal-title { font-family:'Space Grotesk',sans-serif; font-size:15px; font-weight:700; color:var(--cyan); }
+    .web3-modal-close { background:transparent; border:none; color:#88a0bf; font-size:20px; cursor:pointer; line-height:1; }
+    .web3-modal-close:hover { color:#fff; }
+    .modal-user-card { display:flex; align-items:center; gap:14px; background:rgba(255,255,255,.03); border:1px solid rgba(0,255,204,.2); padding:14px; border-radius:12px; margin-bottom:16px; }
+    .modal-user-avatar { width:46px; height:46px; border-radius:50%; border:2px solid var(--cyan); object-fit:cover; background:#020617; display:grid; place-items:center; font-weight:bold; color:var(--cyan); }
+    .modal-user-info { display:flex; flex-direction:column; gap:3px; min-width:0; }
+    .modal-btn-row { display:flex; gap:10px; margin-top:18px; }
+    .btn-modal-action { flex:1; padding:10px 14px; border-radius:10px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:all .2s ease; border:1px solid transparent; }
+    .btn-modal-inspect { background:rgba(0,255,204,.12); border-color:var(--cyan); color:var(--cyan); }
+    .btn-modal-disconnect { background:rgba(239,68,68,.12); border-color:#ef4444; color:#ef4444; }
+    .btn-modal-install { background:linear-gradient(135deg,#00FFCC,#0066FF); color:#040612; border:none; width:100%; padding:12px; margin-top:12px; }
+  </style>
 
   <script>
     document.addEventListener('luxa:components-ready', () => {
       const navActions = document.querySelector('#navbar .nav-actions');
       if (navActions && !document.getElementById('btnConnectVault')) {
         const launchBtn = navActions.querySelector('a.btn-primary');
-        const connectBtnHtml = `
-          <button type="button" class="btn-connect-vault" id="btnConnectVault">
-            <i class="fas fa-spider"></i>
-            <span id="connectVaultLabel">Connect Vault</span>
-          </button>
-        `;
+        const connectBtnHtml = `<button type="button" class="btn-connect-vault" id="btnConnectVault"><i class="fas fa-spider"></i> <span id="connectVaultLabel">Connect Vault</span></button>`;
         if (launchBtn) launchBtn.insertAdjacentHTML('beforebegin', connectBtnHtml);
         else navActions.insertAdjacentHTML('afterbegin', connectBtnHtml);
       }
-      initVaultManager();
+      initVaultWeb3Client();
     });
 
-    function initVaultManager() {
-      const EXTENSION_ID = 'jfhaclclifggggclkpeakpgddohpdbmm';
-      const STORE_URL = `https://chromewebstore.google.com/detail/luxa-vault-%E2%80%94-spiders-nest/${EXTENSION_ID}`;
-      const BACKEND_API = 'https://luxaecosystem.alwaysdata.net/api';
-
+    function initVaultWeb3Client() {
       const connectBtn = document.getElementById('btnConnectVault');
       const label = document.getElementById('connectVaultLabel');
-      const modal = document.getElementById('luxaModalBackdrop');
-      const modalClose = document.getElementById('modalCloseBtn');
-      const modalBody = document.getElementById('modalBody');
-      const modalTitle = document.getElementById('modalTitle');
+      const modalOverlay = document.getElementById('luxa-web3-modal');
+      const modalTitle = document.getElementById('web3ModalTitle');
+      const modalBody = document.getElementById('web3ModalBody');
+      const btnClose = document.getElementById('btnWeb3ModalClose');
+      const backendApi = 'https://luxaecosystem.alwaysdata.net/api';
 
-      if (!connectBtn || !modal) return;
+      if (!connectBtn || !label || !modalOverlay) return;
 
-      modalClose.onclick = () => modal.classList.remove('is-open');
-      modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('is-open'); };
+      let activeAddress = sessionStorage.getItem('luxa_connected_address') || null;
+
+      function escapeHtml(value) {
+        return String(value || '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+      }
 
       function openModal(title, htmlContent) {
-        modalTitle.innerHTML = title;
+        modalTitle.textContent = title;
         modalBody.innerHTML = htmlContent;
-        modal.classList.add('is-open');
+        modalOverlay.style.display = 'flex';
       }
 
-      function showInstallModal() {
-        openModal(
-          `<i class="fas fa-exclamation-triangle" style="color:#FFD700;"></i> Extension Required`,
-          `
-          <div style="text-align:center; padding:10px 0;">
-            <i class="fas fa-spider" style="font-size:42px; color:var(--cyan); margin-bottom:14px;"></i>
-            <p style="font-size:14px; line-height:1.6; color:#cbd5e1; margin-bottom:20px;">
-              <strong>LUXA Vault — Spider's Nest</strong> is not detected.<br>
-              To securely anchor your sovereign account without sharing private keys, please install the official Chrome extension.
-            </p>
-            <a href="${STORE_URL}" target="_blank" rel="noopener noreferrer" class="modal-btn-action btn-install">
-              <i class="fab fa-chrome"></i> Install from Chrome Web Store
-            </a>
-          </div>
-          `
-        );
-      }
+      function closeModal() { modalOverlay.style.display = 'none'; }
 
-      async function showAccountModal(address) {
-        openModal(
-          `<i class="fas fa-shield-alt" style="color:var(--green);"></i> Sovereign Account`,
-          `<div style="text-align:center; padding:20px;"><i class="fas fa-spinner fa-spin"></i> Loading secure profile...</div>`
-        );
+      if (btnClose) btnClose.onclick = closeModal;
+      modalOverlay.onclick = event => { if (event.target === modalOverlay) closeModal(); };
 
-        let profile = { username: 'Sovereign Pioneer', photoUrl: null, type: 'Native' };
+      async function updateAccountUI(address) {
+        activeAddress = address;
+        sessionStorage.setItem('luxa_connected_address', address);
+        const shortAddress = address.slice(0, 8) + '...' + address.slice(-4);
+        let username = shortAddress;
+        let photoUrl = null;
+
         try {
-          const res = await fetch(`${BACKEND_API}/ecosystem/wallet/profile/${encodeURIComponent(address)}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (data.user) {
-              profile = {
-                username: data.user.username || data.user.fullName || 'LUXA Member',
-                photoUrl: data.user.photoUrl || null,
-                type: data.user.telegramId ? 'Telegram Verified' : 'Registered Account'
-              };
-            }
+          const response = await fetch(`${backendApi}/ecosystem/wallet/profile/${encodeURIComponent(address)}`);
+          const data = await response.json();
+          if (data.success && data.user) {
+            username = data.user.username ? `@${data.user.username}` : (data.user.fullName || shortAddress);
+            photoUrl = data.user.photoUrl || null;
           }
         } catch (_) {}
 
-        let balanceLuxa = '0.0000 LUXA';
-        try {
-          const bRes = await fetch(`${BACKEND_API}/ecosystem/chain/balances-public/${encodeURIComponent(address)}`);
-          if (bRes.ok) {
-            const bData = await bRes.json();
-            const found = bData.balances?.find(b => b.denom === 'uluxa');
-            if (found) balanceLuxa = (Number(found.amount) / 1000000).toFixed(4) + ' LUXA';
-          }
-        } catch (_) {}
-
-        const avatarSrc = escapeHtml(profile.photoUrl || 'assets/images/logoluxa.png');
-        const safeAddress = escapeHtml(address);
-        modalBody.innerHTML = `
-          <div class="vault-user-badge">
-            <img src="${avatarSrc}" alt="Avatar" class="vault-user-avatar" onerror="this.src='assets/images/logoluxa.png';">
-            <div class="vault-user-meta">
-              <h4>${escapeHtml(profile.username)} <i class="fas fa-check-circle" style="color:var(--cyan); font-size:12px;"></i></h4>
-              <span>${escapeHtml(profile.type)}</span>
-            </div>
-          </div>
-
-          <div class="vault-stats-grid">
-            <div class="vault-stat-box"><label>On-Chain Balance</label><strong>${escapeHtml(balanceLuxa)}</strong></div>
-            <div class="vault-stat-box"><label>Ledger Network</label><strong>luxa-1</strong></div>
-          </div>
-
-          <div style="font-size:11px; margin-bottom:18px;">
-            <span style="color:#94a3b8;">Address:</span>
-            <div style="font-family:'JetBrains Mono',monospace; color:var(--cyan); word-break:break-all; margin-top:3px;">${safeAddress}</div>
-          </div>
-
-          <div style="display:flex; gap:10px;">
-            <button type="button" class="modal-btn-action" id="modalInspectBtn" style="background:rgba(0,255,204,0.15); border:1px solid var(--cyan); color:var(--cyan);">
-              <i class="fas fa-search"></i> Inspect Ledger
-            </button>
-            <button type="button" class="modal-btn-action btn-disconnect" id="modalDisconnectBtn">
-              <i class="fas fa-sign-out-alt"></i> Disconnect
-            </button>
-          </div>
-        `;
-
-        document.getElementById('modalInspectBtn').onclick = () => {
-          if (window.LuxaExplorer && typeof window.LuxaExplorer.inspect === 'function') window.LuxaExplorer.inspect(address);
-          modal.classList.remove('is-open');
-        };
-        document.getElementById('modalDisconnectBtn').onclick = () => {
-          disconnectWallet();
-          modal.classList.remove('is-open');
-        };
-      }
-
-      function setUIConnected(address) {
-        sessionStorage.setItem('luxa_active_addr', address);
-        label.textContent = address.slice(0, 8) + '...' + address.slice(-4);
+        label.textContent = username;
+        if (photoUrl) {
+          connectBtn.innerHTML = `<img src="${escapeHtml(photoUrl)}" alt="" style="width:18px;height:18px;border-radius:50%;border:1px solid #00FFCC;object-fit:cover;"> <span id="connectVaultLabel">${escapeHtml(username)}</span>`;
+        }
         connectBtn.classList.add('is-connected');
       }
 
-      function disconnectWallet() {
-        sessionStorage.removeItem('luxa_active_addr');
-        label.textContent = 'Connect Vault';
+      function setDisconnectedUI() {
+        activeAddress = null;
+        sessionStorage.removeItem('luxa_connected_address');
+        connectBtn.innerHTML = '<i class="fas fa-spider"></i> <span id="connectVaultLabel">Connect Vault</span>';
         connectBtn.classList.remove('is-connected');
-        if (window.LuxaExplorer && typeof window.LuxaExplorer.resetView === 'function') window.LuxaExplorer.resetView();
       }
 
       connectBtn.onclick = async () => {
-        const active = sessionStorage.getItem('luxa_active_addr');
-        if (active) {
-          showAccountModal(active);
+        if (activeAddress) {
+          let profile = { username: 'LUXA Miner', telegramId: 'N/A', avatar: null };
+          try {
+            const response = await fetch(`${backendApi}/ecosystem/wallet/profile/${encodeURIComponent(activeAddress)}`);
+            const data = await response.json();
+            if (data.success && data.user) {
+              profile.username = data.user.username ? `@${data.user.username}` : (data.user.fullName || 'LUXA Member');
+              profile.telegramId = data.user.telegramId || 'Local Node';
+              profile.avatar = data.user.photoUrl || null;
+            }
+          } catch (_) {}
+
+          const safeUsername = escapeHtml(profile.username);
+          const safeTelegramId = escapeHtml(profile.telegramId);
+          const safeAddress = escapeHtml(activeAddress);
+          const avatarHtml = profile.avatar
+            ? `<img src="${escapeHtml(profile.avatar)}" class="modal-user-avatar" alt="User">`
+            : `<div class="modal-user-avatar">${escapeHtml(profile.username.charAt(0).toUpperCase())}</div>`;
+
+          openModal('Vault Session Active', `
+            <div class="modal-user-card">
+              ${avatarHtml}
+              <div class="modal-user-info">
+                <span style="font-weight:700;font-size:14px;color:#fff;">${safeUsername}</span>
+                <span style="font-size:11px;color:#64748b;font-family:monospace;">Telegram ID: ${safeTelegramId}</span>
+                <span style="font-size:11px;color:#00FFCC;font-family:monospace;word-break:break-all;">${safeAddress}</span>
+              </div>
+            </div>
+            <div class="modal-btn-row">
+              <button type="button" class="btn-modal-action btn-modal-inspect" id="btnModalInspect"><i class="fas fa-search"></i> Inspect Ledger</button>
+              <button type="button" class="btn-modal-action btn-modal-disconnect" id="btnModalDisconnect"><i class="fas fa-power-off"></i> Disconnect</button>
+            </div>
+          `);
+
+          document.getElementById('btnModalInspect').onclick = () => {
+            closeModal();
+            if (window.LuxaExplorer && typeof window.LuxaExplorer.inspect === 'function') window.LuxaExplorer.inspect(activeAddress);
+          };
+          document.getElementById('btnModalDisconnect').onclick = () => { closeModal(); setDisconnectedUI(); };
           return;
         }
 
         if (!window.luxa) {
-          showInstallModal();
+          openModal('LUXA Vault Required', `
+            <div style="text-align:center;padding:10px 0;">
+              <div style="font-size:38px;margin-bottom:12px;">&#128737;</div>
+              <p style="font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:14px;">The sovereign extension <b>LUXA Vault — Spider's Nest</b> was not detected on this browser. Please install the extension to securely sign ledger requests locally.</p>
+              <a href="https://luxaecosystem.xyz" target="_blank" rel="noopener noreferrer" class="btn btn-modal-install"><i class="fas fa-download"></i> Install LUXA Vault Extension</a>
+            </div>
+          `);
           return;
         }
 
         try {
-          label.textContent = 'Connecting...';
-          const conn = await window.luxa.connect();
+          const connection = await window.luxa.connect();
           const key = await window.luxa.getKey();
-          const address = (key && key.address) ? key.address : conn.address;
-
+          const address = key && key.address ? key.address : connection.address;
           if (address) {
-            setUIConnected(address);
+            await updateAccountUI(address);
             if (window.LuxaExplorer && typeof window.LuxaExplorer.inspect === 'function') window.LuxaExplorer.inspect(address);
           }
-        } catch (err) {
-          alert('Authorization failed: ' + err.message);
-          disconnectWallet();
+        } catch (error) {
+          openModal('Connection Rejected', `<p style="color:#ef4444;font-size:12.5px;">${escapeHtml(error.message || 'The connection was denied by the user.')}</p>`);
+          setDisconnectedUI();
         }
       };
 
-      const saved = sessionStorage.getItem('luxa_active_addr');
-      if (saved && window.luxa) {
-        window.luxa.getKey().then(k => {
-          if (k && k.address === saved) setUIConnected(saved);
-          else disconnectWallet();
-        }).catch(() => disconnectWallet());
+      async function restoreSession() {
+        if (window.luxa && activeAddress) {
+          try {
+            const key = await window.luxa.getKey();
+            if (key && key.address) await updateAccountUI(key.address);
+            else setDisconnectedUI();
+          } catch (_) { setDisconnectedUI(); }
+        }
       }
 
-      window.addEventListener('luxa#accountChanged', (e) => {
-        const newAddr = e.detail?.address;
-        if (newAddr) {
-          setUIConnected(newAddr);
-          if (window.LuxaExplorer) window.LuxaExplorer.inspect(newAddr);
-        } else disconnectWallet();
-      });
-
-      function escapeHtml(str) {
-        return String(str || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-      }
+      window.addEventListener('luxa#initialized', restoreSession);
+      setTimeout(restoreSession, 600);
     }
   </script>
 </body>
