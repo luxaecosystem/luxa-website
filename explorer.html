@@ -446,7 +446,26 @@
             if (window.LuxaExplorer && typeof window.LuxaExplorer.inspect === 'function') window.LuxaExplorer.inspect(address);
           }
         } catch (error) {
-          openModal('Connection Rejected', `<p style="color:#ef4444;font-size:12.5px;">${escapeHtml(error.message || 'The connection was denied by the user.')}</p>`);
+          const message = error.message || '';
+          let friendlyNotice = escapeHtml(message || 'The connection was denied by the user.');
+
+          if (message.includes('Unlock or import') || message.includes('locked') || message.includes('No wallet')) {
+            friendlyNotice = 'Open the <b>LUXA Vault</b> extension, unlock it with your PIN (or import your 24 words), and then click <b>Connect Vault</b> again.';
+          }
+
+          openModal(
+            'Vault Action Required',
+            `
+            <div style="text-align:center; padding:10px 0;">
+              <div style="display:flex; justify-content:center; margin-bottom:14px;">
+                <img src="assets/images/lock.png" alt="Vault Locked" style="width:68px; height:68px; object-fit:contain; filter:drop-shadow(0 0 16px rgba(0,255,204,0.3));" onerror="this.onerror=null; this.src='assets/images/logoluxa.png';">
+              </div>
+              <p style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:8px;">
+                ${friendlyNotice}
+              </p>
+            </div>
+            `
+          );
           setDisconnectedUI();
         }
       };
