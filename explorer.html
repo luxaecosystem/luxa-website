@@ -416,8 +416,10 @@
         if (!window.luxa) {
           openModal('LUXA Vault Required', `
             <div style="text-align:center;padding:10px 0;">
-              <div style="font-size:38px;margin-bottom:12px;">&#128737;</div>
-              <p style="font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:14px;">The sovereign extension <b>LUXA Vault — Spider's Nest</b> was not detected on this browser. Please install the extension to securely sign ledger requests locally.</p>
+              <div style="display:flex;justify-content:center;margin-bottom:16px;">
+                <img src="assets/images/logoluxa.png" alt="LUXA Vault" style="width:72px;height:72px;border-radius:18px;border:2px solid var(--cyan);box-shadow:0 0 20px rgba(0,255,204,0.35);object-fit:contain;padding:6px;background:#080c1f;">
+              </div>
+              <p style="font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:16px;">The sovereign extension <b>LUXA Vault — Spider's Nest</b> was not detected on this browser. Please install the extension to securely sign ledger requests locally.</p>
               <a href="https://luxaecosystem.xyz" target="_blank" rel="noopener noreferrer" class="btn btn-modal-install"><i class="fas fa-download"></i> Install LUXA Vault Extension</a>
             </div>
           `);
