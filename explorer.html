@@ -14,6 +14,7 @@
 
   <!-- CSS del sito -->
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/vault-modal.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -268,120 +269,207 @@
   <script src="js/script.js"></script>
   <script src="js/explorer-pro.js"></script>
 
-  <!-- LOGICA DI CONNESSIONE WEB3 CON L'ESTENSIONE CHROME (window.luxa)
-       Il pulsante "Connect Vault" non fa parte della nav condivisa (è specifico
-       di questa pagina), quindi viene iniettato in .nav-actions subito dopo che
-       la nav è stata caricata da include.js (evento luxa:components-ready). -->
+  <!-- Modale Vault Info / Installazione (Iniettato dinamicamente) -->
+  <div id="luxaModalBackdrop" class="luxa-modal-backdrop">
+    <div class="luxa-modal-card">
+      <div class="luxa-modal-header">
+        <h3 id="modalTitle"><i class="fas fa-spider"></i> LUXA Sovereign Vault</h3>
+        <button type="button" class="luxa-modal-close" id="modalCloseBtn" aria-label="Close modal">&times;</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
   <script>
     document.addEventListener('luxa:components-ready', () => {
       const navActions = document.querySelector('#navbar .nav-actions');
       if (navActions && !document.getElementById('btnConnectVault')) {
         const launchBtn = navActions.querySelector('a.btn-primary');
-        const connectBtnHtml = `<button type="button" class="btn-connect-vault" id="btnConnectVault"><i class="fas fa-spider"></i> <span id="connectVaultLabel">Connect Vault</span></button>`;
-        if (launchBtn) {
-          launchBtn.insertAdjacentHTML('beforebegin', connectBtnHtml);
-        } else {
-          navActions.insertAdjacentHTML('afterbegin', connectBtnHtml);
-        }
+        const connectBtnHtml = `
+          <button type="button" class="btn-connect-vault" id="btnConnectVault">
+            <i class="fas fa-spider"></i>
+            <span id="connectVaultLabel">Connect Vault</span>
+          </button>
+        `;
+        if (launchBtn) launchBtn.insertAdjacentHTML('beforebegin', connectBtnHtml);
+        else navActions.insertAdjacentHTML('afterbegin', connectBtnHtml);
       }
-      initVaultConnect();
+      initVaultManager();
     });
 
-    function initVaultConnect() {
+    function initVaultManager() {
+      const EXTENSION_ID = 'jfhaclclifggggclkpeakpgddohpdbmm';
+      const STORE_URL = `https://chromewebstore.google.com/detail/luxa-vault-%E2%80%94-spiders-nest/${EXTENSION_ID}`;
+      const BACKEND_API = 'https://luxaecosystem.alwaysdata.net/api';
+
       const connectBtn = document.getElementById('btnConnectVault');
       const label = document.getElementById('connectVaultLabel');
-      if (!connectBtn || !label) return;
+      const modal = document.getElementById('luxaModalBackdrop');
+      const modalClose = document.getElementById('modalCloseBtn');
+      const modalBody = document.getElementById('modalBody');
+      const modalTitle = document.getElementById('modalTitle');
 
-      let currentAddress = localStorage.getItem('luxa_connected_address') || null;
+      if (!connectBtn || !modal) return;
 
-      function updateUIConnected(address) {
-        currentAddress = address;
-        localStorage.setItem('luxa_connected_address', address);
-        const short = address.slice(0, 8) + '...' + address.slice(-4);
-        label.textContent = short;
-        connectBtn.classList.add('is-connected');
-        connectBtn.title = 'Click to inspect your sovereign account in explorer';
+      modalClose.onclick = () => modal.classList.remove('is-open');
+      modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('is-open'); };
+
+      function openModal(title, htmlContent) {
+        modalTitle.innerHTML = title;
+        modalBody.innerHTML = htmlContent;
+        modal.classList.add('is-open');
       }
 
-      function updateUIDisconnected() {
-        currentAddress = null;
-        localStorage.removeItem('luxa_connected_address');
+      function showInstallModal() {
+        openModal(
+          `<i class="fas fa-exclamation-triangle" style="color:#FFD700;"></i> Extension Required`,
+          `
+          <div style="text-align:center; padding:10px 0;">
+            <i class="fas fa-spider" style="font-size:42px; color:var(--cyan); margin-bottom:14px;"></i>
+            <p style="font-size:14px; line-height:1.6; color:#cbd5e1; margin-bottom:20px;">
+              <strong>LUXA Vault — Spider's Nest</strong> is not detected.<br>
+              To securely anchor your sovereign account without sharing private keys, please install the official Chrome extension.
+            </p>
+            <a href="${STORE_URL}" target="_blank" rel="noopener noreferrer" class="modal-btn-action btn-install">
+              <i class="fab fa-chrome"></i> Install from Chrome Web Store
+            </a>
+          </div>
+          `
+        );
+      }
+
+      async function showAccountModal(address) {
+        openModal(
+          `<i class="fas fa-shield-alt" style="color:var(--green);"></i> Sovereign Account`,
+          `<div style="text-align:center; padding:20px;"><i class="fas fa-spinner fa-spin"></i> Loading secure profile...</div>`
+        );
+
+        let profile = { username: 'Sovereign Pioneer', photoUrl: null, type: 'Native' };
+        try {
+          const res = await fetch(`${BACKEND_API}/ecosystem/wallet/profile/${encodeURIComponent(address)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.user) {
+              profile = {
+                username: data.user.username || data.user.fullName || 'LUXA Member',
+                photoUrl: data.user.photoUrl || null,
+                type: data.user.telegramId ? 'Telegram Verified' : 'Registered Account'
+              };
+            }
+          }
+        } catch (_) {}
+
+        let balanceLuxa = '0.0000 LUXA';
+        try {
+          const bRes = await fetch(`${BACKEND_API}/ecosystem/chain/balances-public/${encodeURIComponent(address)}`);
+          if (bRes.ok) {
+            const bData = await bRes.json();
+            const found = bData.balances?.find(b => b.denom === 'uluxa');
+            if (found) balanceLuxa = (Number(found.amount) / 1000000).toFixed(4) + ' LUXA';
+          }
+        } catch (_) {}
+
+        const avatarSrc = escapeHtml(profile.photoUrl || 'assets/images/logoluxa.png');
+        const safeAddress = escapeHtml(address);
+        modalBody.innerHTML = `
+          <div class="vault-user-badge">
+            <img src="${avatarSrc}" alt="Avatar" class="vault-user-avatar" onerror="this.src='assets/images/logoluxa.png';">
+            <div class="vault-user-meta">
+              <h4>${escapeHtml(profile.username)} <i class="fas fa-check-circle" style="color:var(--cyan); font-size:12px;"></i></h4>
+              <span>${escapeHtml(profile.type)}</span>
+            </div>
+          </div>
+
+          <div class="vault-stats-grid">
+            <div class="vault-stat-box"><label>On-Chain Balance</label><strong>${escapeHtml(balanceLuxa)}</strong></div>
+            <div class="vault-stat-box"><label>Ledger Network</label><strong>luxa-1</strong></div>
+          </div>
+
+          <div style="font-size:11px; margin-bottom:18px;">
+            <span style="color:#94a3b8;">Address:</span>
+            <div style="font-family:'JetBrains Mono',monospace; color:var(--cyan); word-break:break-all; margin-top:3px;">${safeAddress}</div>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="modal-btn-action" id="modalInspectBtn" style="background:rgba(0,255,204,0.15); border:1px solid var(--cyan); color:var(--cyan);">
+              <i class="fas fa-search"></i> Inspect Ledger
+            </button>
+            <button type="button" class="modal-btn-action btn-disconnect" id="modalDisconnectBtn">
+              <i class="fas fa-sign-out-alt"></i> Disconnect
+            </button>
+          </div>
+        `;
+
+        document.getElementById('modalInspectBtn').onclick = () => {
+          if (window.LuxaExplorer && typeof window.LuxaExplorer.inspect === 'function') window.LuxaExplorer.inspect(address);
+          modal.classList.remove('is-open');
+        };
+        document.getElementById('modalDisconnectBtn').onclick = () => {
+          disconnectWallet();
+          modal.classList.remove('is-open');
+        };
+      }
+
+      function setUIConnected(address) {
+        sessionStorage.setItem('luxa_active_addr', address);
+        label.textContent = address.slice(0, 8) + '...' + address.slice(-4);
+        connectBtn.classList.add('is-connected');
+      }
+
+      function disconnectWallet() {
+        sessionStorage.removeItem('luxa_active_addr');
         label.textContent = 'Connect Vault';
         connectBtn.classList.remove('is-connected');
-        connectBtn.title = 'Connect LUXA Vault — Spider\'s Nest';
+        if (window.LuxaExplorer && typeof window.LuxaExplorer.resetView === 'function') window.LuxaExplorer.resetView();
       }
 
-      async function handleConnectClick() {
-        // Se è già connesso, cliccando sul pulsante esamina direttamente l'account nell'Explorer
-        if (currentAddress) {
-          const action = confirm(
-            "Connected Account:\n" + currentAddress + "\n\n" +
-            "Click [OK] to inspect your account in Explorer.\n" +
-            "Click [Cancel] to disconnect."
-          );
-          if (action) {
-            if (window.LuxaExplorer && typeof window.LuxaExplorer.inspect === 'function') {
-              window.LuxaExplorer.inspect(currentAddress);
-            }
-          } else {
-            updateUIDisconnected();
-          }
+      connectBtn.onclick = async () => {
+        const active = sessionStorage.getItem('luxa_active_addr');
+        if (active) {
+          showAccountModal(active);
           return;
         }
 
-        // Verifica se l'estensione Chrome è installata
         if (!window.luxa) {
-          alert(
-            "🕸️ LUXA Vault — Spider's Nest not detected!\n\n" +
-            "Please install or enable the official LUXA Chrome extension to connect."
-          );
+          showInstallModal();
           return;
         }
 
         try {
-          label.textContent = "Connecting... ⏳";
-
-          // 1. Handshake di connessione
+          label.textContent = 'Connecting...';
           const conn = await window.luxa.connect();
-
-          // 2. Lettura chiave pubblica/indirizzo attivo
           const key = await window.luxa.getKey();
-          const activeAddr = (key && key.address) ? key.address : conn.address;
+          const address = (key && key.address) ? key.address : conn.address;
 
-          if (activeAddr) {
-            updateUIConnected(activeAddr);
-            // Mostra subito l'account nell'explorer
-            if (window.LuxaExplorer && typeof window.LuxaExplorer.inspect === 'function') {
-              window.LuxaExplorer.inspect(activeAddr);
-            }
-          } else {
-            updateUIDisconnected();
+          if (address) {
+            setUIConnected(address);
+            if (window.LuxaExplorer && typeof window.LuxaExplorer.inspect === 'function') window.LuxaExplorer.inspect(address);
           }
         } catch (err) {
-          console.error("[Web3 Connect Error]:", err);
-          alert("Connection refused: " + err.message);
-          updateUIDisconnected();
+          alert('Authorization failed: ' + err.message);
+          disconnectWallet();
         }
+      };
+
+      const saved = sessionStorage.getItem('luxa_active_addr');
+      if (saved && window.luxa) {
+        window.luxa.getKey().then(k => {
+          if (k && k.address === saved) setUIConnected(saved);
+          else disconnectWallet();
+        }).catch(() => disconnectWallet());
       }
 
-      connectBtn.addEventListener('click', handleConnectClick);
+      window.addEventListener('luxa#accountChanged', (e) => {
+        const newAddr = e.detail?.address;
+        if (newAddr) {
+          setUIConnected(newAddr);
+          if (window.LuxaExplorer) window.LuxaExplorer.inspect(newAddr);
+        } else disconnectWallet();
+      });
 
-      // Auto-reconnect se era già approvato
-      async function checkAutoConnect() {
-        if (window.luxa && currentAddress) {
-          try {
-            const key = await window.luxa.getKey();
-            if (key && key.address) {
-              updateUIConnected(key.address);
-            }
-          } catch (_) {
-            updateUIDisconnected();
-          }
-        }
+      function escapeHtml(str) {
+        return String(str || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
       }
-
-      window.addEventListener('luxa#initialized', checkAutoConnect);
-      setTimeout(checkAutoConnect, 800);
     }
   </script>
 </body>

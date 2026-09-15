@@ -94,11 +94,51 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
 .btn-large { padding: 14px 26px; font-size: .88rem; }
 .btn-xlarge { padding: 16px 30px; font-size: .92rem; }
 
+/* Pulsante Web3 Connect Vault Navbar */
+.btn-connect-vault {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: 30px;
+    border: 1.5px solid var(--secondary);
+    background: rgba(34, 211, 238, 0.08);
+    color: var(--secondary);
+    font: 700 .82rem var(--font-display);
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+.btn-connect-vault i { font-size: 0.95rem; }
+.btn-connect-vault:hover {
+    background: rgba(34, 211, 238, 0.2);
+    box-shadow: 0 0 16px rgba(34, 211, 238, 0.35);
+    color: #fff;
+    transform: translateY(-2px);
+}
+.btn-connect-vault.is-connected {
+    background: var(--bg-card);
+    border-color: #4ade80;
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    font-size: .78rem;
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.15);
+}
+.btn-connect-vault.is-connected::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    background: #4ade80;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #4ade80;
+}
+
 .mobile-menu-toggle { display: none; width: 38px; height: 38px; border: 1px solid var(--border); background: transparent; border-radius: 6px; cursor: pointer; }
 .mobile-menu-toggle span { display: block; width: 18px; height: 2px; margin: 4px auto; background: var(--text); transition: var(--transition); }
 .mobile-menu { display: none; }
 
-/* Hero Section (Reattiva, No Glow, Centrata) */
+/* Hero Section */
 #hero { 
     min-height: 85vh; 
     display: flex; 
@@ -139,7 +179,6 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
 }
 .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 4px rgba(74,222,128,.15); }
 
-/* Titolo Reattivo */
 .hero-title { 
     font-size: clamp(2.2rem, 5.5vw, 4.2rem); 
     letter-spacing: -.03em; 
@@ -395,3 +434,168 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
 .mono { font-family: 'Courier New', monospace; color: var(--secondary); }
 .badge-ok { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: .64rem; font-weight: 700; background: rgba(74,222,128,0.12); color: #4ade80; }
 @media (max-width: 760px) { .explorer-stats { grid-template-columns: repeat(2, 1fr); } .ex-table th:nth-child(3), .ex-table td:nth-child(3) { display: none; } }
+
+/* ==========================================================================
+   MODAL POP-UP WEB3 CONNECT & ACCOUNT OVERVIEW (LUXA VAULT INTEGRATION)
+   ========================================================================== */
+.luxa-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 7, 17, 0.88);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--transition);
+}
+.luxa-modal-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+.luxa-modal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: min(440px, calc(100% - 32px));
+    padding: 26px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(168, 85, 247, 0.15);
+    color: var(--text);
+    transform: translateY(20px) scale(0.98);
+    transition: transform var(--transition);
+}
+.luxa-modal-backdrop.is-open .luxa-modal-card {
+    transform: translateY(0) scale(1);
+}
+.luxa-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+}
+.luxa-modal-header h3 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.luxa-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-size: 1.4rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: var(--transition);
+}
+.luxa-modal-close:hover {
+    color: var(--primary-light);
+    transform: scale(1.1);
+}
+
+/* Profilo Utente Connesso (Telegram / Google / Native) */
+.vault-user-badge {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: linear-gradient(145deg, rgba(27,24,48,.8), rgba(14,13,28,.7));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+}
+.vault-user-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--secondary);
+    background: var(--bg);
+}
+.vault-user-meta h4 {
+    font-size: .92rem;
+    color: var(--text);
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.vault-user-meta span {
+    font-size: .72rem;
+    color: var(--primary-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+/* Griglia Metriche del Vault */
+.vault-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+.vault-stat-box {
+    background: rgba(8, 7, 17, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+}
+.vault-stat-box label {
+    display: block;
+    font-size: .65rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 4px;
+}
+.vault-stat-box strong {
+    font-family: 'Courier New', monospace;
+    font-size: .95rem;
+    color: var(--secondary);
+}
+
+/* Azioni Pulsanti Modale */
+.modal-btn-action {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font: 700 .82rem var(--font-body);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--transition);
+    border: 1px solid transparent;
+    text-decoration: none;
+}
+.modal-btn-action:hover {
+    transform: translateY(-2px);
+}
+.btn-disconnect {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #ef4444;
+}
+.btn-disconnect:hover {
+    background: #ef4444;
+    color: #fff;
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.35);
+}
+.btn-install {
+    background: var(--gradient-1);
+    color: #080711;
+    font-weight: 800;
+}
+.btn-install:hover {
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+    color: #080711;
+}
