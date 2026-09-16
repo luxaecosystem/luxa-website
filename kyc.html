@@ -1,1 +1,139 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
+    <link rel="canonical" href="https://luxaecosystem.xyz/kyc.html">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="LUXA Ecosystem">
+    <meta property="og:title" content="KYC & Identity Verification — LUXA Ecosystem">
+    <meta property="og:description" content="Identity attestation, Anti-Sybil protection and mainnet migration requirements for LUXA on-chain settlements.">
+    <meta property="og:url" content="https://luxaecosystem.xyz/kyc.html">
+    <meta property="og:image" content="https://luxaecosystem.xyz/assets/images/logoluxa.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@luxatoken">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "KYC & Identity Attestation Guidelines",
+      "url": "https://luxaecosystem.xyz/kyc.html",
+      "publisher": {
+        "@type": "Organization",
+        "name": "LUXA Ecosystem SARL",
+        "url": "https://luxaecosystem.xyz/",
+        "logo": "https://luxaecosystem.xyz/assets/images/logoluxa.png"
+      }
+    }
+    </script>
+
+    <title>KYC & Identity Verification — LUXA Ecosystem</title>
+    <meta name="description" content="Official guidelines on KYC requirements, Sumsub verification, anti-Sybil checks, and migrating mined balances to sovereign luxa-1 vaults.">
+</head>
+<body>
+
+    <!-- NAV + MOBILE MENU (componente condiviso) -->
+    <div data-include="nav"></div>
+
+    <section class="legal-hero">
+        <span class="section-tag">Compliance &amp; Security</span>
+        <h1>Identity Verification (KYC)</h1>
+        <div class="last-updated">Protocol Framework: September 16, 2026 • luxa-1</div>
+    </section>
+
+    <section class="section" style="padding-top: 10px;">
+        <div class="container">
+            <div class="legal-card">
+                <h2>1. Purpose of Identity Attestation</h2>
+                <p>
+                    The LUXA Ecosystem distributes real economic value via passive in-app mining, community airdrops, and block rewards. To protect genuine community members and prevent automated bot swarms, click-farms, and Sybil attackers from depleting protocol liquidity, all balance migrations from the off-chain mining ledger to self-custodial on-chain Vaults require verification.
+                </p>
+
+                <div class="legal-notice">
+                    <strong>Notice on Migration:</strong> Early test claims inside the Telegram Mini App were unlocked strictly for sandbox validation. Full production settlement and unrestricted Cosmos L1 asset transfers require an approved KYC attestation bound to your sovereign <code>luxa1...</code> address.
+                </div>
+
+                <h2>2. Verification Infrastructure (Sumsub Powered)</h2>
+                <p>
+                    LUXA Ecosystem SARL partners with <strong>Sumsub</strong>, a global compliance leader, to deliver secure, bank-grade biometric validation directly inside our Web3 workflows.
+                </p>
+                <ul>
+                    <li><strong>Document Authentication:</strong> Automated checks for national identity cards, international passports, or valid driver's licenses.</li>
+                    <li><strong>3D Biometric Liveness:</strong> Fast, camera-based facial geometry check verifying that the claimant is a real living human.</li>
+                    <li><strong>Anti-Fraud Screening:</strong> Instant cross-checking against global watchlists, sanctioned jurisdictions, and duplicate account hashes.</li>
+                </ul>
+
+                <h2>3. The 3-Step Verification Flow</h2>
+                <div class="about-grid" style="margin: 20px 0;">
+                    <div class="about-card" style="padding: 20px;">
+                        <div class="about-icon" style="color: var(--secondary); font-size: 1.5rem;"><i class="fas fa-wallet"></i></div>
+                        <h3 style="font-size: 1.1rem;">1. Connect Vault</h3>
+                        <p style="font-size: 0.88rem;">Initialize your non-custodial Spider Vault with your 12-word recovery seed to derive your permanent Bech32 address.</p>
+                    </div>
+                    <div class="about-card" style="padding: 20px;">
+                        <div class="about-icon" style="color: var(--accent); font-size: 1.5rem;"><i class="fas fa-user-check"></i></div>
+                        <h3 style="font-size: 1.1rem;">2. Complete Sumsub Scan</h3>
+                        <p style="font-size: 0.88rem;">Open the in-app KYC Portal, capture your official ID, and complete the instant 3D selfie check.</p>
+                    </div>
+                    <div class="about-card" style="padding: 20px;">
+                        <div class="about-icon" style="color: #22c55e; font-size: 1.5rem;"><i class="fas fa-link"></i></div>
+                        <h3 style="font-size: 1.1rem;">3. Unlock On-Chain Bridge</h3>
+                        <p style="font-size: 0.88rem;">Once approved with a verified status, your account unlocks daily bridging of LUXA and SHARDS to the <code>luxa-1</code> chain.</p>
+                    </div>
+                </div>
+
+                <h2>4. Zero On-Chain Data Exposure (Privacy by Design)</h2>
+                <p>
+                    In full compliance with international data privacy legislation (GDPR and Moroccan Law No. 09-08), <strong>no personal identification documents, selfies, or legal names are ever stored or broadcast on the public blockchain</strong>.
+                </p>
+                <p>
+                    The protocol validator only records a zero-knowledge cryptographic signature confirming that address <code>luxa1...</code> is owned by an attested individual. Raw personal data remains securely encrypted off-chain within Sumsub’s certified vault infrastructure.
+                </p>
+
+                <h2>5. Eligibility and Requirements</h2>
+                <ul>
+                    <li>You must be at least 18 years of age.</li>
+                    <li>You must hold a valid government-issued photo ID (not expired).</li>
+                    <li>One person, one node: each legal identity may only be linked to a single master mining account. Multiple Telegram accounts attempting to verify with the same ID will be permanently flagged and forfeited.</li>
+                </ul>
+
+                <h2>6. Need Assistance with Verification?</h2>
+                <p>If you experience any document capture issues or require manual compliance review, reach out to our verification team:</p>
+                <div class="legal-contact">
+                    <p class="lbl">Compliance Desk</p>
+                    <p><a href="mailto:kyc@luxaecosystem.xyz">kyc@luxaecosystem.xyz</a> or open a ticket directly in the Mini App support center.</p>
+                </div>
+            </div>
+
+            <p class="legal-footer">
+                © 2026 LUXA Ecosystem. All rights reserved. • <a href="terms.html" style="color:var(--secondary);">Terms of Service</a> • <a href="privacy-policy.html" style="color:var(--secondary);">Privacy Policy</a> • <a href="index.html" style="color:var(--secondary);">Back to Home</a>
+            </p>
+        </div>
+    </section>
+
+    <!-- Static internal links for crawlers -->
+    <nav class="crawl-links" aria-label="Site links" style="max-width:1100px;margin:0 auto 40px;padding:0 20px;font-size:.8rem;color:var(--text-dim);display:flex;flex-wrap:wrap;gap:14px;justify-content:center;">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/explorer.html">Block Explorer</a>
+        <a href="/vault.html">LUXA Vault</a>
+        <a href="/insights.html">Insights</a>
+        <a href="/kyc.html">KYC Guidelines</a>
+        <a href="/terms.html">Terms of Service</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+    </nav>
+    <div data-include="footer"></div>
+
+    <script src="js/include.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
