@@ -81,11 +81,38 @@
   }
 
   // --- Parser Eventi Reali Cosmos SDK ---
+  function parseTokenAmount(rawValue) {
+    if (typeof rawValue !== 'string') return null;
+    const match = rawValue.match(/(-?\d+)([A-Za-z]+)/);
+    if (!match) return null;
+
+    const atomicAmount = parseInt(match[1], 10);
+    const denom = (match[2] || '').toLowerCase();
+    const decimals = 6;
+
+    if (!isNaN(atomicAmount)) {
+      let tokenName = 'LUXA';
+      if (denom === 'ushard' || denom === 'shard' || denom === 'shards') tokenName = 'SHARDS';
+      else if (denom === 'uluxa' || denom === 'luxa') tokenName = 'LUXA';
+      else tokenName = denom.toUpperCase();
+
+      return {
+        atomicAmount: atomicAmount,
+        tokenName: tokenName,
+        humanAmount: atomicAmount / Math.pow(10, decimals),
+        rawDenom: denom
+      };
+    }
+
+    return null;
+  }
+
   function parseCosmosEvents(events, rawTxB64) {
     events = events || [];
     const transfers = [];
     let nftId = null;
     let detectedFee = 0;
+    let feeToken = 'LUXA';
 
     for (let i = 0; i < events.length; i++) {
       const ev = events[i];
@@ -102,10 +129,18 @@
 
         if (k === 'sender' || k === 'spender') evSender = v;
         if (k === 'recipient' || k === 'receiver') evRecipient = v;
-        if (k === 'amount' && typeof v === 'string' && v.indexOf('uluxa') !== -1) evAmount = v;
-        if (k === 'fee' && typeof v === 'string' && v.indexOf('uluxa') !== -1) {
-          const num = parseInt(v.replace(/[^0-9]/g, ''), 10);
-          if (!isNaN(num)) detectedFee = num / 1000000;
+        if (k === 'amount' || k === 'amounts') {
+          const parsedAmount = parseTokenAmount(v);
+          if (parsedAmount && (parsedAmount.rawDenom === 'uluxa' || parsedAmount.rawDenom === 'ushard' || parsedAmount.rawDenom === 'luxa' || parsedAmount.rawDenom === 'shard')) {
+            evAmount = v;
+          }
+        }
+        if (k === 'fee' || k === 'gas') {
+          const parsedFee = parseTokenAmount(v);
+          if (parsedFee && (parsedFee.rawDenom === 'uluxa' || parsedFee.rawDenom === 'ushard')) {
+            detectedFee = parsedFee.humanAmount;
+            feeToken = parsedFee.tokenName;
+          }
         }
 
         if ((k === 'nft_id' || k === 'license_id' || k === 'nftKey') && !nftId) {
@@ -114,13 +149,14 @@
       }
 
       if (evType === 'transfer' && evAmount) {
-        const rawNum = parseInt(evAmount.replace(/[^0-9]/g, ''), 10);
-        if (!isNaN(rawNum)) {
+        const parsed = parseTokenAmount(evAmount);
+        if (parsed) {
           transfers.push({
             sender: evSender,
             recipient: evRecipient,
-            uAmount: rawNum,
-            luxa: rawNum / 1000000
+            uAmount: parsed.atomicAmount,
+            human: parsed.humanAmount,
+            tokenName: parsed.tokenName
           });
         }
       }
@@ -137,21 +173,23 @@
     let sender = 'luxa1...';
     let recipient = 'luxa1...';
     let amountStr = '0.0000 LUXA';
+    let amountToken = 'LUXA';
 
     if (transfers.length > 0) {
-      // Ordine decrescente: il trasferimento principale vince sempre
       transfers.sort(function (a, b) { return b.uAmount - a.uAmount; });
 
       const mainTx = transfers[0];
       if (isCleanAddress(mainTx.sender)) sender = mainTx.sender;
       if (isCleanAddress(mainTx.recipient)) recipient = mainTx.recipient;
 
-      amountStr = mainTx.luxa.toFixed(4) + ' LUXA';
+      amountToken = mainTx.tokenName || 'LUXA';
+      amountStr = mainTx.human.toFixed(4) + ' ' + amountToken;
 
       if (transfers.length > 1 && detectedFee === 0) {
         const minor = transfers[transfers.length - 1];
         if (minor.uAmount <= 5000) {
-          detectedFee = minor.luxa;
+          detectedFee = minor.human;
+          feeToken = minor.tokenName || 'LUXA';
         }
       }
     }
@@ -162,9 +200,10 @@
       sender: sender,
       recipient: recipient,
       amount: amountStr,
-      fee: detectedFee > 0 ? (detectedFee.toFixed(4) + ' LUXA') : '0 LUXA (Free)',
+      fee: detectedFee > 0 ? (detectedFee.toFixed(4) + ' ' + feeToken) : '0 LUXA (Free)',
       nftId: nftId,
-      isNft: isNft
+      isNft: isNft,
+      token: amountToken
     };
   }
 
@@ -310,6 +349,7 @@
   function renderTxCard(data) {
     const stage = document.getElementById('searchStage');
     const accent = data.isNft ? 'var(--gold)' : 'var(--cyan)';
+    const transferToken = data.token || 'LUXA';
 
     let visual = '';
     if (data.isNft) {
@@ -330,7 +370,7 @@
       '<div class="card-top">' +
       '<button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>' +
       '<span class="badge ' + (data.isNft ? 'badge-gold' : 'badge-cyan') + '">' +
-      (data.isNft ? 'SOVEREIGN LICENSE (#' + escapeHtml(data.nftId) + ')' : 'NATIVE TRANSFER (LUXA)') +
+      (data.isNft ? 'SOVEREIGN LICENSE (#' + escapeHtml(data.nftId) + ')' : 'NATIVE TRANSFER (' + escapeHtml(transferToken) + ')') +
       '</span>' +
       '<span class="badge ' + (data.isSuccess ? 'badge-ok' : 'badge-gold') + '">' +
       (data.isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED') +
