@@ -17,6 +17,9 @@
     <meta property="og:image" content="https://luxaecosystem.xyz/assets/images/logoluxa.png">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@luxatoken">
+    <meta name="twitter:title" content="LUXA Token — Sovereign Cosmos L1 Ecosystem">
+    <meta name="twitter:description" content="A sovereign Layer 1 blockchain with zero-barrier mining, Spider Wallet mesh and transparent shared wealth.">
+    <meta name="twitter:image" content="https://luxaecosystem.xyz/assets/images/logoluxa.png">
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +27,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script type="application/ld+json">
-    {"@context":"https://schema.org","@type":"Organization","name":"LUXA Ecosystem SARL","url":"https://luxaecosystem.xyz/","logo":"https://luxaecosystem.xyz/assets/images/logoluxa.png","email":"contact@luxaecosystem.xyz","founder":{"@type":"Person","name":"Yassine Ouaadil"},"sameAs":["https://t.me/luxatokenofficial","https://x.com/luxatoken","https://github.com/luxatokenofficial"]}
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "LUXA Ecosystem SARL",
+      "url": "https://luxaecosystem.xyz/",
+      "logo": "https://luxaecosystem.xyz/assets/images/logoluxa.png",
+      "email": "contact@luxaecosystem.xyz",
+      "founder": {
+        "@type": "Person",
+        "name": "Yassine Ouaadil"
+      },
+      "sameAs": [
+        "https://t.me/luxatokenofficial",
+        "https://x.com/luxatoken",
+        "https://github.com/luxatokenofficial"
+      ]
+    }
     </script>
 </head>
 <body>
@@ -37,7 +56,7 @@
         </div>
     </div>
 
-    <!-- NAV + MOBILE MENU (componente condiviso: partials/nav.html) -->
+    <!-- NAV + MOBILE MENU (shared component) -->
     <div data-include="nav"></div>
 
     <!-- Hero Section -->
@@ -60,7 +79,7 @@
                 <a href="https://t.me/LuxaToken_bot" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large">
                     <i class="fab fa-telegram"></i> <span>Start Mining Free</span>
                 </a>
-                <a href="https://chromewebstore.google.com/detail/luxa-vault-%E2%80%94-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-large">
+                <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-large">
                     <i class="fab fa-chrome"></i> <span>Install Chrome Extension</span>
                 </a>
                 <a href="explorer.html" class="btn btn-outline btn-large">
@@ -81,11 +100,11 @@
 
             <div class="hero-stats">
                 <div class="stat">
-                    <span class="stat-number live-stat" id="statMiners">Actif</span>
+                    <span class="stat-number live-stat" id="statMiners">Active</span>
                     <span class="stat-label">Miners Network</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-number live-stat" id="statCountries">Actif</span>
+                    <span class="stat-number live-stat" id="statCountries">220+</span>
                     <span class="stat-label">Global Access</span>
                 </div>
                 <div class="stat">
@@ -140,7 +159,7 @@
                     </p>
                 </div>
                 <div>
-                    <a href="https://chromewebstore.google.com/detail/luxa-vault-%E2%80%94-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600;">
+                    <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600;">
                         <i class="fab fa-chrome"></i> <span>Install on Chrome</span>
                     </a>
                 </div>
@@ -376,24 +395,45 @@
                 <h2>Mainnet On-Chain Migration &amp; KYC</h2>
                 <p>Ensuring compliance, protecting community wealth, and eliminating fraudulent multi-accounts before external market listings.</p>
             </div>
+
+            <!-- Global Verification Stats (Sumsub Powered) -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 30px;">
+                <div style="background: rgba(0,255,204,0.05); border: 1px solid rgba(0,255,204,0.25); border-radius: 12px; padding: 14px; text-align: center;">
+                    <div style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: #00FFCC;">220+</div>
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Countries Covered</div>
+                </div>
+                <div style="background: rgba(0,255,204,0.05); border: 1px solid rgba(0,255,204,0.25); border-radius: 12px; padding: 14px; text-align: center;">
+                    <div style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: #00FFCC;">14,000+</div>
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Supported ID Types</div>
+                </div>
+                <div style="background: rgba(0,255,204,0.05); border: 1px solid rgba(0,255,204,0.25); border-radius: 12px; padding: 14px; text-align: center;">
+                    <div style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: #00FFCC;">50+</div>
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Native Languages</div>
+                </div>
+                <div style="background: rgba(0,255,204,0.05); border: 1px solid rgba(0,255,204,0.25); border-radius: 12px; padding: 14px; text-align: center;">
+                    <div style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: #00FFCC;">AI Liveness</div>
+                    <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase;">Biometrics &amp; NFC</div>
+                </div>
+            </div>
+
             <div class="about-grid">
                 <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-id-card"></i></div>
+                    <div class="about-icon" style="color: var(--secondary);"><i class="fas fa-id-card"></i></div>
                     <h3>Mandatory Identity Check</h3>
                     <p>While social mining inside Telegram is free and open to everyone, migrating mined balances to full on-chain Mainnet circulation requires KYC verification.</p>
                 </div>
                 <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-robot"></i></div>
+                    <div class="about-icon" style="color: #ff5c7a;"><i class="fas fa-robot"></i></div>
                     <h3>Anti-Sybil Defense</h3>
                     <p>Automated bots, fake clickers, and duplicate accounts are systematically excluded from receiving verified payout certificates to preserve token value.</p>
                 </div>
                 <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-file-signature"></i></div>
+                    <div class="about-icon" style="color: #22c55e;"><i class="fas fa-file-signature"></i></div>
                     <h3>Verifiable Settlement Proof</h3>
                     <p>Each payout produces a verifiable document seal containing your Telegram ID, sender Treasury hash, and timestamped block height.</p>
                 </div>
                 <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-user-lock"></i></div>
+                    <div class="about-icon" style="color: #c084fc;"><i class="fas fa-user-lock"></i></div>
                     <h3>Strict Data Protection</h3>
                     <p>Identity records are processed strictly according to data privacy legislation and are never revealed or stored publicly on the open blockchain ledger.</p>
                 </div>
@@ -526,7 +566,7 @@
                     <a href="https://t.me/LuxaToken_bot" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-xlarge">
                         <i class="fab fa-telegram"></i> <span>Launch LUXA Mini App</span>
                     </a>
-                    <a href="https://chromewebstore.google.com/detail/luxa-vault-%E2%80%94-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-xlarge">
+                    <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-xlarge">
                         <i class="fab fa-chrome"></i> <span>Chrome Extension</span>
                     </a>
                     <a href="explorer.html" class="btn btn-outline btn-xlarge">
@@ -537,7 +577,7 @@
         </div>
     </section>
 
-    <!-- FOOTER (componente condiviso: partials/footer.html) -->
+    <!-- FOOTER (shared component) -->
     <!-- Static internal links for crawlers (nav/footer are JS-injected) -->
     <nav class="crawl-links" aria-label="Site links" style="max-width:1100px;margin:0 auto 40px;padding:0 20px;font-size:.8rem;color:var(--text-dim);display:flex;flex-wrap:wrap;gap:14px;justify-content:center;">
         <a href="/">Home</a>
