@@ -472,6 +472,57 @@
     `;
   }
 
+  async function inspectNftCollection(classId = 'luxa-relics') {
+    const stage = document.getElementById('searchStage');
+    if (!stage) return;
+
+    stage.innerHTML = `
+      <div class="status-msg status-loading" style="color:#00FFCC;">
+        <i class="fas fa-spinner fa-spin"></i> Interrogazione registro on-chain per la classe ${escapeHtml(classId)}...
+      </div>
+    `;
+
+    try {
+      const res = await fetchJson('https://luxaecosystem.alwaysdata.net/nftlist.json');
+      const relics = Array.isArray(res.data?.nfts) ? res.data.nfts : [];
+      if (!res.ok) throw new Error('Registry request failed (' + res.status + ').');
+
+      stage.innerHTML = `
+        <div class="result-card" style="--border-color:#00FFCC;">
+          <div class="card-top">
+            <button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>
+            <span class="badge" style="color:#FFD700; border-color:#FFD700; background:#FFD70018;">🏛️ GENESIS NFT CLASS</span>
+          </div>
+          <h2 style="margin:4px 0 20px; color:#fff;">LUXA Genesis Relics (${escapeHtml(classId)})</h2>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+            ${relics.map(item => {
+              const isOrigin = String(item.id) === '0';
+              const accent = isOrigin ? '#FFD700' : '#00FFCC';
+              const archetype = Array.isArray(item.attributes)
+                ? item.attributes.find(attr => attr.trait_type === 'Archetype')?.value
+                : null;
+              return `
+                <div style="background:rgba(7,9,20,0.85); border:1.5px solid ${accent}; border-radius:14px; overflow:hidden; padding:12px;">
+                  <div style="width:100%; aspect-ratio:4/5; border-radius:10px; overflow:hidden; margin-bottom:10px; background:#000;">
+                    <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" style="width:100%; height:100%; object-fit:cover; object-position:top center; display:block;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
+                  </div>
+                  <div style="font-size:10px; color:${accent}; font-family:var(--font-mono); font-weight:bold;">TOKEN #${escapeHtml(item.id)} • ${escapeHtml(item.rarity)}</div>
+                  <h4 style="margin:4px 0 8px; color:#fff; font-size:13px;">${escapeHtml(item.name)}</h4>
+                  <p style="font-size:11px; color:#94a3b8; line-height:1.4; margin:0 0 10px;">${escapeHtml(item.description || '')}</p>
+                  <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:8px; font-size:10px; font-family:var(--font-mono);">
+                    <span style="color:#64748b;">Archetype:</span> <span style="color:#fff;">${escapeHtml(archetype || 'Guardian')}</span>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    } catch (err) {
+      stage.innerHTML = '<div class="status-msg status-error">❌ Impossibile recuperare i dettagli della collezione: ' + escapeHtml(err.message) + '</div>';
+    }
+  }
+
   async function search(query) {
     const input = document.getElementById('searchInput');
     const stage = document.getElementById('searchStage');
@@ -481,10 +532,12 @@
     stage.innerHTML = '<div class="status-msg status-loading">🔍 Searching luxa-1 ledger...</div>';
 
     try {
-      if (q.startsWith('luxa1')) await searchAddress(q);
+      const normalizedQuery = q.toLowerCase();
+      if (['luxa-relics', 'relics', 'genesis'].includes(normalizedQuery)) await inspectNftCollection('luxa-relics');
+      else if (normalizedQuery.startsWith('luxa1')) await searchAddress(normalizedQuery);
       else if (/^\d+$/.test(q)) await searchBlock(q);
       else if (/^(0x)?[0-9a-fA-F]{16,}$/.test(q)) await searchTx(q);
-      else throw new Error('Invalid query format. Enter a valid Tx Hash, luxa1 address, or Block number.');
+      else throw new Error("Invalid query format. Enter a valid Tx Hash, luxa1 address, Block number, or 'luxa-relics'.");
     } catch (err) {
       stage.innerHTML = '<div class="status-msg status-error">❌ ' + escapeHtml(err.message) + '</div>';
     }
