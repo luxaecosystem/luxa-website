@@ -1,50 +1,116 @@
 /* ==========================================================================
    LUXA SCAN PRO ENGINE — js/explorer-pro.js
-   Dynamic Genesis NFTs & Multi-Asset Engine
+   Dynamic Genesis NFTs & Multi-Asset Engine (Self-Healing Parser)
    ========================================================================== */
 
 (function () {
   'use strict';
 
   const RPC_URL = 'https://rpc.luxaecosystem.xyz';
-  
-  // Icone standard per monete
+
+  // REGISTRO DI GENESI INTEGRATO (Fallback garantito a zero latenza)
+  const GENESIS_FALLBACK = {
+    '0': {
+      id: '0',
+      name: 'Genesis Progenitor — Citizen Zero',
+      rarity: 'Mythic (Origin 1 of 1)',
+      image: 'https://luxaecosystem.alwaysdata.net/assets/nfts/citizen_zero.jpeg',
+      attributes: [
+        { trait_type: 'Archetype', value: 'Genesis Progenitor' },
+        { trait_type: 'Citizen Number', value: '#0' },
+        { trait_type: 'Authority', value: 'Root Validator & Architect' },
+        { trait_type: 'Network Access', value: 'Sovereign / Unrestricted' },
+        { trait_type: 'Discipline', value: 'Protocol Creation' },
+        { trait_type: 'Perk', value: 'Zero Fees & Instant Cooldown' }
+      ]
+    },
+    '1': {
+      id: '1',
+      name: 'Chrono-Key Master',
+      rarity: 'Legendary',
+      image: 'https://luxaecosystem.alwaysdata.net/assets/nfts/chrono_key_master.jpeg',
+      attributes: [
+        { trait_type: 'Archetype', value: 'Chrono Keeper' },
+        { trait_type: 'Discipline', value: 'Temporal Mechanics' },
+        { trait_type: 'Forge Cooldown', value: '-50%' }
+      ]
+    },
+    '2': {
+      id: '2',
+      name: 'Cyber-Shadow Node',
+      rarity: 'Epic',
+      image: 'https://luxaecosystem.alwaysdata.net/assets/nfts/cyber_shadow_node.jpeg',
+      attributes: [
+        { trait_type: 'Archetype', value: 'Stealth Sentinel' },
+        { trait_type: 'Discipline', value: 'Cryptographic Stealth' },
+        { trait_type: 'Forge Discount', value: '20% ushard' }
+      ]
+    },
+    '3': {
+      id: '3',
+      name: 'Grandmaster of Servers',
+      rarity: 'Legendary',
+      image: 'https://luxaecosystem.alwaysdata.net/assets/nfts/grandmaster_of_servers.jpeg',
+      attributes: [
+        { trait_type: 'Archetype', value: 'Consensus Architect' },
+        { trait_type: 'Discipline', value: 'Node Architecture' },
+        { trait_type: 'Staking Yield', value: '+25% APY' }
+      ]
+    },
+    '4': {
+      id: '4',
+      name: 'Neon Data Valkyrie',
+      rarity: 'Rare',
+      image: 'https://luxaecosystem.alwaysdata.net/assets/nfts/neon_data_valkyrie.jpeg',
+      attributes: [
+        { trait_type: 'Archetype', value: 'Data Vanguard' },
+        { trait_type: 'Discipline', value: 'High-Throughput Stream' },
+        { trait_type: 'Shard Multiplier', value: '1.5x' }
+      ]
+    }
+  };
+
   const TOKEN_ICONS = {
     uluxa: 'https://luxaecosystem.alwaysdata.net/assets/128.png',
     ushard: 'https://luxaecosystem.alwaysdata.net/assets/shard128.png'
   };
 
-  // --- RISOLUZIONE DINAMICA METADATI NFT ---
-  let _cachedGenesisRegistry = null;
+  // Pulizia radicale degli ID: rimuove virgolette, cancelletti e spazi
+  function sanitizeTokenId(raw) {
+    if (raw === null || raw === undefined) return null;
+    const clean = String(raw).replace(/[^0-9]/g, '').trim();
+    return clean.length > 0 ? clean : null;
+  }
 
-  async function fetchExternalGenesisNft(tokenId) {
-    if (!_cachedGenesisRegistry) {
+  let _externalRegistry = null;
+  async function resolveMetadata(tokenId) {
+    const cleanId = sanitizeTokenId(tokenId);
+    if (!cleanId) return null;
+
+    if (!_externalRegistry) {
       try {
         const res = await fetch('https://luxaecosystem.alwaysdata.net/nftlist.json', { cache: 'no-cache' });
         if (res.ok) {
           const doc = await res.json();
           if (Array.isArray(doc.nfts)) {
-            _cachedGenesisRegistry = {};
+            _externalRegistry = {};
             doc.nfts.forEach(item => {
-              _cachedGenesisRegistry[String(item.id)] = item;
+              const id = sanitizeTokenId(item.id);
+              if (id) _externalRegistry[id] = item;
             });
           }
         }
-      } catch (err) {
-        console.warn('Impossibile recuperare nftlist.json:', err);
-      }
+      } catch (_) {}
     }
-    return _cachedGenesisRegistry ? _cachedGenesisRegistry[String(tokenId)] : null;
+
+    if (_externalRegistry && _externalRegistry[cleanId]) {
+      return _externalRegistry[cleanId];
+    }
+    return GENESIS_FALLBACK[cleanId] || null;
   }
 
-  // --- UTILITY DI PARSING ---
   function escapeHtml(val) {
     return String(val ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  }
-
-  // Pulisce stringhe codificate e toglie eventuali virgolette residue ('"0"' -> '0')
-  function cleanIdValue(val) {
-    return String(val).replace(/['"]/g, '').trim();
   }
 
   function smartDecode(str) {
@@ -84,7 +150,7 @@
     try {
       const res = await fetch(url, { signal: controller.signal });
       const data = await res.json().catch(() => null);
-      return { ok: res.ok, status: res.status, data: data };
+      return { ok: res.ok, status: res.status, data };
     } catch (e) {
       return { ok: false, error: e.message };
     } finally {
@@ -92,7 +158,6 @@
     }
   }
 
-  // --- ESTRAZIONE EVENTI ON-CHAIN ---
   function parseCosmosEvents(events, rawTxB64) {
     events = events || [];
     const coins = [];
@@ -112,7 +177,6 @@
         if (['sender', 'spender', 'from_address'].includes(k) && isCleanAddress(v)) sender = v;
         if (['recipient', 'receiver', 'to_address'].includes(k) && isCleanAddress(v)) recipient = v;
 
-        // Parsing Monete
         if (evType === 'transfer' && k === 'amount' && typeof v === 'string') {
           const parts = v.split(',');
           for (const p of parts) {
@@ -131,20 +195,20 @@
           if (!isNaN(num)) detectedFee = num / 1000000;
         }
 
-        // Parsing NFT
         if (['id', 'token_id', 'nft_id', 'nftKey'].includes(k)) {
-          nftId = cleanIdValue(v);
+          const clean = sanitizeTokenId(v);
+          if (clean !== null) nftId = clean;
         }
       }
     }
 
-    // Fallback: Lettura payload base64
-    if (!nftId && rawTxB64) {
+    // Fallback: cerca l'ID direttamente dentro il payload base64 della tx
+    if (nftId === null && rawTxB64) {
       try {
         const decoded = atob(rawTxB64);
-        if (decoded.includes('luxa-relics') || decoded.includes('/cosmos.nft.v1beta1')) {
+        if (decoded.includes('luxa-relics')) {
           const match = decoded.match(/luxa-relics[^\d]*?(\d+)/);
-          if (match) nftId = cleanIdValue(match[1]);
+          if (match) nftId = sanitizeTokenId(match[1]);
         }
       } catch (_) {}
     }
@@ -159,32 +223,22 @@
     };
   }
 
-  // --- ROUTING RICERCA ---
-  window.handleExplorerBack = function(inputId, resultId) {
-    const resultEl = document.getElementById(resultId) || document.getElementById('txExplorerResult');
-    const inputEl = document.getElementById(inputId) || document.getElementById('txExplorerHashInput');
-    if (resultEl) resultEl.innerHTML = '';
-    if (inputEl) inputEl.value = '';
-  };
-
   async function searchTx(hash) {
     const cleanHash = hash.toUpperCase().replace(/^0X/, '');
     const res = await fetchJson(RPC_URL + '/tx?hash=0x' + cleanHash + '&prove=true');
 
-    if (!res.ok || !res.data?.result) throw new Error('Transaction not found on luxa-1.');
+    if (!res.ok || !res.data?.result) {
+      throw new Error('Transaction ' + cleanHash + ' not found on luxa-1.');
+    }
 
     const tx = res.data.result;
     const height = tx.height;
-    const isSuccess = tx.tx_result?.code === 0 || !tx.tx_result?.code;
+    const isSuccess = tx.tx_result ? (tx.tx_result.code === 0 || !tx.tx_result.code) : true;
     const gasUsed = tx.tx_result?.gas_used || '0';
     const gasWanted = tx.tx_result?.gas_wanted || '0';
 
     const parsed = parseCosmosEvents(tx.tx_result?.events || [], tx.tx);
-    
-    let externalMeta = null;
-    if (parsed.isNft) {
-      externalMeta = await fetchExternalGenesisNft(parsed.nftId);
-    }
+    const meta = parsed.isNft ? await resolveMetadata(parsed.nftId) : null;
 
     renderTxCard({
       hash: cleanHash,
@@ -197,49 +251,49 @@
       coins: parsed.coins,
       fee: parsed.fee,
       nftId: parsed.nftId,
-      isNft: parsed.isNft,
-      meta: externalMeta
+      isNft: Boolean(meta),
+      meta
     });
   }
 
-  // --- RENDERING SCHEDA TRANSAZIONE ---
   function renderTxCard(data) {
-    const stage = document.getElementById('searchStage') || document.getElementById('txExplorerResult');
+    const stage = document.getElementById('searchStage');
     if (!stage) return;
 
-    const isOrigin = String(data.nftId) === '0';
-    const isNft = data.isNft;
+    const isNft = Boolean(data.isNft && data.meta);
+    const isOrigin = isNft && String(data.nftId) === '0';
     const accent = isOrigin ? '#FFD700' : (isNft ? '#00FFCC' : 'var(--cyan)');
+    const meta = data.meta;
 
     let visual = '';
     let attributesHtml = '';
     let amountDisplay = '<span style="color:#94a3b8;">0.0000 LUXA</span>';
 
-    if (isNft && data.meta) {
-      const meta = data.meta;
+    if (isNft) {
       const targetHolder = isCleanAddress(data.recipient) ? data.recipient : data.sender;
       amountDisplay = `<strong style="color:${accent};">1x NFT (${escapeHtml(meta.name)})</strong>`;
-      
-      const marquee = (` ⚡ HOLDER: ${targetHolder} • ASSET: ${meta.name.toUpperCase()} • ON-CHAIN: LUXA-1 ⚡ `).repeat(3);
+      const marquee = (` ⚡ CITIZEN: #${data.nftId} • ASSET: ${meta.name.toUpperCase()} • ON-CHAIN: LUXA-1 ⚡ `).repeat(3);
 
       visual = `
-        <div class="highway-box" style="border-color:${accent}; max-width:340px; margin:14px auto; border-radius:16px; overflow:hidden;">
-          <img src="${meta.image}" alt="${escapeHtml(meta.name)}" style="width:100%; max-height:300px; object-fit:cover; display:block;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
+        <div class="highway-box" style="border:1.5px solid ${accent}; max-width:340px; margin:14px auto 18px; border-radius:16px; overflow:hidden; background:#020617;">
+          <img src="${meta.image}" alt="${escapeHtml(meta.name)}" style="width:100%; height:280px; object-fit:cover; display:block;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
           <div class="sovereign-highway-ticker" style="background:#020617; padding:7px 0; border-top:1px solid ${accent};">
-            <div class="highway-track" style="color:${accent}; font-family:monospace; font-size:10px; font-weight:bold; white-space:nowrap; animation:tickerRun 16s linear infinite;">${escapeHtml(marquee)}</div>
+            <div class="highway-track" style="color:${accent}; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; white-space:nowrap; animation:tickerRun 16s linear infinite;">
+              ${escapeHtml(marquee)}
+            </div>
           </div>
         </div>
       `;
 
       if (Array.isArray(meta.attributes) && meta.attributes.length > 0) {
         attributesHtml = `
-          <div style="margin-top:14px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px;">
-            <div style="color:${accent}; font-family:'Orbitron',sans-serif; font-size:11px; font-weight:bold; margin-bottom:8px;">⚡ PROTOCOL ATTRIBUTES &amp; POWERS</div>
+          <div style="margin-top:14px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
+            <div style="color:${accent}; font-family:'Orbitron',sans-serif; font-size:11px; font-weight:bold; margin-bottom:10px;">⚡ PROTOCOL ATTRIBUTES &amp; POWERS</div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
               ${meta.attributes.map(attr => `
-                <div style="background:rgba(0,0,0,0.4); padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
-                  <div style="font-size:9.5px; color:#94a3b8; text-transform:uppercase;">${escapeHtml(attr.trait_type)}</div>
-                  <div style="font-size:11px; color:#fff; font-weight:600;">${escapeHtml(attr.value)}</div>
+                <div style="background:rgba(0,0,0,0.5); padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
+                  <div style="font-size:9.5px; color:#94a3b8; text-transform:uppercase; font-family:'Space Grotesk',sans-serif;">${escapeHtml(attr.trait_type)}</div>
+                  <div style="font-size:11.5px; color:#fff; font-weight:600; margin-top:2px;">${escapeHtml(attr.value)}</div>
                 </div>
               `).join('')}
             </div>
@@ -255,64 +309,247 @@
       `).join(' + ');
     }
 
-    const titleBadge = isNft && data.meta
+    const titleBadge = isNft
       ? (isOrigin ? `👑 GENESIS PROGENITOR (CITIZEN ZERO #${data.nftId})` : `🏛️ GENESIS ARTIFACT (#${data.nftId})`)
       : '🪙 NATIVE LEDGER SETTLEMENT';
 
-    const rarityBadge = isNft && data.meta
-      ? (data.meta.rarity || 'SOVEREIGN').toUpperCase()
-      : (data.isSuccess ? 'CONFIRMED' : 'FAILED');
+    const rarityBadge = isNft
+      ? (meta.rarity || 'SOVEREIGN').toUpperCase()
+      : (data.isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED');
 
     stage.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0 14px;">
-        <button type="button" onclick="window.handleExplorerBack()" style="background:rgba(7,9,20,0.8); border:1px solid ${accent}; color:${accent}; padding:7px 16px; border-radius:12px; font-size:11.5px; font-weight:700; cursor:pointer;">← BACK</button>
-        <span style="font-size:11px; color:#22c55e; font-family:monospace;">● Live On-Chain Record</span>
-      </div>
-
-      <div class="result-card" style="background:rgba(0,0,0,0.7); border:1.5px solid ${accent}; border-radius:18px; padding:16px; box-shadow:0 0 25px ${isOrigin ? 'rgba(255,215,0,0.25)' : 'rgba(0,255,204,0.15)'}; text-align:left;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
-          <span style="color:${accent}; font-weight:bold; font-size:11px; font-family:'Orbitron',sans-serif;">${titleBadge}</span>
-          <span style="background:rgba(34,197,94,0.2); color:#22c55e; font-weight:bold; font-size:10px; padding:2px 8px; border-radius:4px;">${rarityBadge}</span>
+      <div class="result-card" style="--border-color: ${accent}; box-shadow: 0 0 30px ${accent}33;">
+        <div class="card-top">
+          <button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>
+          <span class="badge" style="color:${accent}; border-color:${accent}; background:${accent}18;">${titleBadge}</span>
+          <span class="badge ${data.isSuccess ? 'badge-ok' : 'badge-gold'}">${rarityBadge}</span>
         </div>
-
         ${visual}
-
-        <div class="details-grid" style="font-size:12px; line-height:1.7; color:#cbd5e1;">
-          <div class="details-row" style="margin-bottom:6px;"><span style="color:#94a3b8; min-width:110px; display:inline-block;">Asset Transferred:</span> ${amountDisplay}</div>
-          <div class="details-row"><span style="color:#94a3b8; min-width:110px; display:inline-block;">Block Height:</span><span class="mono" style="color:var(--gold);">#${escapeHtml(data.height)}</span></div>
-          <div class="details-row"><span style="color:#94a3b8; min-width:110px; display:inline-block;">Network Fee:</span><span class="mono">${escapeHtml(data.fee)}</span></div>
-          <div class="details-row"><span style="color:#94a3b8; min-width:110px; display:inline-block;">Sender:</span><span class="mono click-hash" style="color:#88BBFF; cursor:pointer;" onclick="window.LuxaExplorer.inspect('${data.sender}')">${escapeHtml(data.sender)}</span></div>
-          <div class="details-row"><span style="color:#94a3b8; min-width:110px; display:inline-block;">Recipient:</span><span class="mono click-hash" style="color:#88BBFF; cursor:pointer;" onclick="window.LuxaExplorer.inspect('${data.recipient}')">${escapeHtml(data.recipient)}</span></div>
-          <div class="details-row"><span style="color:#94a3b8; min-width:110px; display:inline-block;">Gas Consumed:</span><span class="mono">${escapeHtml(data.gasUsed)} / ${escapeHtml(data.gasWanted)}</span></div>
+        <div class="details-grid">
+          <div class="details-row"><span class="details-label">Block Height:</span><span class="details-val mono" style="color:var(--gold);">#${escapeHtml(data.height)}</span></div>
+          <div class="details-row"><span class="details-label">Transfer Asset:</span><span class="details-val">${amountDisplay}</span></div>
+          <div class="details-row"><span class="details-label">Network Fee:</span><span class="details-val mono">${escapeHtml(data.fee)}</span></div>
+          <div class="details-row"><span class="details-label">Sender (From):</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect('${data.sender}')">${escapeHtml(data.sender)}</span></div>
+          <div class="details-row"><span class="details-label">Recipient (To):</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect('${data.recipient}')">${escapeHtml(data.recipient)}</span></div>
+          <div class="details-row"><span class="details-label">Gas Consumed:</span><span class="details-val mono">${escapeHtml(data.gasUsed)} / ${escapeHtml(data.gasWanted)}</span></div>
         </div>
-
         ${attributesHtml}
-
-        <button type="button" class="action-btn-sm" style="width:100%; margin-top:14px; font-size:11px; background:transparent; border:1.5px solid ${accent}; color:${accent}; font-weight:bold; padding:9px; cursor:pointer;" onclick="navigator.clipboard.writeText('${data.hash}'); window.showToast ? window.showToast('Hash copied!') : alert('Hash copied!');">
+        <button type="button" class="back-btn" style="width:100%; margin-top:16px; justify-content:center; padding:10px; border-color:${accent}; color:${accent}; font-weight:bold;" onclick="navigator.clipboard.writeText('${data.hash}'); window.showToast ? window.showToast('Hash copied!') : alert('Hash copied!');">
           📋 Copy Transaction Hash
         </button>
       </div>
     `;
   }
 
-  // --- AVVIO E ROUTING GLOBALE ---
+  async function searchAddress(address) {
+    const stage = document.getElementById('searchStage');
+    const querySender = encodeURIComponent("transfer.sender='" + address + "'");
+    const queryRecv = encodeURIComponent("transfer.recipient='" + address + "'");
+
+    const results = await Promise.all([
+      fetchJson(RPC_URL + '/tx_search?query="' + querySender + '"&page=1&per_page=10&order_by="desc"'),
+      fetchJson(RPC_URL + '/tx_search?query="' + queryRecv + '"&page=1&per_page=10&order_by="desc"')
+    ]);
+
+    const sentTxs = results[0].data?.result?.txs || [];
+    const recvTxs = results[1].data?.result?.txs || [];
+    const allTxs = sentTxs.concat(recvTxs).sort((a, b) => parseInt(b.height, 10) - parseInt(a.height, 10));
+
+    let rowsHtml = '';
+    if (allTxs.length === 0) {
+      rowsHtml = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted);">No on-chain activity for this address.</td></tr>';
+    } else {
+      rowsHtml = allTxs.slice(0, 10).map(t => {
+        const isOut = sentTxs.some(s => s.hash === t.hash);
+        const gas = t.tx_result?.gas_used || '0';
+        return '<tr>' +
+          '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.hash + '\')">' + escapeHtml(shorten(t.hash, 8, 4)) + '</td>' +
+          '<td class="mono">#' + escapeHtml(t.height) + '</td>' +
+          '<td><span class="badge ' + (isOut ? 'badge-gold' : 'badge-ok') + '" style="font-size:9px;">' + (isOut ? 'OUT' : 'IN') + '</span></td>' +
+          '<td class="mono">' + escapeHtml(gas) + ' units</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    stage.innerHTML = `
+      <div class="result-card" style="--border-color: var(--cyan);">
+        <div class="card-top">
+          <button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>
+          <span class="badge badge-cyan">ACCOUNT OVERVIEW</span>
+        </div>
+        <div class="details-grid" style="margin-bottom:20px;">
+          <div class="details-row"><span class="details-label">Address:</span><span class="details-val mono" style="color:var(--cyan); font-weight:bold;">${escapeHtml(address)}</span></div>
+          <div class="details-row"><span class="details-label">Total Records:</span><span class="details-val mono">${allTxs.length} activity entries</span></div>
+        </div>
+        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:13px; margin-bottom:12px; color:#fff;">Account Activity</h3>
+        <div style="overflow-x:auto;">
+          <table class="data-table">
+            <thead><tr><th>Tx Hash</th><th>Block</th><th>Flow</th><th>Gas Units</th></tr></thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  async function searchBlock(height) {
+    const res = await fetchJson(RPC_URL + '/block?height=' + height);
+    if (!res.ok || !res.data?.result?.block) throw new Error('Block #' + height + ' not found.');
+
+    const blk = res.data.result.block;
+    const stage = document.getElementById('searchStage');
+    const txCount = blk.data?.txs?.length || 0;
+    const proposer = blk.header?.proposer_address || 'validator';
+    const timestamp = blk.header?.time ? new Date(blk.header.time).toLocaleString() : 'N/A';
+
+    stage.innerHTML = `
+      <div class="result-card" style="--border-color: var(--cyan);">
+        <div class="card-top">
+          <button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>
+          <span class="badge badge-cyan">BLOCK #${escapeHtml(height)}</span>
+        </div>
+        <div class="details-grid">
+          <div class="details-row"><span class="details-label">Timestamp:</span><span class="details-val">${escapeHtml(timestamp)}</span></div>
+          <div class="details-row"><span class="details-label">Proposer:</span><span class="details-val mono" style="color:#88BBFF;">${escapeHtml(proposer)}</span></div>
+          <div class="details-row"><span class="details-label">Transactions:</span><span class="details-val mono" style="color:var(--gold); font-weight:bold;">${txCount}</span></div>
+        </div>
+      </div>
+    `;
+  }
+
   async function search(query) {
-    const input = document.getElementById('searchInput') || document.getElementById('txExplorerHashInput');
-    const stage = document.getElementById('searchStage') || document.getElementById('txExplorerResult');
+    const input = document.getElementById('searchInput');
+    const stage = document.getElementById('searchStage');
     const q = (query || (input ? input.value : '')).trim();
 
     if (!q || !stage) return;
-    stage.innerHTML = '<div style="color:#00FFCC; font-size:12px; margin-top:8px; font-family:monospace;">🔍 Interrogazione luxa-1 in corso...</div>';
+    stage.innerHTML = '<div class="status-msg status-loading">🔍 Searching luxa-1 ledger...</div>';
 
     try {
-      if (/^(0x)?[0-9a-fA-F]{16,}$/.test(q)) await searchTx(q);
-      else throw new Error('Inserire un hash di transazione valido.');
+      if (q.startsWith('luxa1')) await searchAddress(q);
+      else if (/^\d+$/.test(q)) await searchBlock(q);
+      else if (/^(0x)?[0-9a-fA-F]{16,}$/.test(q)) await searchTx(q);
+      else throw new Error('Invalid query format. Enter a valid Tx Hash, luxa1 address, or Block number.');
     } catch (err) {
-      stage.innerHTML = `<div style="background:rgba(239,68,68,0.1); border:1px solid #ef4444; border-radius:12px; padding:14px; margin-top:10px; text-align:left;"><div style="color:#ef4444; font-weight:bold; font-size:12px;">❌ On-Chain Ledger Query Error</div><div style="color:#cbd5e1; font-size:11px; margin-top:4px;">${escapeHtml(err.message)}</div></div>`;
+      stage.innerHTML = '<div class="status-msg status-error">❌ ' + escapeHtml(err.message) + '</div>';
     }
   }
 
-  window.LuxaExplorer = { search, inspect: function(val) { search(val); } };
-  window.searchTransactionHash = search;
+  function resetView() {
+    const stage = document.getElementById('searchStage');
+    const input = document.getElementById('searchInput');
+    if (stage) stage.innerHTML = '';
+    if (input) {
+      input.value = '';
+      input.focus();
+    }
+  }
 
+  let currentLatestBlock = 0;
+  async function syncNode() {
+    const badge = document.getElementById('chainBlockBadge');
+    const res = await fetchJson(RPC_URL + '/status');
+    if (res.ok && res.data?.result?.sync_info?.latest_block_height) {
+      currentLatestBlock = parseInt(res.data.result.sync_info.latest_block_height, 10);
+      if (badge) badge.textContent = 'luxa-1 • #' + currentLatestBlock;
+      loadRecentBlocks(currentLatestBlock);
+    }
+  }
+
+  async function loadRecentBlocks(latestHeight) {
+    const tbody = document.getElementById('latestBlocksBody');
+    if (!tbody || !latestHeight) return;
+
+    const minHeight = Math.max(1, latestHeight - 9);
+    const res = await fetchJson(RPC_URL + '/blockchain?minHeight=' + minHeight + '&maxHeight=' + latestHeight, 4000);
+
+    if (res.ok && Array.isArray(res.data?.result?.block_metas)) {
+      tbody.innerHTML = res.data.result.block_metas.map(b => {
+        const h = b.header?.height || 'N/A';
+        const time = b.header?.time || '';
+        const proposer = b.header?.proposer_address ? shorten(b.header.proposer_address, 6, 4) : 'validator';
+        const numTx = b.num_txs || b.header?.num_txs || 0;
+
+        return '<tr>' +
+          '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + h + '\')">#' + escapeHtml(h) + '</td>' +
+          '<td class="mono muted-note">' + escapeHtml(timeAgo(time)) + '</td>' +
+          '<td class="mono" style="color:#88BBFF;">' + escapeHtml(proposer) + '</td>' +
+          '<td class="mono">' + escapeHtml(numTx) + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+  }
+
+  async function loadRecentActivity() {
+    const tbody = document.getElementById('latestTxsBody');
+    if (!tbody) return;
+
+    try {
+      const rpcRes = await fetchJson(RPC_URL + '/tx_search?query="tx.height>0"&page=1&per_page=10&order_by="desc"', 4000);
+      const txs = rpcRes.data?.result?.txs || [];
+
+      if (txs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">No transactions recorded on luxa-1. Node is live and synced.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = txs.map(t => {
+        const parsed = parseCosmosEvents(t.tx_result?.events || [], t.tx);
+        const isNft = parsed.isNft;
+        const meta = isNft ? GENESIS_FALLBACK[parsed.nftId] : null;
+        const amount = isNft ? (meta ? `1x NFT (${meta.name})` : '1x Genesis NFT') : (parsed.coins.length > 0 ? parsed.coins.map(c => `${c.amount} ${c.denom}`).join(' + ') : '0 LUXA');
+        const status = (t.tx_result && (t.tx_result.code === 0 || !t.tx_result.code)) ? 'CONFIRMED' : 'FAILED';
+
+        return '<tr>' +
+          '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.hash + '\')">' + escapeHtml(shorten(t.hash, 6, 4)) + '</td>' +
+          '<td><span class="badge ' + (isNft ? 'badge-gold' : 'badge-cyan') + '" style="font-size:9px;">' + (isNft ? 'NFT' : 'TX') + '</span></td>' +
+          '<td class="mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.height + '\')">#' + escapeHtml(t.height) + '</td>' +
+          '<td class="mono muted-note">Latest</td>' +
+          '<td style="font-weight:bold; color:var(--cyan);">' + escapeHtml(amount) + '</td>' +
+          '<td><span class="badge badge-ok" style="font-size:9px;">' + escapeHtml(status) + '</span></td>' +
+          '</tr>';
+      }).join('');
+    } catch (_) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">Connected to luxa-1 node. Awaiting transactions.</td></tr>';
+    }
+  }
+
+  window.LuxaExplorer = {
+    search,
+    resetView,
+    inspect: function (val) {
+      const input = document.getElementById('searchInput');
+      if (input) input.value = val;
+      search(val);
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('searchBtn');
+    const input = document.getElementById('searchInput');
+    const refreshBtn = document.getElementById('refreshActivityBtn');
+
+    if (btn) btn.addEventListener('click', () => search());
+    if (input) input.addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', () => {
+        syncNode();
+        loadRecentActivity();
+      });
+    }
+
+    syncNode();
+    setInterval(syncNode, 10000);
+
+    loadRecentActivity();
+    setInterval(loadRecentActivity, 15000);
+
+    const params = new URLSearchParams(window.location.search);
+    const prefill = params.get('q') || params.get('tx');
+    if (prefill && input) {
+      input.value = prefill;
+      search(prefill);
+    }
+  });
 })();
