@@ -8,6 +8,30 @@
 
   const RPC_URL = 'https://rpc.luxaecosystem.xyz';
 
+  // --- Risoluzione Dinamica Metadati Genesis da sorgente esterna ---
+  let _cachedGenesisRegistry = null;
+
+  async function fetchExternalGenesisNft(tokenId) {
+    if (!_cachedGenesisRegistry) {
+      try {
+        const res = await fetch('https://luxaecosystem.alwaysdata.net/nftlist.json', { cache: 'no-cache' });
+        if (res.ok) {
+          const doc = await res.json();
+          if (Array.isArray(doc.nfts)) {
+            _cachedGenesisRegistry = {};
+            doc.nfts.forEach(function (item) {
+              _cachedGenesisRegistry[String(item.id)] = item;
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Impossibile recuperare nftlist.json esterno:', err);
+      }
+    }
+
+    return _cachedGenesisRegistry ? _cachedGenesisRegistry[String(tokenId)] : null;
+  }
+
   const NFT_HEROES = {
     '0': {
       name: 'Genesis Progenitor — Citizen Zero',
@@ -144,7 +168,7 @@
         // Riconoscimento messaggi ed eventi x/nft
         if (['id', 'token_id', 'nft_id', 'nftKey'].includes(k)) {
           const cleanId = String(v).trim();
-          if (NFT_HEROES[cleanId]) nftId = cleanId;
+          if (cleanId) nftId = cleanId;
         }
       }
     }
@@ -169,11 +193,12 @@
       } catch (_) {}
     }
 
-    const isNft = Boolean(nftId && NFT_HEROES[nftId]);
+    const isNft = Boolean(nftId);
     let amountDisplay = '0.0000 LUXA';
 
     if (isNft) {
-      amountDisplay = `1x NFT (${NFT_HEROES[nftId].name})`;
+      const staticMeta = NFT_HEROES[nftId];
+      amountDisplay = staticMeta ? `1x NFT (${staticMeta.name})` : `1x NFT (#${nftId})`;
     } else if (coins.length > 0) {
       amountDisplay = coins.join(' + ');
     }
@@ -204,6 +229,10 @@
     const gasWanted = tx.tx_result?.gas_wanted || '0';
 
     const parsed = parseCosmosEvents(tx.tx_result?.events || [], tx.tx);
+    let externalMeta = null;
+    if (parsed.nftId !== null && parsed.nftId !== undefined) {
+      externalMeta = await fetchExternalGenesisNft(parsed.nftId);
+    }
 
     renderTxCard({
       hash: cleanHash,
@@ -213,10 +242,11 @@
       gasWanted: gasWanted,
       sender: parsed.sender,
       recipient: parsed.recipient,
-      amount: parsed.amount,
+      amount: externalMeta ? '1x ' + externalMeta.name : parsed.amount,
       fee: parsed.fee,
       nftId: parsed.nftId,
-      isNft: parsed.isNft
+      isNft: Boolean(externalMeta),
+      meta: externalMeta
     });
   }
 
@@ -302,41 +332,60 @@
   // --- Rendering Scheda Transazione ---
   function renderTxCard(data) {
     const stage = document.getElementById('searchStage');
-    const isCitizenZero = String(data.nftId) === '0';
-    const accent = isCitizenZero ? 'var(--gold)' : (data.isNft ? '#00FFCC' : 'var(--cyan)');
+    const isNft = Boolean(data.isNft && data.meta);
+    const meta = data.meta;
+    const isOrigin = String(data.nftId) === '0';
+    const accent = isOrigin ? '#FFD700' : '#00FFCC';
 
     let visual = '';
-    if (data.isNft) {
-      const meta = NFT_HEROES[data.nftId] || NFT_HEROES['0'];
+    let attributesHtml = '';
+    if (isNft) {
       const targetHolder = isCleanAddress(data.recipient) ? data.recipient : data.sender;
-      const marquee = (' ⚡ CITIZEN: #' + data.nftId + ' • ASSET: ' + meta.name.toUpperCase() + ' • ON-CHAIN: LUXA-1 ⚡ ').repeat(4);
+      const marquee = (' ⚡ HOLDER: ' + targetHolder + ' • ASSET: ' + meta.name.toUpperCase() + ' • ON-CHAIN: LUXA-1 ⚡ ').repeat(3);
 
       visual = '<div class="highway-box" style="border-color:' + accent + '; max-width:340px; margin:14px auto;">' +
-        '<img src="https://luxaecosystem.alwaysdata.net/assets/nfts/' + meta.file + '" alt="' + escapeHtml(meta.name) + '" onerror="this.src=\'assets/images/logoluxa.png\';" style="width:100%; max-height:300px; object-fit:cover; display:block;">' +
+        '<img src="' + escapeHtml(meta.image) + '" alt="' + escapeHtml(meta.name) + '" onerror="this.src=\'https://luxaecosystem.alwaysdata.net/assets/128.png\';" style="width:100%; max-height:300px; object-fit:cover; display:block;">' +
         '<div class="sovereign-highway-ticker">' +
         '<div class="highway-track">' + escapeHtml(marquee) + '</div>' +
         '</div></div>';
+
+      if (Array.isArray(meta.attributes) && meta.attributes.length > 0) {
+        attributesHtml = '<div style="margin-top:14px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px;">' +
+          '<div style="color:' + accent + '; font-family:\'Orbitron\',sans-serif; font-size:11px; font-weight:bold; margin-bottom:8px;">⚡ PROTOCOL ATTRIBUTES &amp; POWERS</div>' +
+          '<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">' +
+          meta.attributes.map(function (attr) {
+            return '<div style="background:rgba(0,0,0,0.4); padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">' +
+              '<div style="font-size:9.5px; color:#94a3b8; text-transform:uppercase;">' + escapeHtml(attr.trait_type) + '</div>' +
+              '<div style="font-size:11px; color:#fff; font-weight:600;">' + escapeHtml(attr.value) + '</div>' +
+              '</div>';
+          }).join('') +
+          '</div></div>';
+      }
     }
 
-    const titleBadge = isCitizenZero
-      ? '👑 GENESIS PROGENITOR (CITIZEN ZERO #0)'
-      : (data.isNft ? '🏛️ SOVEREIGN GENESIS ARTIFACT (#' + escapeHtml(data.nftId) + ')' : '🪙 NATIVE LEDGER SETTLEMENT');
+    const titleBadge = isNft
+      ? escapeHtml(meta.name) + ' (ID #' + escapeHtml(data.nftId) + ')'
+      : 'COSMOS SDK NATIVE SETTLEMENT';
+    const rarityBadge = isNft
+      ? escapeHtml(meta.rarity || 'SOVEREIGN').toUpperCase()
+      : (data.isSuccess ? 'CONFIRMED' : 'FAILED');
 
-    stage.innerHTML = '<div class="result-card" style="--border-color: ' + accent + '; box-shadow: 0 0 25px ' + (isCitizenZero ? 'rgba(255,215,0,0.2)' : 'rgba(0,255,204,0.15)') + ';">' +
+    stage.innerHTML = '<div class="result-card" style="--border-color: ' + accent + '; box-shadow: 0 0 25px ' + accent + '33;">' +
       '<div class="card-top">' +
       '<button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>' +
-      '<span class="badge ' + (isCitizenZero ? 'badge-gold' : 'badge-cyan') + '">' + titleBadge + '</span>' +
-      '<span class="badge ' + (data.isSuccess ? 'badge-ok' : 'badge-gold') + '">' + (data.isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED') + '</span>' +
+      '<span class="badge" style="color:' + accent + '; border-color:' + accent + '; background:' + accent + '15;">' + titleBadge + '</span>' +
+      '<span class="badge ' + (data.isSuccess ? 'badge-ok' : 'badge-gold') + '">' + rarityBadge + '</span>' +
       '</div>' +
       visual +
       '<div class="details-grid">' +
       '<div class="details-row"><span class="details-label">Block Height:</span><span class="details-val mono" style="color:var(--gold);">#' + escapeHtml(data.height) + '</span></div>' +
       '<div class="details-row"><span class="details-label">Transfer Asset:</span><span class="details-val" style="font-weight:bold; color:' + accent + ';">' + escapeHtml(data.amount) + '</span></div>' +
       '<div class="details-row"><span class="details-label">Network Fee:</span><span class="details-val mono">' + escapeHtml(data.fee) + '</span></div>' +
-      '<div class="details-row"><span class="details-label">Sender (Origin):</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + data.sender + '\')">' + escapeHtml(data.sender) + '</span></div>' +
-      '<div class="details-row"><span class="details-label">Recipient (Owner):</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + data.recipient + '\')">' + escapeHtml(data.recipient) + '</span></div>' +
+      '<div class="details-row"><span class="details-label">Sender (From):</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + data.sender + '\')">' + escapeHtml(data.sender) + '</span></div>' +
+      '<div class="details-row"><span class="details-label">Recipient (To):</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + data.recipient + '\')">' + escapeHtml(data.recipient) + '</span></div>' +
       '<div class="details-row"><span class="details-label">Gas Consumed:</span><span class="details-val mono">' + escapeHtml(data.gasUsed) + ' / ' + escapeHtml(data.gasWanted) + '</span></div>' +
       '</div>' +
+      attributesHtml +
       '<button type="button" class="back-btn" style="width:100%; margin-top:16px; justify-content:center; padding:10px; border-color:' + accent + '; color:' + accent + ';" onclick="navigator.clipboard.writeText(\'' + data.hash + '\'); window.showToast ? window.showToast(\'Hash copied!\') : alert(\'Hash copied!\');">' +
       '📋 Copy Transaction Hash' +
       '</button>' +
