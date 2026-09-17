@@ -348,54 +348,73 @@
     `;
   }
 
+  // --- 2. Ricerca Indirizzo Wallet (Transazioni + Genesis NFT posseduti) ---
   async function searchAddress(address) {
     const stage = document.getElementById('searchStage');
     const querySender = encodeURIComponent("transfer.sender='" + address + "'");
     const queryRecv = encodeURIComponent("transfer.recipient='" + address + "'");
 
+    // Interroga sia i trasferimenti monetari sia il modulo x/nft tramite il proxy AlwaysData.
     const results = await Promise.all([
       fetchJson(RPC_URL + '/tx_search?query="' + querySender + '"&page=1&per_page=10&order_by="desc"'),
-      fetchJson(RPC_URL + '/tx_search?query="' + queryRecv + '"&page=1&per_page=10&order_by="desc"')
+      fetchJson(RPC_URL + '/tx_search?query="' + queryRecv + '"&page=1&per_page=10&order_by="desc"'),
+      fetchJson('https://luxaecosystem.alwaysdata.net/api/node/nfts/' + address, 4000)
     ]);
 
     const sentTxs = results[0].data?.result?.txs || [];
     const recvTxs = results[1].data?.result?.txs || [];
+    const onChainNfts = results[2].data?.nfts || [];
     const allTxs = sentTxs.concat(recvTxs).sort((a, b) => parseInt(b.height, 10) - parseInt(a.height, 10));
+
+    // Costruzione vetrina Genesis NFT se l'indirizzo ne possiede.
+    let nftsBannerHtml = '';
+    if (onChainNfts.length > 0) {
+      const nftCards = await Promise.all(onChainNfts.map(async item => {
+        const meta = await resolveMetadata(item.id);
+        const name = meta ? meta.name : `Genesis Relic #${item.id}`;
+        const img = meta ? meta.image : 'https://luxaecosystem.alwaysdata.net/assets/128.png';
+        const isCitizenZero = String(item.id) === '0';
+        const accent = isCitizenZero ? '#FFD700' : '#00FFCC';
+
+        return `
+          <div style="background:#020617; border:1.5px solid ${accent}; border-radius:12px; padding:10px; text-align:center; min-width:140px; flex:1; max-width:200px; box-shadow:0 0 15px ${accent}22;">
+            <img src="${escapeHtml(img)}" alt="${escapeHtml(name)}" style="width:100%; height:110px; object-fit:cover; border-radius:8px; margin-bottom:8px;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
+            <div style="font-family:'Orbitron',sans-serif; font-size:11px; font-weight:bold; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(name)}</div>
+            <div style="font-family:monospace; font-size:10px; color:${accent}; font-weight:bold; margin-top:3px;">ID #${escapeHtml(item.id)}</div>
+          </div>
+        `;
+      }));
+
+      nftsBannerHtml = `
+        <div style="margin-bottom:20px; background:rgba(0,255,204,0.04); border:1px solid rgba(0,255,204,0.25); border-radius:14px; padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <span style="font-family:'Orbitron',sans-serif; font-size:12px; color:#00FFCC; font-weight:bold;">🏛️ GENESIS RELICS CUSTODITI (ON-CHAIN)</span>
+            <span style="font-family:monospace; font-size:10px; color:#22c55e; background:rgba(34,197,94,0.15); padding:2px 8px; border-radius:4px;">${onChainNfts.length} Relics</span>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:12px;">
+            ${nftCards.join('')}
+          </div>
+        </div>
+      `;
+    }
 
     let rowsHtml = '';
     if (allTxs.length === 0) {
-      rowsHtml = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted);">No on-chain activity for this address.</td></tr>';
+      rowsHtml = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted);">Nessuna transazione bancaria trovata per questo indirizzo.</td></tr>';
     } else {
       rowsHtml = allTxs.slice(0, 10).map(t => {
         const isOut = sentTxs.some(s => s.hash === t.hash);
         const gas = t.tx_result?.gas_used || '0';
-        return '<tr>' +
-          '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.hash + '\')">' + escapeHtml(shorten(t.hash, 8, 4)) + '</td>' +
-          '<td class="mono">#' + escapeHtml(t.height) + '</td>' +
-          '<td><span class="badge ' + (isOut ? 'badge-gold' : 'badge-ok') + '" style="font-size:9px;">' + (isOut ? 'OUT' : 'IN') + '</span></td>' +
-          '<td class="mono">' + escapeHtml(gas) + ' units</td>' +
-          '</tr>';
+        return `
+          <tr>
+            <td class="click-hash" onclick="window.LuxaExplorer.inspect('${t.hash}')">${escapeHtml(shorten(t.hash, 8, 4))}</td>
+            <td class="mono">#${escapeHtml(t.height)}</td>
+            <td><span class="badge ${isOut ? 'badge-gold' : 'badge-ok'}" style="font-size:9px;">${isOut ? 'OUT' : 'IN'}</span></td>
+            <td class="mono">${escapeHtml(gas)} units</td>
+          </tr>
+        `;
       }).join('');
     }
-
-    // Query al modulo x/nft per identificare le reliquie custodite dall'indirizzo.
-    await fetchJson('https://luxaecosystem.alwaysdata.net/api/node/balances/' + encodeURIComponent(address)).catch(() => null);
-    let heldRelicsHtml = '';
-
-    try {
-      const restNfts = await fetchJson('http://51.170.130.74:1317/cosmos/nft/v1beta1/nfts?owner=' + encodeURIComponent(address));
-      const items = restNfts.data?.nfts || [];
-      if (items.length > 0) {
-        heldRelicsHtml = `
-          <div style="margin-top:14px; background:rgba(0,255,204,0.05); border:1px solid rgba(0,255,204,0.3); border-radius:12px; padding:12px;">
-            <div style="font-family:'Orbitron',sans-serif; font-size:11px; color:#00FFCC; font-weight:bold; margin-bottom:8px;">🏛️ GENESIS RELICS DETENUTI:</div>
-            <div style="display:flex; flex-wrap:wrap; gap:8px;">
-              ${items.map(n => `<span style="background:#020617; border:1px solid #FFD700; color:#FFD700; font-size:10.5px; padding:4px 8px; border-radius:6px; font-family:monospace;">Token #${escapeHtml(n.id)} (luxa-relics)</span>`).join('')}
-            </div>
-          </div>
-        `;
-      }
-    } catch (_) {}
 
     stage.innerHTML = `
       <div class="result-card" style="--border-color: var(--cyan);">
@@ -403,12 +422,15 @@
           <button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>
           <span class="badge badge-cyan">ACCOUNT OVERVIEW</span>
         </div>
+        
         <div class="details-grid" style="margin-bottom:20px;">
           <div class="details-row"><span class="details-label">Address:</span><span class="details-val mono" style="color:var(--cyan); font-weight:bold;">${escapeHtml(address)}</span></div>
-          <div class="details-row"><span class="details-label">Total Records:</span><span class="details-val mono">${allTxs.length} activity entries</span></div>
+          <div class="details-row"><span class="details-label">Total Bank Tx:</span><span class="details-val mono">${allTxs.length} activity entries</span></div>
         </div>
-        ${heldRelicsHtml}
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:13px; margin-bottom:12px; color:#fff;">Account Activity</h3>
+
+        ${nftsBannerHtml}
+
+        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:13px; margin-bottom:12px; color:#fff;">Bank Account Activity</h3>
         <div style="overflow-x:auto;">
           <table class="data-table">
             <thead><tr><th>Tx Hash</th><th>Block</th><th>Flow</th><th>Gas Units</th></tr></thead>
