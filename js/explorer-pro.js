@@ -378,6 +378,25 @@
       }).join('');
     }
 
+    // Query al modulo x/nft per identificare le reliquie custodite dall'indirizzo.
+    await fetchJson('https://luxaecosystem.alwaysdata.net/api/node/balances/' + encodeURIComponent(address)).catch(() => null);
+    let heldRelicsHtml = '';
+
+    try {
+      const restNfts = await fetchJson('http://51.170.130.74:1317/cosmos/nft/v1beta1/nfts?owner=' + encodeURIComponent(address));
+      const items = restNfts.data?.nfts || [];
+      if (items.length > 0) {
+        heldRelicsHtml = `
+          <div style="margin-top:14px; background:rgba(0,255,204,0.05); border:1px solid rgba(0,255,204,0.3); border-radius:12px; padding:12px;">
+            <div style="font-family:'Orbitron',sans-serif; font-size:11px; color:#00FFCC; font-weight:bold; margin-bottom:8px;">🏛️ GENESIS RELICS DETENUTI:</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              ${items.map(n => `<span style="background:#020617; border:1px solid #FFD700; color:#FFD700; font-size:10.5px; padding:4px 8px; border-radius:6px; font-family:monospace;">Token #${escapeHtml(n.id)} (luxa-relics)</span>`).join('')}
+            </div>
+          </div>
+        `;
+      }
+    } catch (_) {}
+
     stage.innerHTML = `
       <div class="result-card" style="--border-color: var(--cyan);">
         <div class="card-top">
@@ -388,6 +407,7 @@
           <div class="details-row"><span class="details-label">Address:</span><span class="details-val mono" style="color:var(--cyan); font-weight:bold;">${escapeHtml(address)}</span></div>
           <div class="details-row"><span class="details-label">Total Records:</span><span class="details-val mono">${allTxs.length} activity entries</span></div>
         </div>
+        ${heldRelicsHtml}
         <h3 style="font-family:'Space Grotesk',sans-serif; font-size:13px; margin-bottom:12px; color:#fff;">Account Activity</h3>
         <div style="overflow-x:auto;">
           <table class="data-table">
