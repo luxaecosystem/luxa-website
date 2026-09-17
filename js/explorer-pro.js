@@ -282,8 +282,10 @@
       const marquee = (` ⚡ CITIZEN: #${data.nftId} • ASSET: ${meta.name.toUpperCase()} • ON-CHAIN: LUXA-1 ⚡ `).repeat(3);
 
       visual = `
-        <div class="highway-box" style="border:1.5px solid ${accent}; max-width:340px; margin:14px auto 18px; border-radius:16px; overflow:hidden; background:#020617;">
-          <img src="${meta.image}" alt="${escapeHtml(meta.name)}" style="width:100%; height:280px; object-fit:cover; display:block;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
+        <div class="highway-box" style="border:1.5px solid ${accent}; max-width:320px; margin:14px auto 18px; border-radius:16px; overflow:hidden; background:#020617; box-shadow:0 8px 25px ${accent}25;">
+          <div style="width:100%; aspect-ratio:4/5; overflow:hidden; background:#000;">
+            <img src="${escapeHtml(meta.image)}" alt="${escapeHtml(meta.name)}" style="width:100%; height:100%; object-fit:cover; object-position:top center; display:block;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
+          </div>
           <div class="sovereign-highway-ticker" style="background:#020617; padding:7px 0; border-top:1px solid ${accent};">
             <div class="highway-track" style="color:${accent}; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; white-space:nowrap; animation:tickerRun 16s linear infinite;">
               ${escapeHtml(marquee)}
@@ -366,7 +368,7 @@
     const onChainNfts = results[2].data?.nfts || [];
     const allTxs = sentTxs.concat(recvTxs).sort((a, b) => parseInt(b.height, 10) - parseInt(a.height, 10));
 
-    // Costruzione vetrina Genesis NFT se l'indirizzo ne possiede.
+    // Costruzione vetrina Genesis NFT con proporzioni verticali uniformi e testa preservata.
     let nftsBannerHtml = '';
     if (onChainNfts.length > 0) {
       const nftCards = await Promise.all(onChainNfts.map(async item => {
@@ -377,21 +379,25 @@
         const accent = isCitizenZero ? '#FFD700' : '#00FFCC';
 
         return `
-          <div style="background:#020617; border:1.5px solid ${accent}; border-radius:12px; padding:10px; text-align:center; min-width:140px; flex:1; max-width:200px; box-shadow:0 0 15px ${accent}22;">
-            <img src="${escapeHtml(img)}" alt="${escapeHtml(name)}" style="width:100%; height:110px; object-fit:cover; border-radius:8px; margin-bottom:8px;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
-            <div style="font-family:'Orbitron',sans-serif; font-size:11px; font-weight:bold; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(name)}</div>
-            <div style="font-family:monospace; font-size:10px; color:${accent}; font-weight:bold; margin-top:3px;">ID #${escapeHtml(item.id)}</div>
+          <div style="background:#030712; border:1.5px solid ${accent}; border-radius:14px; padding:10px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 6px 20px ${accent}22; transition:transform 0.2s ease;">
+            <div style="width:100%; aspect-ratio:4/5; border-radius:10px; overflow:hidden; background:#000; border:1px solid rgba(255,255,255,0.08); margin-bottom:10px;">
+              <img src="${escapeHtml(img)}" alt="${escapeHtml(name)}" style="width:100%; height:100%; object-fit:cover; object-position:top center; display:block;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
+            </div>
+            <div style="text-align:center;">
+              <div style="font-family:'Orbitron',sans-serif; font-size:11.5px; font-weight:bold; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+              <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:${accent}; font-weight:700; margin-top:4px;">ID #${escapeHtml(item.id)}</div>
+            </div>
           </div>
         `;
       }));
 
       nftsBannerHtml = `
-        <div style="margin-bottom:20px; background:rgba(0,255,204,0.04); border:1px solid rgba(0,255,204,0.25); border-radius:14px; padding:16px;">
+        <div style="margin-bottom:24px; background:rgba(0,255,204,0.03); border:1px solid rgba(0,255,204,0.25); border-radius:16px; padding:18px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <span style="font-family:'Orbitron',sans-serif; font-size:12px; color:#00FFCC; font-weight:bold;">🏛️ GENESIS RELICS CUSTODITI (ON-CHAIN)</span>
-            <span style="font-family:monospace; font-size:10px; color:#22c55e; background:rgba(34,197,94,0.15); padding:2px 8px; border-radius:4px;">${onChainNfts.length} Relics</span>
+            <span style="font-family:'Orbitron',sans-serif; font-size:12px; color:#00FFCC; font-weight:bold; letter-spacing:0.5px;">🏛️ GENESIS RELICS CUSTODITI (ON-CHAIN)</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#22c55e; background:rgba(34,197,94,0.15); border:1px solid #22c55e; padding:3px 9px; border-radius:6px; font-weight:bold;">${onChainNfts.length} Relics</span>
           </div>
-          <div style="display:flex; flex-wrap:wrap; gap:12px;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:14px;">
             ${nftCards.join('')}
           </div>
         </div>
