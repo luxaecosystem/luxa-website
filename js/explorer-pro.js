@@ -89,7 +89,12 @@
 
     if (!_externalRegistry) {
       try {
-        const res = await fetch('https://luxaecosystem.alwaysdata.net/nftlist.json', { cache: 'no-cache' });
+        // Tenta la risorsa same-origin locale; se fallisce, usa AlwaysData.
+        let res = await fetch('./nftlist.json', { cache: 'no-cache' });
+        if (!res.ok) {
+          res = await fetch('https://luxaecosystem.alwaysdata.net/nftlist.json', { cache: 'no-cache' });
+        }
+
         if (res.ok) {
           const doc = await res.json();
           if (Array.isArray(doc.nfts)) {
@@ -100,7 +105,9 @@
             });
           }
         }
-      } catch (_) {}
+      } catch (err) {
+        console.warn('[Explorer] Fetch nftlist.json fallito, uso fallback interno:', err);
+      }
     }
 
     if (_externalRegistry && _externalRegistry[cleanId]) {
