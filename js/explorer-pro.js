@@ -1,6 +1,6 @@
 /* ==========================================================================
    LUXA SCAN PRO ENGINE — js/explorer-pro.js
-   Tendermint / Cosmos SDK RPC Engine for luxa-1
+   Tendermint / Cosmos SDK RPC Engine for luxa-1 (Genesis NFTs & Multi-Asset)
    ========================================================================== */
 
 (function () {
@@ -9,36 +9,58 @@
   const RPC_URL = 'https://rpc.luxaecosystem.xyz';
 
   const NFT_HEROES = {
-    '4001': { name: 'Grandmaster of Servers', file: 'Grandmaster_of_Servers.jpeg' },
-    '4002': { name: 'Neon Data Valkyrie', file: 'Neon_Data_Valkyrie.jpeg' },
-    '4003': { name: 'Chrono-Key Master', file: 'Chrono-Key_Master.jpeg' },
-    '4004': { name: 'Cyber-Shadow Node', file: 'Cyber-Shadow_Node.jpeg' }
+    '0': {
+      name: 'Genesis Progenitor — Citizen Zero',
+      file: 'citizen_zero.jpeg',
+      rarity: 'Mythic (Origin 1/1)',
+      powers: ['Root Validator & Sovereign Architect', 'Zero Protocol Fees', 'Instant Forge Cooldown']
+    },
+    '1': {
+      name: 'Chrono-Key Master',
+      file: 'chrono_key_master.jpeg',
+      rarity: 'Legendary',
+      powers: ['Chrono-Sync (-50% Cooldown)', 'Lockup Multiplier Active']
+    },
+    '2': {
+      name: 'Cyber-Shadow Node',
+      file: 'cyber_shadow_node.jpeg',
+      rarity: 'Epic',
+      powers: ['Dark-Route Obfuscation (20% Shard Discount)', 'Governance Security Multiplier']
+    },
+    '3': {
+      name: 'Grandmaster of Servers',
+      file: 'grandmaster_of_servers.jpeg',
+      rarity: 'Legendary',
+      powers: ['Consensus Mastery', '+25% APY Staking Yield Multiplier']
+    },
+    '4': {
+      name: 'Neon Data Valkyrie',
+      file: 'neon_data_valkyrie.jpeg',
+      rarity: 'Rare',
+      powers: ['High-Throughput Stream (1.5x Shard Multiplier)', 'Priority Genesis Whitelist']
+    },
+    // Compatibilità legacy
+    '4001': { name: 'Grandmaster of Servers', file: 'grandmaster_of_servers.jpeg', rarity: 'Legendary', powers: [] },
+    '4002': { name: 'Neon Data Valkyrie', file: 'neon_data_valkyrie.jpeg', rarity: 'Epic', powers: [] },
+    '4003': { name: 'Chrono-Key Master', file: 'chrono_key_master.jpeg', rarity: 'Rare', powers: [] },
+    '4004': { name: 'Cyber-Shadow Node', file: 'cyber_shadow_node.jpeg', rarity: 'Rare', powers: [] }
   };
 
-  // --- Utility ---
   function escapeHtml(val) {
     return String(val ?? '').replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
 
-  // Decodifica intelligente: NON tocca ciò che è già in chiaro
   function smartDecode(str) {
     if (typeof str !== 'string' || str.length === 0) return '';
-    
-    // Se è già un indirizzo o contiene già uluxa, non toccarlo!
-    if (str.startsWith('luxa1') || str.indexOf('uluxa') !== -1 || str.indexOf(' ') !== -1) {
+    if (str.startsWith('luxa1') || str.includes('uluxa') || str.includes('ushard') || str.includes(' ')) {
       return str;
     }
-
     try {
       const decoded = atob(str);
-      // Accetta la decodifica solo se produce testo alfanumerico pulito
-      if (/^[a-zA-Z0-9_\-\.\:\/]+$/.test(decoded)) {
-        return decoded;
-      }
+      if (/^[a-zA-Z0-9_\-\.\:\/]+$/.test(decoded)) return decoded;
     } catch (_) {}
-
     return str;
   }
 
@@ -68,10 +90,10 @@
   async function fetchJson(url, timeoutMs) {
     timeoutMs = timeoutMs || 6000;
     const controller = new AbortController();
-    const timer = setTimeout(function () { controller.abort(); }, timeoutMs);
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
     try {
       const res = await fetch(url, { signal: controller.signal });
-      const data = await res.json().catch(function () { return null; });
+      const data = await res.json().catch(() => null);
       return { ok: res.ok, status: res.status, data: data };
     } catch (e) {
       return { ok: false, error: e.message };
@@ -80,130 +102,89 @@
     }
   }
 
-  // --- Parser Eventi Reali Cosmos SDK ---
-  function parseTokenAmount(rawValue) {
-    if (typeof rawValue !== 'string') return null;
-    const match = rawValue.match(/(-?\d+)([A-Za-z]+)/);
-    if (!match) return null;
-
-    const atomicAmount = parseInt(match[1], 10);
-    const denom = (match[2] || '').toLowerCase();
-    const decimals = 6;
-
-    if (!isNaN(atomicAmount)) {
-      let tokenName = 'LUXA';
-      if (denom === 'ushard' || denom === 'shard' || denom === 'shards') tokenName = 'SHARDS';
-      else if (denom === 'uluxa' || denom === 'luxa') tokenName = 'LUXA';
-      else tokenName = denom.toUpperCase();
-
-      return {
-        atomicAmount: atomicAmount,
-        tokenName: tokenName,
-        humanAmount: atomicAmount / Math.pow(10, decimals),
-        rawDenom: denom
-      };
-    }
-
-    return null;
-  }
-
+  // --- Parser Eventi Cosmos SDK per Coin & NFT nativi ---
   function parseCosmosEvents(events, rawTxB64) {
     events = events || [];
-    const transfers = [];
+    const coins = [];
     let nftId = null;
     let detectedFee = 0;
-    let feeToken = 'LUXA';
+    let sender = 'luxa1...';
+    let recipient = 'luxa1...';
 
     for (let i = 0; i < events.length; i++) {
       const ev = events[i];
       const evType = smartDecode(ev.type);
       const attrs = ev.attributes || [];
 
-      let evSender = '';
-      let evRecipient = '';
-      let evAmount = '';
-
       for (let j = 0; j < attrs.length; j++) {
         const k = smartDecode(attrs[j].key);
         const v = smartDecode(attrs[j].value);
 
-        if (k === 'sender' || k === 'spender') evSender = v;
-        if (k === 'recipient' || k === 'receiver') evRecipient = v;
-        if (k === 'amount' || k === 'amounts') {
-          const parsedAmount = parseTokenAmount(v);
-          if (parsedAmount && (parsedAmount.rawDenom === 'uluxa' || parsedAmount.rawDenom === 'ushard' || parsedAmount.rawDenom === 'luxa' || parsedAmount.rawDenom === 'shard')) {
-            evAmount = v;
-          }
-        }
-        if (k === 'fee' || k === 'gas') {
-          const parsedFee = parseTokenAmount(v);
-          if (parsedFee && (parsedFee.rawDenom === 'uluxa' || parsedFee.rawDenom === 'ushard')) {
-            detectedFee = parsedFee.humanAmount;
-            feeToken = parsedFee.tokenName;
+        if (['sender', 'spender', 'from_address'].includes(k) && isCleanAddress(v)) sender = v;
+        if (['recipient', 'receiver', 'to_address'].includes(k) && isCleanAddress(v)) recipient = v;
+
+        // Parsing monete (LUXA e SHARD)
+        if (evType === 'transfer' && k === 'amount' && typeof v === 'string') {
+          const parts = v.split(',');
+          for (const p of parts) {
+            const m = p.trim().match(/^(\d+)(uluxa|ushard)$/);
+            if (m) {
+              const num = parseInt(m[1], 10) / 1000000;
+              const denom = m[2] === 'ushard' ? 'SHARDS' : 'LUXA';
+              coins.push(`${num.toFixed(4)} ${denom}`);
+            }
           }
         }
 
-        if ((k === 'nft_id' || k === 'license_id' || k === 'nftKey') && !nftId) {
-          nftId = String(v).trim();
+        if (k === 'fee' && typeof v === 'string' && v.includes('uluxa')) {
+          const num = parseInt(v.replace(/[^0-9]/g, ''), 10);
+          if (!isNaN(num)) detectedFee = num / 1000000;
         }
-      }
 
-      if (evType === 'transfer' && evAmount) {
-        const parsed = parseTokenAmount(evAmount);
-        if (parsed) {
-          transfers.push({
-            sender: evSender,
-            recipient: evRecipient,
-            uAmount: parsed.atomicAmount,
-            human: parsed.humanAmount,
-            tokenName: parsed.tokenName
-          });
+        // Riconoscimento messaggi ed eventi x/nft
+        if (['id', 'token_id', 'nft_id', 'nftKey'].includes(k)) {
+          const cleanId = String(v).trim();
+          if (NFT_HEROES[cleanId]) nftId = cleanId;
         }
       }
     }
 
+    // Fallback: ispezione del corpo della transazione Protobuf decodificato
     if (!nftId && rawTxB64) {
       try {
         const decoded = atob(rawTxB64);
-        const match = decoded.match(/400[1-4]/);
-        if (match) nftId = match[0];
+        if (decoded.includes('luxa-relics') || decoded.includes('/cosmos.nft.v1beta1')) {
+          const match = decoded.match(/luxa-relics.*?([0-4])/);
+          if (match && NFT_HEROES[match[1]]) {
+            nftId = match[1];
+          } else {
+            const idMatch = decoded.match(/\b([0-4])\b/);
+            if (idMatch && NFT_HEROES[idMatch[1]]) nftId = idMatch[1];
+          }
+        }
+        if (!nftId) {
+          const oldMatch = decoded.match(/400[1-4]/);
+          if (oldMatch) nftId = oldMatch[0];
+        }
       } catch (_) {}
     }
 
-    let sender = 'luxa1...';
-    let recipient = 'luxa1...';
-    let amountStr = '0.0000 LUXA';
-    let amountToken = 'LUXA';
+    const isNft = Boolean(nftId && NFT_HEROES[nftId]);
+    let amountDisplay = '0.0000 LUXA';
 
-    if (transfers.length > 0) {
-      transfers.sort(function (a, b) { return b.uAmount - a.uAmount; });
-
-      const mainTx = transfers[0];
-      if (isCleanAddress(mainTx.sender)) sender = mainTx.sender;
-      if (isCleanAddress(mainTx.recipient)) recipient = mainTx.recipient;
-
-      amountToken = mainTx.tokenName || 'LUXA';
-      amountStr = mainTx.human.toFixed(4) + ' ' + amountToken;
-
-      if (transfers.length > 1 && detectedFee === 0) {
-        const minor = transfers[transfers.length - 1];
-        if (minor.uAmount <= 5000) {
-          detectedFee = minor.human;
-          feeToken = minor.tokenName || 'LUXA';
-        }
-      }
+    if (isNft) {
+      amountDisplay = `1x NFT (${NFT_HEROES[nftId].name})`;
+    } else if (coins.length > 0) {
+      amountDisplay = coins.join(' + ');
     }
 
-    const isNft = Boolean(nftId && NFT_HEROES[nftId]);
-
     return {
-      sender: sender,
-      recipient: recipient,
-      amount: amountStr,
-      fee: detectedFee > 0 ? (detectedFee.toFixed(4) + ' ' + feeToken) : '0 LUXA (Free)',
-      nftId: nftId,
-      isNft: isNft,
-      token: amountToken
+      sender,
+      recipient,
+      amount: amountDisplay,
+      fee: detectedFee > 0 ? `${detectedFee.toFixed(4)} LUXA` : '0 LUXA (Free)',
+      nftId,
+      isNft
     };
   }
 
@@ -219,20 +200,10 @@
     const tx = res.data.result;
     const height = tx.height;
     const isSuccess = tx.tx_result ? (tx.tx_result.code === 0 || !tx.tx_result.code) : true;
-    const gasUsed = (tx.tx_result && tx.tx_result.gas_used) ? tx.tx_result.gas_used : '0';
-    const gasWanted = (tx.tx_result && tx.tx_result.gas_wanted) ? tx.tx_result.gas_wanted : '0';
+    const gasUsed = tx.tx_result?.gas_used || '0';
+    const gasWanted = tx.tx_result?.gas_wanted || '0';
 
-    const parsed = parseCosmosEvents((tx.tx_result && tx.tx_result.events) ? tx.tx_result.events : [], tx.tx);
-
-    let nftId = parsed.nftId;
-    if (!nftId) {
-      if (cleanHash.indexOf('4004') !== -1) nftId = '4004';
-      else if (cleanHash.indexOf('4003') !== -1) nftId = '4003';
-      else if (cleanHash.indexOf('4002') !== -1) nftId = '4002';
-      else if (cleanHash.indexOf('4001') !== -1) nftId = '4001';
-    }
-
-    const isNft = Boolean(nftId && NFT_HEROES[nftId]);
+    const parsed = parseCosmosEvents(tx.tx_result?.events || [], tx.tx);
 
     renderTxCard({
       hash: cleanHash,
@@ -244,8 +215,8 @@
       recipient: parsed.recipient,
       amount: parsed.amount,
       fee: parsed.fee,
-      nftId: nftId,
-      isNft: isNft
+      nftId: parsed.nftId,
+      isNft: parsed.isNft
     });
   }
 
@@ -262,20 +233,18 @@
 
     const sendRes = results[0];
     const recvRes = results[1];
-    const sentTxs = (sendRes.ok && sendRes.data && sendRes.data.result && sendRes.data.result.txs) ? sendRes.data.result.txs : [];
-    const recvTxs = (recvRes.ok && recvRes.data && recvRes.data.result && recvRes.data.result.txs) ? recvRes.data.result.txs : [];
+    const sentTxs = sendRes.data?.result?.txs || [];
+    const recvTxs = recvRes.data?.result?.txs || [];
 
-    const allTxs = sentTxs.concat(recvTxs).sort(function (a, b) {
-      return parseInt(b.height, 10) - parseInt(a.height, 10);
-    });
+    const allTxs = sentTxs.concat(recvTxs).sort((a, b) => parseInt(b.height, 10) - parseInt(a.height, 10));
 
     let rowsHtml = '';
     if (allTxs.length === 0) {
       rowsHtml = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted);">No on-chain activity for this address.</td></tr>';
     } else {
       rowsHtml = allTxs.slice(0, 10).map(function (t) {
-        const isOut = sentTxs.some(function (s) { return s.hash === t.hash; });
-        const gas = (t.tx_result && t.tx_result.gas_used) ? t.tx_result.gas_used : '0';
+        const isOut = sentTxs.some(s => s.hash === t.hash);
+        const gas = t.tx_result?.gas_used || '0';
         return '<tr>' +
           '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.hash + '\')">' + escapeHtml(shorten(t.hash, 8, 4)) + '</td>' +
           '<td class="mono">#' + escapeHtml(t.height) + '</td>' +
@@ -294,19 +263,13 @@
       '<span style="font-family:\'JetBrains Mono\',monospace; font-size:11px; color:var(--text-muted);">Network: luxa-1</span>' +
       '</div>' +
       '<div class="details-grid" style="margin-bottom:20px;">' +
-      '<div class="details-row">' +
-      '<span class="details-label">Address:</span>' +
-      '<span class="details-val mono" style="color:var(--cyan); font-weight:bold;">' + escapeHtml(address) + '</span>' +
+      '<div class="details-row"><span class="details-label">Address:</span><span class="details-val mono" style="color:var(--cyan); font-weight:bold;">' + escapeHtml(address) + '</span></div>' +
+      '<div class="details-row"><span class="details-label">Total Activity:</span><span class="details-val mono">' + allTxs.length + ' records found</span></div>' +
       '</div>' +
-      '<div class="details-row">' +
-      '<span class="details-label">Total On-Chain Tx:</span>' +
-      '<span class="details-val mono">' + allTxs.length + ' records found</span>' +
-      '</div>' +
-      '</div>' +
-      '<h3 style="font-family:\'Space Grotesk\',sans-serif; font-size:13px; margin-bottom:12px; color:#fff;">Account Activity</h3>' +
+      '<h3 style="font-family:\'Space Grotesk\',sans-serif; font-size:13px; margin-bottom:12px; color:#fff;">Account Ledger Records</h3>' +
       '<div style="overflow-x:auto;">' +
       '<table class="data-table">' +
-      '<thead><tr><th>Tx Hash</th><th>Block</th><th>Flow</th><th>Fee/Gas</th></tr></thead>' +
+      '<thead><tr><th>Tx Hash</th><th>Block</th><th>Flow</th><th>Gas Units</th></tr></thead>' +
       '<tbody>' + rowsHtml + '</tbody>' +
       '</table></div></div>';
   }
@@ -314,15 +277,15 @@
   // --- 3. Ricerca Blocco ---
   async function searchBlock(height) {
     const res = await fetchJson(RPC_URL + '/block?height=' + height);
-    if (!res.ok || !res.data || !res.data.result || !res.data.result.block) {
+    if (!res.ok || !res.data?.result?.block) {
       throw new Error('Block #' + height + ' not found.');
     }
 
     const blk = res.data.result.block;
     const stage = document.getElementById('searchStage');
-    const txCount = (blk.data && blk.data.txs) ? blk.data.txs.length : 0;
-    const proposer = (blk.header && blk.header.proposer_address) ? blk.header.proposer_address : 'unknown';
-    const timestamp = (blk.header && blk.header.time) ? new Date(blk.header.time).toLocaleString() : 'N/A';
+    const txCount = blk.data?.txs?.length || 0;
+    const proposer = blk.header?.proposer_address || 'validator';
+    const timestamp = blk.header?.time ? new Date(blk.header.time).toLocaleString() : 'N/A';
 
     stage.innerHTML = '<div class="result-card" style="--border-color: var(--cyan);">' +
       '<div class="card-top">' +
@@ -330,62 +293,51 @@
       '<span class="badge badge-cyan">BLOCK #' + escapeHtml(height) + '</span>' +
       '</div>' +
       '<div class="details-grid">' +
-      '<div class="details-row">' +
-      '<span class="details-label">Timestamp:</span>' +
-      '<span class="details-val">' + escapeHtml(timestamp) + '</span>' +
-      '</div>' +
-      '<div class="details-row">' +
-      '<span class="details-label">Proposer:</span>' +
-      '<span class="details-val mono" style="color:#88BBFF;">' + escapeHtml(proposer) + '</span>' +
-      '</div>' +
-      '<div class="details-row">' +
-      '<span class="details-label">Transactions:</span>' +
-      '<span class="details-val mono" style="color:var(--gold); font-weight:bold;">' + txCount + '</span>' +
-      '</div>' +
+      '<div class="details-row"><span class="details-label">Timestamp:</span><span class="details-val">' + escapeHtml(timestamp) + '</span></div>' +
+      '<div class="details-row"><span class="details-label">Proposer:</span><span class="details-val mono" style="color:#88BBFF;">' + escapeHtml(proposer) + '</span></div>' +
+      '<div class="details-row"><span class="details-label">Transactions:</span><span class="details-val mono" style="color:var(--gold); font-weight:bold;">' + txCount + '</span></div>' +
       '</div></div>';
   }
 
   // --- Rendering Scheda Transazione ---
   function renderTxCard(data) {
     const stage = document.getElementById('searchStage');
-    const accent = data.isNft ? 'var(--gold)' : 'var(--cyan)';
-    const transferToken = data.token || 'LUXA';
+    const isCitizenZero = String(data.nftId) === '0';
+    const accent = isCitizenZero ? 'var(--gold)' : (data.isNft ? '#00FFCC' : 'var(--cyan)');
 
     let visual = '';
     if (data.isNft) {
-      const meta = NFT_HEROES[data.nftId] || NFT_HEROES['4004'];
-      const targetHolder = isCleanAddress(data.recipient) ? data.recipient : (isCleanAddress(data.sender) ? data.sender : 'Protocol Anchor (luxa-1)');
-      const marquee = (' ⚡ HOLDER: ' + targetHolder + ' • ON-CHAIN: LUXA-1 • ANCHORED ⚡ ').repeat(4);
+      const meta = NFT_HEROES[data.nftId] || NFT_HEROES['0'];
+      const targetHolder = isCleanAddress(data.recipient) ? data.recipient : data.sender;
+      const marquee = (' ⚡ CITIZEN: #' + data.nftId + ' • ASSET: ' + meta.name.toUpperCase() + ' • ON-CHAIN: LUXA-1 ⚡ ').repeat(4);
 
-      visual = '<div class="highway-box" style="border-color:' + accent + ';">' +
-        '<img src="assets/nft/Nft_Images/' + meta.file + '" alt="' + escapeHtml(meta.name) + '" onerror="this.src=\'assets/images/logoluxa.png\';">' +
+      visual = '<div class="highway-box" style="border-color:' + accent + '; max-width:340px; margin:14px auto;">' +
+        '<img src="https://luxaecosystem.alwaysdata.net/assets/nfts/' + meta.file + '" alt="' + escapeHtml(meta.name) + '" onerror="this.src=\'assets/images/logoluxa.png\';" style="width:100%; max-height:300px; object-fit:cover; display:block;">' +
         '<div class="sovereign-highway-ticker">' +
         '<div class="highway-track">' + escapeHtml(marquee) + '</div>' +
         '</div></div>';
     }
 
-    const safeRecipientDisplay = isCleanAddress(data.recipient) ? data.recipient : (data.isNft ? 'Protocol Anchor (luxa-1)' : data.sender);
+    const titleBadge = isCitizenZero
+      ? '👑 GENESIS PROGENITOR (CITIZEN ZERO #0)'
+      : (data.isNft ? '🏛️ SOVEREIGN GENESIS ARTIFACT (#' + escapeHtml(data.nftId) + ')' : '🪙 NATIVE LEDGER SETTLEMENT');
 
-    stage.innerHTML = '<div class="result-card" style="--border-color: ' + accent + ';">' +
+    stage.innerHTML = '<div class="result-card" style="--border-color: ' + accent + '; box-shadow: 0 0 25px ' + (isCitizenZero ? 'rgba(255,215,0,0.2)' : 'rgba(0,255,204,0.15)') + ';">' +
       '<div class="card-top">' +
       '<button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>' +
-      '<span class="badge ' + (data.isNft ? 'badge-gold' : 'badge-cyan') + '">' +
-      (data.isNft ? 'SOVEREIGN LICENSE (#' + escapeHtml(data.nftId) + ')' : 'NATIVE TRANSFER (' + escapeHtml(transferToken) + ')') +
-      '</span>' +
-      '<span class="badge ' + (data.isSuccess ? 'badge-ok' : 'badge-gold') + '">' +
-      (data.isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED') +
-      '</span>' +
+      '<span class="badge ' + (isCitizenZero ? 'badge-gold' : 'badge-cyan') + '">' + titleBadge + '</span>' +
+      '<span class="badge ' + (data.isSuccess ? 'badge-ok' : 'badge-gold') + '">' + (data.isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED') + '</span>' +
       '</div>' +
       visual +
       '<div class="details-grid">' +
       '<div class="details-row"><span class="details-label">Block Height:</span><span class="details-val mono" style="color:var(--gold);">#' + escapeHtml(data.height) + '</span></div>' +
-      '<div class="details-row"><span class="details-label">Amount:</span><span class="details-val" style="font-weight:bold; color:var(--cyan);">' + escapeHtml(data.amount) + '</span></div>' +
+      '<div class="details-row"><span class="details-label">Transfer Asset:</span><span class="details-val" style="font-weight:bold; color:' + accent + ';">' + escapeHtml(data.amount) + '</span></div>' +
       '<div class="details-row"><span class="details-label">Network Fee:</span><span class="details-val mono">' + escapeHtml(data.fee) + '</span></div>' +
-      '<div class="details-row"><span class="details-label">Sender:</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + data.sender + '\')">' + escapeHtml(data.sender) + '</span></div>' +
-      '<div class="details-row"><span class="details-label">Recipient:</span><span class="details-val mono">' + escapeHtml(safeRecipientDisplay) + '</span></div>' +
-      '<div class="details-row"><span class="details-label">Gas Used:</span><span class="details-val mono">' + escapeHtml(data.gasUsed) + ' / ' + escapeHtml(data.gasWanted) + '</span></div>' +
+      '<div class="details-row"><span class="details-label">Sender (Origin):</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + data.sender + '\')">' + escapeHtml(data.sender) + '</span></div>' +
+      '<div class="details-row"><span class="details-label">Recipient (Owner):</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + data.recipient + '\')">' + escapeHtml(data.recipient) + '</span></div>' +
+      '<div class="details-row"><span class="details-label">Gas Consumed:</span><span class="details-val mono">' + escapeHtml(data.gasUsed) + ' / ' + escapeHtml(data.gasWanted) + '</span></div>' +
       '</div>' +
-      '<button type="button" class="back-btn" style="width:100%; margin-top:16px; justify-content:center; padding:10px;" onclick="navigator.clipboard.writeText(\'' + data.hash + '\'); this.textContent=\'Hash Copied! 📋\';">' +
+      '<button type="button" class="back-btn" style="width:100%; margin-top:16px; justify-content:center; padding:10px; border-color:' + accent + '; color:' + accent + ';" onclick="navigator.clipboard.writeText(\'' + data.hash + '\'); window.showToast ? window.showToast(\'Hash copied!\') : alert(\'Hash copied!\');">' +
       '📋 Copy Transaction Hash' +
       '</button>' +
       '</div>';
@@ -408,7 +360,7 @@
       } else if (/^(0x)?[0-9a-fA-F]{16,}$/.test(q)) {
         await searchTx(q);
       } else {
-        throw new Error('Invalid query format. Enter a valid Tx Hash, luxa1 address, or Block number.');
+        throw new Error('Invalid query format. Enter a Tx Hash, luxa1 address, or Block number.');
       }
     } catch (err) {
       stage.innerHTML = '<div class="status-msg status-error">❌ ' + escapeHtml(err.message) + '</div>';
@@ -425,13 +377,13 @@
     }
   }
 
-  // --- Sincronizzazione Nodo & Tabelle PRO ---
+  // --- Sincronizzazione Nodo & Tabelle ---
   let currentLatestBlock = 0;
 
   async function syncNode() {
     const badge = document.getElementById('chainBlockBadge');
     const res = await fetchJson(RPC_URL + '/status');
-    if (res.ok && res.data && res.data.result && res.data.result.sync_info && res.data.result.sync_info.latest_block_height) {
+    if (res.ok && res.data?.result?.sync_info?.latest_block_height) {
       currentLatestBlock = parseInt(res.data.result.sync_info.latest_block_height, 10);
       if (badge) badge.textContent = 'luxa-1 • #' + currentLatestBlock;
       loadRecentBlocks(currentLatestBlock);
@@ -445,13 +397,12 @@
     const minHeight = Math.max(1, latestHeight - 9);
     const res = await fetchJson(RPC_URL + '/blockchain?minHeight=' + minHeight + '&maxHeight=' + latestHeight, 4000);
 
-    if (res.ok && res.data && res.data.result && Array.isArray(res.data.result.block_metas)) {
-      const blocks = res.data.result.block_metas;
-      tbody.innerHTML = blocks.map(function (b) {
-        const h = b.header ? b.header.height : (b.block_id ? b.block_id.hash : 'N/A');
-        const time = b.header ? b.header.time : '';
-        const proposer = (b.header && b.header.proposer_address) ? shorten(b.header.proposer_address, 6, 4) : 'validator';
-        const numTx = b.num_txs || (b.header && b.header.num_txs) || 0;
+    if (res.ok && Array.isArray(res.data?.result?.block_metas)) {
+      tbody.innerHTML = res.data.result.block_metas.map(function (b) {
+        const h = b.header?.height || 'N/A';
+        const time = b.header?.time || '';
+        const proposer = b.header?.proposer_address ? shorten(b.header.proposer_address, 6, 4) : 'validator';
+        const numTx = b.num_txs || b.header?.num_txs || 0;
 
         return '<tr>' +
           '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + h + '\')">#' + escapeHtml(h) + '</td>' +
@@ -467,11 +418,9 @@
     const tbody = document.getElementById('latestTxsBody') || document.getElementById('recentTxsBody');
     if (!tbody) return;
 
-    const isProTable = Boolean(document.getElementById('latestTxsBody'));
-
     try {
       const rpcRes = await fetchJson(RPC_URL + '/tx_search?query="tx.height>0"&page=1&per_page=10&order_by="desc"', 4000);
-      const txs = (rpcRes.ok && rpcRes.data && rpcRes.data.result && Array.isArray(rpcRes.data.result.txs)) ? rpcRes.data.result.txs : [];
+      const txs = rpcRes.data?.result?.txs || [];
 
       if (txs.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">No transactions recorded on luxa-1. Node is live and synced.</td></tr>';
@@ -479,36 +428,25 @@
       }
 
       tbody.innerHTML = txs.map(function (t) {
-        const parsed = parseCosmosEvents((t.tx_result && t.tx_result.events) ? t.tx_result.events : [], t.tx);
+        const parsed = parseCosmosEvents(t.tx_result?.events || [], t.tx);
         const isNft = parsed.isNft;
         const amount = parsed.amount;
         const status = (t.tx_result && (t.tx_result.code === 0 || !t.tx_result.code)) ? 'CONFIRMED' : 'FAILED';
 
-        if (isProTable) {
-          return '<tr>' +
-            '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.hash + '\')">' + escapeHtml(shorten(t.hash, 6, 4)) + '</td>' +
-            '<td><span class="badge ' + (isNft ? 'badge-gold' : 'badge-cyan') + '" style="font-size:9px;">' + (isNft ? 'NFT' : 'TX') + '</span></td>' +
-            '<td class="mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.height + '\')">#' + escapeHtml(t.height) + '</td>' +
-            '<td class="mono muted-note">Latest</td>' +
-            '<td style="font-weight:bold; color:var(--cyan);">' + escapeHtml(amount) + '</td>' +
-            '<td><span class="badge badge-ok" style="font-size:9px;">' + escapeHtml(status) + '</span></td>' +
-            '</tr>';
-        } else {
-          return '<tr>' +
-            '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.hash + '\')">' + escapeHtml(shorten(t.hash, 8, 4)) + '</td>' +
-            '<td><span class="badge ' + (isNft ? 'badge-gold' : 'badge-cyan') + '" style="font-size:10px;">' + (isNft ? 'SOVEREIGN NFT' : 'TRANSFER') + '</span></td>' +
-            '<td style="font-weight:bold; color:var(--cyan);">' + escapeHtml(amount) + '</td>' +
-            '<td class="mono">#' + escapeHtml(t.height) + '</td>' +
-            '<td><span class="badge badge-ok" style="font-size:10px;">' + escapeHtml(status) + '</span></td>' +
-            '</tr>';
-        }
+        return '<tr>' +
+          '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.hash + '\')">' + escapeHtml(shorten(t.hash, 6, 4)) + '</td>' +
+          '<td><span class="badge ' + (isNft ? 'badge-gold' : 'badge-cyan') + '" style="font-size:9px;">' + (isNft ? 'NFT' : 'TX') + '</span></td>' +
+          '<td class="mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.height + '\')">#' + escapeHtml(t.height) + '</td>' +
+          '<td class="mono muted-note">Latest</td>' +
+          '<td style="font-weight:bold; color:var(--cyan);">' + escapeHtml(amount) + '</td>' +
+          '<td><span class="badge badge-ok" style="font-size:9px;">' + escapeHtml(status) + '</span></td>' +
+          '</tr>';
       }).join('');
     } catch (_) {
       tbody.innerHTML = '<tr><td colspan="6" class="empty-cell">Connected to luxa-1 node. Awaiting transactions.</td></tr>';
     }
   }
 
-  // --- API Globale ---
   window.LuxaExplorer = {
     search: search,
     resetView: resetView,
@@ -525,10 +463,10 @@
     const input = document.getElementById('searchInput');
     const refreshBtn = document.getElementById('refreshActivityBtn');
 
-    if (btn) btn.addEventListener('click', function () { search(); });
-    if (input) input.addEventListener('keydown', function (e) { if (e.key === 'Enter') search(); });
+    if (btn) btn.addEventListener('click', () => search());
+    if (input) input.addEventListener('keydown', (e) => { if (e.key === 'Enter') search(); });
     if (refreshBtn) {
-      refreshBtn.addEventListener('click', function () {
+      refreshBtn.addEventListener('click', () => {
         syncNode();
         loadRecentActivity();
       });
