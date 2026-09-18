@@ -106,7 +106,7 @@
           }
         }
       } catch (err) {
-        console.warn('[Explorer] Fetch nftlist.json fallito, uso fallback interno:', err);
+        console.warn('[Explorer] nftlist.json fetch failed, using internal fallback:', err);
       }
     }
 
@@ -394,7 +394,7 @@
       nftsBannerHtml = `
         <div style="margin-bottom:24px; background:rgba(0,255,204,0.03); border:1px solid rgba(0,255,204,0.25); border-radius:16px; padding:18px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <span style="font-family:'Orbitron',sans-serif; font-size:12px; color:#00FFCC; font-weight:bold; letter-spacing:0.5px;">🏛️ GENESIS RELICS CUSTODITI (ON-CHAIN)</span>
+            <span style="font-family:'Orbitron',sans-serif; font-size:12px; color:#00FFCC; font-weight:bold; letter-spacing:0.5px;">🏛️ GENESIS RELICS OWNED (ON-CHAIN)</span>
             <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#22c55e; background:rgba(34,197,94,0.15); border:1px solid #22c55e; padding:3px 9px; border-radius:6px; font-weight:bold;">${onChainNfts.length} Relics</span>
           </div>
           <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:14px;">
@@ -406,7 +406,7 @@
 
     let rowsHtml = '';
     if (allTxs.length === 0) {
-      rowsHtml = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted);">Nessuna transazione bancaria trovata per questo indirizzo.</td></tr>';
+      rowsHtml = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted);">No banking transactions found for this address.</td></tr>';
     } else {
       rowsHtml = allTxs.slice(0, 10).map(t => {
         const isOut = sentTxs.some(s => s.hash === t.hash);
@@ -478,7 +478,7 @@
 
     stage.innerHTML = `
       <div class="status-msg status-loading" style="color:#00FFCC;">
-        <i class="fas fa-spinner fa-spin"></i> Interrogazione registro on-chain per la classe ${escapeHtml(classId)}...
+        <i class="fas fa-spinner fa-spin"></i> Querying the on-chain registry for class ${escapeHtml(classId)}...
       </div>
     `;
 
@@ -519,7 +519,7 @@
         </div>
       `;
     } catch (err) {
-      stage.innerHTML = '<div class="status-msg status-error">❌ Impossibile recuperare i dettagli della collezione: ' + escapeHtml(err.message) + '</div>';
+      stage.innerHTML = '<div class="status-msg status-error">❌ Unable to retrieve collection details: ' + escapeHtml(err.message) + '</div>';
     }
   }
 
