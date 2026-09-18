@@ -19,7 +19,6 @@
 
   <!-- CSS del sito -->
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/vault-modal.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -311,7 +310,7 @@
         const launchBtn = navActions.querySelector('a.btn-primary');
         const connectBtnHtml = `
         <button type="button" class="btn-connect-vault" id="btnConnectVault">
-          <img src="assets/images/icon128.png" alt="LUXA Vault" class="btn-vault-icon" onerror="this.onerror=null; this.src='assets/images/logoluxa.png';">
+          <img src="assets/images/logoluxa.png" alt="LUXA Vault" class="btn-vault-icon">
           <span id="connectVaultLabel">Connect Vault</span>
         </button>`;
         if (launchBtn) launchBtn.insertAdjacentHTML('beforebegin', connectBtnHtml);
@@ -372,7 +371,7 @@
           connectBtn.innerHTML = `<img src="${escapeHtml(photoUrl)}" alt="" style="width:18px;height:18px;border-radius:50%;border:1px solid #00FFCC;object-fit:cover;"> <span id="connectVaultLabel">${escapeHtml(username)}</span>`;
         } else {
           connectBtn.innerHTML = `
-          <img src="assets/images/icon128.png" alt="LUXA Vault" class="btn-vault-icon" onerror="this.onerror=null; this.src='assets/images/logoluxa.png';">
+          <img src="assets/images/logoluxa.png" alt="LUXA Vault" class="btn-vault-icon">
           <span id="connectVaultLabel">${escapeHtml(username)}</span>`;
         }
         connectBtn.classList.add('is-connected');
@@ -382,7 +381,7 @@
         activeAddress = null;
         sessionStorage.removeItem('luxa_connected_address');
         connectBtn.innerHTML = `
-        <img src="assets/images/icon128.png" alt="LUXA Vault" class="btn-vault-icon" onerror="this.onerror=null; this.src='assets/images/logoluxa.png';">
+        <img src="assets/images/logoluxa.png" alt="LUXA Vault" class="btn-vault-icon">
         <span id="connectVaultLabel">Connect Vault</span>`;
         connectBtn.classList.remove('is-connected');
       }
@@ -478,7 +477,7 @@
           openModal('LUXA Vault Required', `
           <div style="text-align:center; padding:10px 0;">
             <div style="display:flex; justify-content:center; margin-bottom:16px;">
-              <img src="assets/images/icon128.png" alt="LUXA Vault" style="width:80px; height:80px; border-radius:20px; border:2px solid var(--cyan); box-shadow:0 0 25px rgba(0,255,204,0.35); object-fit:contain; padding:8px; background:rgba(8,12,31,0.85);" onerror="this.onerror=null; this.src='assets/images/logoluxa.png';">
+              <img src="assets/images/logoluxa.png" alt="LUXA Vault" style="width:80px; height:80px; border-radius:20px; border:2px solid var(--cyan); box-shadow:0 0 25px rgba(0,255,204,0.35); object-fit:contain; padding:8px; background:rgba(8,12,31,0.85);">
             </div>
             <p style="font-size:13.5px; color:#94a3b8; line-height:1.6; margin-bottom:18px;">
               The sovereign extension <b>LUXA Vault — Spider's Nest</b> was not detected on this browser. Please install the extension to securely sign ledger requests locally.

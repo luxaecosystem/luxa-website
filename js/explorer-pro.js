@@ -89,11 +89,7 @@
 
     if (!_externalRegistry) {
       try {
-        // Tenta la risorsa same-origin locale; se fallisce, usa AlwaysData.
-        let res = await fetch('./nftlist.json', { cache: 'no-cache' });
-        if (!res.ok) {
-          res = await fetch('https://luxaecosystem.alwaysdata.net/nftlist.json', { cache: 'no-cache' });
-        }
+        const res = await fetch('https://luxaecosystem.alwaysdata.net/nftlist.json', { cache: 'no-cache' });
 
         if (res.ok) {
           const doc = await res.json();
