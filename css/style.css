@@ -864,6 +864,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
     background: linear-gradient(140deg, rgba(34,211,238,0.55), transparent 35%, transparent 65%, rgba(168,85,247,0.55));
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     mask-composite: exclude;
     pointer-events: none;
 }
