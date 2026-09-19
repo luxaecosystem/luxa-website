@@ -50,7 +50,10 @@
                 </a>
                 <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-large">
                     <i class="fab fa-chrome"></i> <span>Install Chrome Extension</span>
-                </a>
+                </a><!-- LUXA-APK:hero -->
+                <a href="assets/downloads/LUXA-Vault-1.4.0.apk" download="LUXA-Vault-1.4.0.apk" target="_self" rel="noopener" class="btn btn-outline btn-large">
+                    <i class="fab fa-android"></i> <span>Download Android App</span>
+                </a><!-- /LUXA-APK:hero -->
                 <a href="explorer.html" class="btn btn-outline btn-large">
                     <i class="fas fa-cubes"></i> <span>Live Block Explorer</span>
                 </a>
@@ -130,13 +133,116 @@
                 <div>
                     <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600;">
                         <i class="fab fa-chrome"></i> <span>Install on Chrome</span>
-                    </a>
+                    </a><!-- LUXA-APK:card -->
+                    <a href="assets/downloads/LUXA-Vault-1.4.0.apk" download="LUXA-Vault-1.4.0.apk" target="_self" rel="noopener" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600; margin-left: 8px;">
+                        <i class="fab fa-android"></i> <span>Android App</span>
+                    </a><!-- /LUXA-APK:card -->
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SHARED WEALTH & REVENUE SHARING -->
+    <!-- LUXA-APK:section -->
+    <section id="vault-app" class="section section-dark">
+        <style>
+            #vault-app .vault-dl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+            #vault-app .vault-dl { display: flex; flex-direction: column; gap: 12px; padding: 26px; border: 1px solid rgba(168,85,247,0.35); background: linear-gradient(135deg, rgba(20,20,35,0.7), rgba(15,15,28,0.9)); }
+            #vault-app .vault-badge { align-self: flex-start; background: rgba(34,211,238,0.15); color: var(--secondary); font-size: 0.72rem; padding: 3px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; }
+            #vault-app .vault-dl h3 { margin: 0; font-size: 1.25rem; color: #fff; display: flex; align-items: center; gap: 10px; }
+            #vault-app .vault-dl p { margin: 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+            #vault-app .vault-dl .btn { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; }
+            #vault-app .vault-install { color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; }
+            #vault-app .vault-install summary { cursor: pointer; color: var(--secondary); font-weight: 600; }
+            #vault-app .vault-install ol { margin: 8px 0 0; padding-left: 20px; }
+            #vault-app .vault-hash { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 0.72rem; color: var(--text-muted); }
+            #vault-app .vault-hash code { flex: 1 1 240px; font-family: var(--font-mono); word-break: break-all; background: rgba(255,255,255,0.05); padding: 6px 8px; border-radius: 6px; }
+            #vault-app .vault-copy { background: transparent; color: var(--secondary); border: 1px solid rgba(34,211,238,0.4); border-radius: 6px; padding: 5px 10px; cursor: pointer; font-size: 0.72rem; }
+            #vault-app .vault-note { font-size: 0.75rem; color: var(--text-muted); }
+            #vault-app .vault-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; margin-top: 40px; }
+            #vault-app .vault-shot { margin: 0; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); background: #05070d; }
+            #vault-app .vault-shot img { display: block; width: 100%; height: auto; }
+            #vault-app .vault-shot figcaption { padding: 10px 14px; font-size: 0.8rem; color: var(--text-muted); }
+        </style>
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">LUXA Vault</span>
+                <h2>Your Vault, Everywhere:<br>Chrome &amp; Android</h2>
+                <p>The same non-custodial Spider's Nest wallet on desktop and on your phone. Keys are encrypted on your device and never sent to any server.</p>
+            </div>
+
+            <div class="vault-dl-grid">
+                <div class="about-card vault-dl">
+                    <span class="vault-badge">Chrome Extension</span>
+                    <h3><i class="fab fa-chrome"></i> LUXA Vault for Chrome</h3>
+                    <p>Manage your keys, sign transactions on the <code>luxa-1</code> network and connect to decentralized web apps straight from your browser.</p>
+                    <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="fab fa-chrome"></i> <span>Install on Chrome</span></a>
+                </div>
+
+                <div class="about-card vault-dl">
+                    <span class="vault-badge">Android APK · v1.4.0 · 6.5 MB</span>
+                    <h3><i class="fab fa-android"></i> LUXA Vault for Android</h3>
+                    <p>The same vault in your pocket, with encrypted zero-knowledge backup to your own Google Drive. Distributed directly from this official page, not through Google Play.</p>
+                    <a href="assets/downloads/LUXA-Vault-1.4.0.apk" download="LUXA-Vault-1.4.0.apk" target="_self" rel="noopener" class="btn btn-primary"><i class="fas fa-download"></i> <span>Download APK</span></a>
+                    <details class="vault-install">
+                        <summary>How to install</summary>
+                        <ol>
+                            <li>Open the downloaded file. If Android asks, allow installing from your browser or file manager ("Install unknown apps").</li>
+                            <li>Android or Google Play Protect may warn you because the app is not from Google Play. Before installing, check that the SHA-256 below matches your file.</li>
+                            <li>Open LUXA Vault, create or import your vault and set your PIN.</li>
+                        </ol>
+                    </details>
+                    <div class="vault-hash">
+                        <span>SHA-256</span>
+                        <code id="vaultApkSha">F28C81AFCB734449E70F96BACC32E5BD7A78A086D5DE5926BFCC9DA3CB60AB60</code>
+                        <button type="button" class="vault-copy" id="vaultCopySha">Copy</button>
+                    </div>
+                    <span class="vault-note">Only install LUXA Vault from this official page.</span>
+                </div>
+            </div>
+
+            <div class="vault-gallery">
+                <figure class="vault-shot">
+                    <a href="assets/images/vault-unlock.webp" target="_blank" rel="noopener"><img src="assets/images/vault-unlock.webp" alt="LUXA Vault unlock screen with PIN entry" width="1280" height="800" loading="lazy" decoding="async"></a>
+                    <figcaption>Unlock with your PIN: keys are decrypted only on your device.</figcaption>
+                </figure>
+                <figure class="vault-shot">
+                    <a href="assets/images/vault-dashboard.webp" target="_blank" rel="noopener"><img src="assets/images/vault-dashboard.webp" alt="LUXA Vault dashboard with balance, receive address and multi-vault actions" width="1280" height="800" loading="lazy" decoding="async"></a>
+                    <figcaption>Multi-vault dashboard: balance, address, import and 24-word backup.</figcaption>
+                </figure>
+                <figure class="vault-shot">
+                    <a href="assets/images/vault-live-onchain.webp" target="_blank" rel="noopener"><img src="assets/images/vault-live-onchain.webp" alt="Live on-chain activity and dual asset balances (uluxa and ushard)" width="1280" height="800" loading="lazy" decoding="async"></a>
+                    <figcaption>Live on-chain activity with dual-asset balances (uluxa and ushard).</figcaption>
+                </figure>
+                <figure class="vault-shot">
+                    <a href="assets/images/vault-onchain-activity.webp" target="_blank" rel="noopener"><img src="assets/images/vault-onchain-activity.webp" alt="On-chain transaction history and Sovereign NFT Vault" width="1280" height="800" loading="lazy" decoding="async"></a>
+                    <figcaption>Transaction history and the Sovereign NFT Vault, anchored on luxa-1.</figcaption>
+                </figure>
+                <figure class="vault-shot">
+                    <a href="assets/images/vault-nft-relics.webp" target="_blank" rel="noopener"><img src="assets/images/vault-nft-relics.webp" alt="Sovereign NFT Vault with Genesis relics and licenses" width="1280" height="800" loading="lazy" decoding="async"></a>
+                    <figcaption>Genesis relics and licenses registered on-chain.</figcaption>
+                </figure>
+                <figure class="vault-shot">
+                    <a href="assets/images/vault-receive-qr.webp" target="_blank" rel="noopener"><img src="assets/images/vault-receive-qr.webp" alt="Receive screen with Bech32 QR code for luxa1 addresses" width="1280" height="800" loading="lazy" decoding="async"></a>
+                    <figcaption>Receive assets with an instant Bech32 QR code.</figcaption>
+                </figure>
+            </div>
+        </div>
+        <script>
+        (function () {
+            var btn = document.getElementById('vaultCopySha');
+            var code = document.getElementById('vaultApkSha');
+            if (!btn || !code || !navigator.clipboard) return;
+            btn.addEventListener('click', function () {
+                navigator.clipboard.writeText(code.textContent.trim()).then(function () {
+                    btn.textContent = 'Copied';
+                    setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+                });
+            });
+        })();
+        </script>
+    </section>
+
+<!-- /LUXA-APK:section --><!-- SHARED WEALTH & REVENUE SHARING -->
     <section id="shared-wealth" class="section">
         <div class="container">
             <div class="section-header">
@@ -675,7 +781,10 @@
                     </a>
                     <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-xlarge">
                         <i class="fab fa-chrome"></i> <span>Chrome Extension</span>
-                    </a>
+                    </a><!-- LUXA-APK:cta -->
+                    <a href="assets/downloads/LUXA-Vault-1.4.0.apk" download="LUXA-Vault-1.4.0.apk" target="_self" rel="noopener" class="btn btn-outline btn-xlarge">
+                        <i class="fab fa-android"></i> <span>Android App</span>
+                    </a><!-- /LUXA-APK:cta -->
                     <a href="explorer.html" class="btn btn-outline btn-xlarge">
                         <i class="fas fa-search"></i> <span>Explore Block Ledger</span>
                     </a>
