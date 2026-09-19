@@ -1,0 +1,31 @@
+LUXA — aggiornamento sito: pulsante Android + galleria LUXA Vault
+=================================================================
+
+1) IMMAGINI (gia' ottimizzate, ~90 KB ciascuna)
+   Copia la cartella "assets" di questo zip dentro la cartella del sito (luxa-website),
+   unendola a quella esistente:  assets/images/vault-*.webp
+
+   vault-unlock.webp            schermata di sblocco con PIN
+   vault-dashboard.webp         dashboard multi-vault
+   vault-live-onchain.webp      attivita' on-chain e doppio asset
+   vault-onchain-activity.webp  storico transazioni + NFT Vault
+   vault-nft-relics.webp        Genesis relics e licenze
+   vault-receive-qr.webp        ricezione con QR Bech32
+
+2) PULSANTI + SEZIONE NELLA HOME
+   Copia "add-android-app.mjs" nella cartella principale del sito, poi in PowerShell:
+
+     cd C:\percorso\luxa-website
+     node add-android-app.mjs assets\downloads\NOME-DELL-APK.apk 1.4.0
+
+   Lo script calcola da solo SHA-256 e dimensione, aggiunge il pulsante "Download Android App"
+   accanto ai 3 pulsanti Chrome (hero, card estensione, CTA finale) e inserisce la sezione
+   "LUXA Vault - Chrome & Android" prima di "Shared Wealth".
+   Puo' essere rilanciato a ogni nuova versione dell'APK: aggiorna solo i suoi blocchi.
+
+3) CHROME WEB STORE
+   La cartella "chrome-store-screenshots" contiene le stesse 6 immagini in 1280x800 PNG
+   (formato richiesto dallo store), gia' nell'ordine consigliato.
+
+4) PUBBLICA
+   git add . && git commit -m "Add Android app download" && git push
