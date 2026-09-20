@@ -16,9 +16,13 @@ const CHROME_URL =
 const INDEX = "index.html";
 
 // ---------- argomenti ----------
-const apkArg = process.argv[2];
+const rawArgs = process.argv.slice(2);
+let urlFlag;
+const urlIdx = rawArgs.indexOf("--url");
+if (urlIdx !== -1) { urlFlag = rawArgs[urlIdx + 1]; rawArgs.splice(urlIdx, 2); }
+const apkArg = rawArgs[0];
 if (!apkArg) {
-  console.error("Uso: node add-android-app.mjs <percorso-apk> [versione]\nEsempio: node add-android-app.mjs assets/downloads/LUXA-Vault-1.4.0.apk 1.4.0");
+  console.error("Uso: node add-android-app.mjs <percorso-apk> [versione] [--url <https-url>]");
   process.exit(1);
 }
 const apkAbs = resolve(apkArg);
@@ -30,16 +34,21 @@ if (!existsSync(INDEX)) {
   console.error("index.html non trovato: lancia lo script dalla cartella principale del sito.");
   process.exit(1);
 }
-const rel = relative(process.cwd(), apkAbs);
-if (rel.startsWith("..")) {
-  console.error("L'APK deve stare dentro la cartella del sito, cosi' il link funziona online.");
-  process.exit(1);
+let href;
+if (urlFlag) {
+  href = urlFlag;
+} else {
+  const rel = relative(process.cwd(), apkAbs);
+  if (rel.startsWith("..")) {
+    console.error("L'APK deve stare dentro la cartella del sito, oppure usa --url.");
+    process.exit(1);
+  }
+  href = encodeURI(rel.split(sep).join("/"));
 }
-const href = encodeURI(rel.split(sep).join("/"));
 const apkBuf = readFileSync(apkAbs);
 const sha256 = createHash("sha256").update(apkBuf).digest("hex").toUpperCase();
 const sizeMB = (statSync(apkAbs).size / (1024 * 1024)).toFixed(1);
-const version = process.argv[3] || (basename(apkAbs).match(/(\d+\.\d+(?:\.\d+)*)/) || [])[1] || "1.0";
+const version = rawArgs[1] || (basename(apkAbs).match(/(\d+\.\d+(?:\.\d+)*)/) || [])[1] || "1.0";
 const fileName = basename(apkAbs);
 
 // ---------- galleria (solo immagini presenti in assets/images) ----------
@@ -114,7 +123,7 @@ const section = `
                 </div>
 
                 <div class="about-card vault-dl">
-                    <span class="vault-badge">Android APK · v${version} · ${sizeMB} MB</span>
+                    <span class="vault-badge">Android APK ط¢آ· v${version} ط¢آ· ${sizeMB} MB</span>
                     <h3><i class="fab fa-android"></i> LUXA Vault for Android</h3>
                     <p>The same vault in your pocket, with encrypted zero-knowledge backup to your own Google Drive. Distributed directly from this official page, not through Google Play.</p>
                     <a ${apkAttrs} class="btn btn-primary"><i class="fas fa-download"></i> <span>Download APK</span></a>
@@ -190,6 +199,6 @@ writeFileSync(INDEX, html, "utf8");
 console.log(`APK: ${href}  (v${version}, ${sizeMB} MB)`);
 console.log(`SHA-256: ${sha256}`);
 console.log(`Immagini nella galleria: ${shots.length}/6`);
-done.forEach((d) => console.log("  ✓ " + d));
+done.forEach((d) => console.log("  أ¢إ“â€œ " + d));
 warnings.forEach((w) => console.log("  ! " + w));
 if (warnings.length) process.exitCode = 2;
