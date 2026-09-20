@@ -123,7 +123,7 @@ const section = `
                 </div>
 
                 <div class="about-card vault-dl">
-                    <span class="vault-badge">Android APK ط¢آ· v${version} ط¢آ· ${sizeMB} MB</span>
+                    <span class="vault-badge">Android APK &middot; v${version} &middot; ${sizeMB} MB</span>
                     <h3><i class="fab fa-android"></i> LUXA Vault for Android</h3>
                     <p>The same vault in your pocket, with encrypted zero-knowledge backup to your own Google Drive. Distributed directly from this official page, not through Google Play.</p>
                     <a ${apkAttrs} class="btn btn-primary"><i class="fas fa-download"></i> <span>Download APK</span></a>
