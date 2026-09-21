@@ -4,185 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="wFg7fq4UzbK3x8YV6zHNMm76KRvZyKHvbE-hD4bnY1s">
+    <meta name="theme-color" content="#080711">
+
+    <title>LUXA Ecosystem — Sovereign Cosmos L1, Spider Wallet &amp; Shared Wealth</title>
+    <meta name="description" content="LUXA Ecosystem - Sovereign Cosmos L1 blockchain, decentralized Spider Wallet mesh, revenue sharing for everyone, and verified KYC mainnet migration.">
+
+    <!-- Verifica che dominio e immagine siano quelli corretti -->
+    <link rel="canonical" href="https://luxaecosystem.xyz/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="LUXA Ecosystem — Sovereign Cosmos L1 &amp; Spider Wallet">
+    <meta property="og:description" content="Sovereign Cosmos L1, non-custodial Spider Wallet and shared-wealth tokenomics.">
+    <meta property="og:url" content="https://luxaecosystem.xyz/">
+    <meta property="og:image" content="https://luxaecosystem.xyz/assets/images/logoluxa.png">
+    <meta name="twitter:card" content="summary">
+
     <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
-    <link rel="stylesheet" href="css/style.css">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <title>LUXA Token — Sovereign L1 Cosmos Ecosystem, Spider Wallet &amp; Shared Wealth</title>
-    <meta name="description" content="LUXA Ecosystem - Sovereign Cosmos L1 blockchain, decentralized Spider Wallet mesh, Testnet sandbox, revenue sharing, and verified 60-day KYC mainnet migration.">
-    <base target="_blank">
-    <style>
-        html { scroll-behavior: smooth; }
-
-        /* REGOLA: Link a pagine HTML con colore blu dedicato */
-        a[href$=".html"], a[href*=".html?"], .page-html-link {
-            color: #38BDF8 !important;
-            text-decoration: none;
-            transition: all 0.2s ease;
-        }
-        a[href$=".html"]:hover, a[href*=".html?"]:hover, .page-html-link:hover {
-            color: #7dd3fc !important;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
-        }
-        .btn-page-link {
-            border-color: rgba(56, 189, 248, 0.4) !important;
-            color: #38BDF8 !important;
-        }
-        .btn-page-link:hover {
-            background: rgba(56, 189, 248, 0.1) !important;
-            border-color: #38BDF8 !important;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3) !important;
-        }
-
-        /* SEZIONE DOWNLOAD COMPATTA IN FONDO (STILE SITO PROFESSIONALE) */
-        #vault-app {
-            padding: 50px 0 60px;
-            background: #060811;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        #vault-app .vault-dl-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            max-width: 960px;
-            margin: 0 auto;
-        }
-        #vault-app .vault-dl {
-            background: #0a0e1c;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
-            padding: 20px 22px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            scroll-margin-top: 100px;
-            transition: all 0.25s ease;
-        }
-        #vault-app .vault-dl:hover, #vault-app .vault-dl:target {
-            border-color: #00FFCC;
-            box-shadow: 0 0 25px rgba(0, 255, 204, 0.15);
-        }
-        #vault-app .vault-header-compact {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        #vault-app .vault-icon-compact {
-            width: 46px;
-            height: 46px;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 255, 204, 0.4);
-            background: #04060b;
-            padding: 2px;
-            object-fit: cover;
-        }
-        #vault-app .vault-titles h3 {
-            margin: 0;
-            font-size: 1.05rem;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        #vault-app .vault-titles span {
-            font-size: 0.75rem;
-            color: #94A3B8;
-            font-family: var(--font-mono);
-        }
-        #vault-app .vault-dl p {
-            margin: 0;
-            color: #94a3b8;
-            font-size: 0.84rem;
-            line-height: 1.5;
-        }
-        #vault-app .btn-compact {
-            padding: 10px 18px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            width: fit-content;
-        }
-        #vault-app .vault-install-summary {
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 0.78rem;
-        }
-        #vault-app .vault-install-summary summary {
-            cursor: pointer;
-            color: #00FFCC;
-            font-weight: 600;
-        }
-        #vault-app .vault-install-summary ol {
-            margin: 6px 0 0;
-            padding-left: 16px;
-            color: #94A3B8;
-            line-height: 1.45;
-        }
-        #vault-app .vault-hash-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0,0,0,0.4);
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            color: #64748B;
-        }
-        #vault-app .vault-hash-row code {
-            flex: 1;
-            font-family: var(--font-mono);
-            color: #38BDF8;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        #vault-app .vault-copy-mini {
-            background: rgba(0, 255, 204, 0.1);
-            color: #00FFCC;
-            border: 1px solid rgba(0, 255, 204, 0.3);
-            border-radius: 4px;
-            padding: 3px 8px;
-            cursor: pointer;
-            font-size: 0.68rem;
-            font-weight: 600;
-        }
-
-        /* BADGE & ACCENTI TESTNET SANDBOX */
-        .badge-testnet {
-            background: rgba(246, 196, 83, 0.15);
-            border: 1px solid #f6c453;
-            color: #f6c453;
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 99px;
-            font-weight: 700;
-        }
-    </style>
-<base target="_blank">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/home.css">
+    <!-- NB: rimosso <base target="_blank"> (era presente due volte): faceva aprire in una nuova scheda
+         anche i link interni. I link esterni hanno già target="_blank" rel="noopener noreferrer". -->
 </head>
 <body>
 
+    <a class="skip-link" href="#main">Skip to content</a>
+
     <!-- Preloader -->
-    <div id="preloader">
+    <div id="preloader" aria-hidden="true">
         <div class="preloader-content">
-            <img src="assets/images/logoluxa.png" alt="LUXA Ecosystem" class="preloader-logo">
+            <img src="assets/images/logoluxa.png" alt="" class="preloader-logo">
             <div class="preloader-bar"><div class="preloader-progress"></div></div>
         </div>
     </div>
 
-    <!-- NAV + MOBILE MENU (componente condiviso: partials/nav.html) -->
+    <!-- NAV + MOBILE MENU (partials/nav.html) -->
     <div data-include="nav"></div>
 
-    <!-- Hero Section -->
+    <main id="main">
+
+    <!-- ============================================================
+         HERO
+         ============================================================ -->
     <section id="hero">
         <div class="hero-bg">
             <div class="particles" id="particles"></div>
@@ -196,24 +63,23 @@
                 LUXA Ecosystem — <span class="gradient-text">Shared Wealth &amp; True Ownership</span>
             </h1>
             <p class="hero-desc">
-                A sovereign blockchain designed to divide economic prosperity among all participants. Featuring the non-custodial <strong>Spider Wallet</strong>, passive zero-barrier mining, a risk-free <strong>Testnet Sandbox</strong>, and 60-day verified Mainnet migration.
+                A sovereign blockchain designed to divide economic prosperity among all participants. Featuring the non-custodial <strong>Spider Wallet</strong>, passive zero-barrier mining, and verifiable cryptographic transparency.
             </p>
             <div class="hero-buttons">
                 <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large">
                     <i class="fab fa-telegram"></i> <span>Start Mining Free</span>
                 </a>
-                <a href="#vault-chrome-card" target="_self" class="btn btn-outline btn-large">
+                <a href="#vault-chrome-card" class="btn btn-outline btn-large">
                     <i class="fab fa-chrome"></i> <span>Install Chrome Extension</span>
-                </a>
-                <a href="#vault-android-card" target="_self" class="btn btn-outline btn-large">
+                </a><!-- LUXA-APK:hero -->
+                <a href="#vault-android-card" class="btn btn-outline btn-large">
                     <i class="fab fa-android"></i> <span>Download Android App</span>
-                </a>
+                </a><!-- /LUXA-APK:hero -->
                 <a href="explorer.html" class="btn btn-outline btn-large btn-page-link">
                     <i class="fas fa-cubes"></i> <span>Live Block Explorer</span>
                 </a>
             </div>
 
-            <!-- HERO SOCIAL BAR -->
             <div class="hero-social-bar">
                 <span>Connect with our official channels:</span>
                 <div class="social-row">
@@ -225,58 +91,187 @@
                 </div>
             </div>
 
+            <!-- Prima: "Miners Network: Actif" e "Global Access: Actif" (testo francese, nessun dato reale).
+                 Ora solo fatti verificabili: altezza blocchi live + regole di rete già dichiarate in pagina. -->
             <div class="hero-stats">
                 <div class="stat">
-                    <span class="stat-number live-stat" id="statMiners">Actif</span>
-                    <span class="stat-label">Miners Network</span>
+                    <span class="stat-number" id="statBlocks"><i class="fas fa-spinner fa-spin"></i></span>
+                    <span class="stat-label">L1 Blocks Verified</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-number live-stat" id="statCountries">Actif</span>
-                    <span class="stat-label">Global Access</span>
+                    <span class="stat-number">0 LUXA</span>
+                    <span class="stat-label">L1 Network Gas</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-number live-stat" id="statBlocks"><i class="fas fa-spinner fa-spin"></i></span>
-                    <span class="stat-label">L1 Verified Blocks</span>
+                    <span class="stat-number">8%</span>
+                    <span class="stat-label">Settlement Fee</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SPIDER WALLET SECTION -->
-    <section id="spider-wallet" class="section section-dark">
+    <!-- ============================================================
+         PRODUCT — Vault in azione + download (subito dopo l'hero)
+         ============================================================ -->
+    <section id="vault-showcase" class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Inside the App</span>
+                <h2>LUXA Vault in Action</h2>
+                <p>The sovereign Spider Vault on your screen — PIN-encrypted keys, multi-vault dashboard, live on-chain activity and a clear wallet selector.</p>
+            </div>
+
+            <!-- Immagini 16:9 in assets/images/screenshots/ (webp). Se un file manca, la slide sparisce da sola. -->
+            <div class="showcase" id="showcase" role="region" aria-roledescription="carousel" aria-label="LUXA Vault screenshots">
+                <div class="showcase-track" tabindex="0">
+                    <figure class="showcase-slide" role="group" aria-roledescription="slide">
+                        <button type="button" class="showcase-frame" aria-label="Enlarge screenshot: unlock screen">
+                            <img src="assets/images/screenshots/01-unlock-pin.webp" alt="LUXA Vault unlock screen with PIN entry" width="1280" height="720" loading="lazy" draggable="false">
+                            <span class="showcase-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
+                        </button>
+                        <figcaption class="showcase-caption"><strong><span class="showcase-step">01</span>Unlock with your PIN</strong><span>Keys are decrypted only on your device.</span></figcaption>
+                    </figure>
+                    <figure class="showcase-slide" role="group" aria-roledescription="slide">
+                        <button type="button" class="showcase-frame" aria-label="Enlarge screenshot: multi-vault dashboard">
+                            <img src="assets/images/screenshots/02-dashboard.webp" alt="LUXA Vault multi-vault dashboard" width="1280" height="720" loading="lazy" draggable="false">
+                            <span class="showcase-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
+                        </button>
+                        <figcaption class="showcase-caption"><strong><span class="showcase-step">02</span>Multi-vault dashboard</strong><span>Balance, address, import and backup for every vault.</span></figcaption>
+                    </figure>
+                    <figure class="showcase-slide" role="group" aria-roledescription="slide">
+                        <button type="button" class="showcase-frame" aria-label="Enlarge screenshot: live activity">
+                            <img src="assets/images/screenshots/03-activity.webp" alt="Live on-chain activity with dual asset balances" width="1280" height="720" loading="lazy" draggable="false">
+                            <span class="showcase-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
+                        </button>
+                        <figcaption class="showcase-caption"><strong><span class="showcase-step">03</span>Live on-chain activity</strong><span>Dual-asset balances (uluxa &amp; ushard) in real time.</span></figcaption>
+                    </figure>
+                    <figure class="showcase-slide" role="group" aria-roledescription="slide">
+                        <button type="button" class="showcase-frame" aria-label="Enlarge screenshot: transaction history">
+                            <img src="assets/images/screenshots/04-history.webp" alt="Transaction history and settlement proof" width="1280" height="720" loading="lazy" draggable="false">
+                            <span class="showcase-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
+                        </button>
+                        <figcaption class="showcase-caption"><strong><span class="showcase-step">04</span>Verifiable history</strong><span>Every transaction comes with a verifiable settlement proof.</span></figcaption>
+                    </figure>
+                    <figure class="showcase-slide" role="group" aria-roledescription="slide">
+                        <button type="button" class="showcase-frame" aria-label="Enlarge screenshot: wallet selector">
+                            <img src="assets/images/screenshots/05-wallet-select.webp" alt="LUXA Vault wallet selector with the active vault marked" width="1280" height="720" loading="lazy" draggable="false">
+                            <span class="showcase-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
+                        </button>
+                        <figcaption class="showcase-caption"><strong><span class="showcase-step">05</span>Wallet selector</strong><span>See which vault is active, switch in one tap, or create and import a new one.</span></figcaption>
+                    </figure>
+                </div>
+
+                <div class="showcase-controls">
+                    <button type="button" class="showcase-arrow" data-showcase="prev" aria-label="Previous screenshot"><i class="fas fa-arrow-left"></i></button>
+                    <div class="showcase-dots"></div>
+                    <button type="button" class="showcase-arrow" data-showcase="next" aria-label="Next screenshot"><i class="fas fa-arrow-right"></i></button>
+                    <span class="showcase-counter" aria-hidden="true"><span data-showcase-current>01</span> / <span data-showcase-total>05</span></span>
+                    <button type="button" class="showcase-toggle" data-showcase="toggle" aria-label="Pause automatic slideshow"><i class="fas fa-pause"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LUXA-APK:section -->
+    <section id="vault-app">
+        <div class="container">
+            <div class="section-header section-header--tight">
+                <span class="section-tag">Direct Downloads</span>
+                <h2>Get LUXA Vault</h2>
+                <p>Sovereign non-custodial wallet with local AES-256-GCM encryption.</p>
+            </div>
+
+            <div class="vault-dl-grid">
+                <div class="vault-dl" id="vault-chrome-card">
+                    <div class="vault-header-compact">
+                        <img src="assets/images/wallet.png" alt="" class="vault-icon-compact" width="46" height="46">
+                        <div class="vault-titles">
+                            <h3><i class="fab fa-chrome" style="color:#00FFCC;"></i> Chrome Extension</h3>
+                            <span>Manifest V3 • Chrome Web Store</span>
+                        </div>
+                    </div>
+                    <p>Connect seamlessly to dApps and sign transactions on <code>luxa-1</code> directly from your browser.</p>
+                    <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-compact">
+                        <i class="fab fa-chrome"></i> <span>Install on Chrome</span>
+                    </a>
+                </div>
+
+                <div class="vault-dl" id="vault-android-card">
+                    <div class="vault-header-compact">
+                        <img src="assets/images/wallet.png" alt="" class="vault-icon-compact" width="46" height="46">
+                        <div class="vault-titles">
+                            <h3><i class="fab fa-android" style="color:#22c55e;"></i> Android App</h3>
+                            <span>v1.4.2 APK • 5.1 MB</span>
+                        </div>
+                    </div>
+                    <p>Zero-knowledge encrypted backup to your private Google Drive appDataFolder, with native Bech32 transactions.</p>
+
+                    <a href="https://raw.githubusercontent.com/luxaecosystem/luxa-vault-releases/main/assets/downloads/LUXA-Vault-1.4.2.apk" download="LUXA-Vault-1.4.2.apk" rel="noopener" class="btn btn-primary btn-compact">
+                        <i class="fas fa-download"></i> <span>Download APK (v1.4.2)</span>
+                    </a>
+
+                    <details class="vault-install-summary">
+                        <summary><i class="fas fa-info-circle"></i> Quick installation guide</summary>
+                        <ol>
+                            <li>Open the downloaded APK and allow "Install unknown apps" if prompted.</li>
+                            <li>If Google Play Protect displays a prompt, select "Install anyway".</li>
+                            <li>Set your local security PIN, then create or import your 12-word seed phrase.</li>
+                            <li>Optional: check the file before installing. On Windows run <code>certutil -hashfile LUXA-Vault-1.4.2.apk SHA256</code>, on macOS/Linux <code>sha256sum LUXA-Vault-1.4.2.apk</code>, and compare it with the checksum below.</li>
+                        </ol>
+                    </details>
+
+                    <div class="vault-hash-row">
+                        <span>SHA-256:</span>
+                        <code id="vaultApkSha">943FF596BE43F22B1C8891C0605120F374199C13101D57AFC0EDE700D479F793</code>
+                        <button type="button" class="vault-copy-mini" id="vaultCopySha">Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <p class="vault-note">Only download LUXA Vault from this page or the official Chrome Web Store. LUXA will never ask for your seed phrase.</p>
+        </div>
+    </section>
+    <!-- /LUXA-APK:section -->
+
+    <!-- ============================================================
+         SPIDER WALLET
+         ============================================================ -->
+    <section id="spider-wallet" class="section">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Next-Gen Architecture</span>
                 <h2>The Spider Wallet System<br>Decentralized Multi-Vault Mesh</h2>
-                <p>No more single point of failure. The Spider Wallet links multiple L1 Cosmos addresses into an encrypted, multi-legged architecture tailored for total user control.</p>
+                <p>No more single point of failure. One Telegram account can manage up to 10 native Cosmos <code>luxa1...</code> vaults, each encrypted locally and fully under your control.</p>
             </div>
             <div class="about-grid">
                 <div class="about-card">
                     <div class="about-icon" style="color: var(--secondary);"><i class="fas fa-project-diagram"></i></div>
                     <h3>Multi-Vault Web</h3>
-                    <p>Connect and isolate multiple <code>luxa1...</code> vaults under one master profile: separate your daily mining, NFT licenses, and cold storage.</p>
+                    <p>Keep daily mining, savings and long-term cold storage in separate <code>luxa1...</code> vaults under one account, and switch between them from the wallet selector.</p>
                 </div>
                 <div class="about-card">
                     <div class="about-icon" style="color: #c084fc;"><i class="fas fa-shield-virus"></i></div>
                     <h3>Compartmentalized Safety</h3>
-                    <p>Even if one satellite address is shared or inspected, your primary reserve vaults remain independent, encrypted, and safe from unauthorized access.</p>
+                    <p>Even if one satellite address is shared or inspected, your primary reserve vaults remain independent, encrypted, and impervious to unauthorized draining.</p>
                 </div>
                 <div class="about-card">
                     <div class="about-icon" style="color: #22c55e;"><i class="fas fa-key"></i></div>
                     <h3>Zero-Knowledge BIP-39</h3>
-                    <p>Keys are derived locally via AES-256-GCM. The network servers and administrators never see or hold your 12-word seed phrase.</p>
+                    <p>Your recovery phrase (12 or 24 words) is encrypted locally with AES-256-GCM. The network and its administrators never see or hold it, and your PIN is always masked.</p>
                 </div>
                 <div class="about-card">
-                    <div class="about-icon" style="color: #f59e0b;"><i class="fas fa-bolt"></i></div>
-                    <h3>Direct On-Chain Routing</h3>
-                    <p>Switch active payout destinations dynamically inside the Telegram app with immediate ledger recognition and zero friction.</p>
+                    <div class="about-icon" style="color: #f59e0b;"><i class="fas fa-qrcode"></i></div>
+                    <h3>Scan, Send &amp; Receive</h3>
+                    <p>Pick the active vault, scan a recipient's QR code with the Telegram camera, and send in a few taps. Transfers between vaults are recognised by the ledger immediately.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SHARED WEALTH & REVENUE SHARING -->
-    <section id="shared-wealth" class="section">
+    <!-- ============================================================
+         SHARED WEALTH
+         ============================================================ -->
+    <section id="shared-wealth" class="section section-dark">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Economic Justice</span>
@@ -308,8 +303,10 @@
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="section section-dark">
+    <!-- ============================================================
+         FEATURES
+         ============================================================ -->
+    <section id="features" class="section">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Core Features</span>
@@ -320,10 +317,10 @@
                     <div class="feature-content">
                         <div class="feature-number">01</div>
                         <h3>Free Mining Engine</h3>
-                        <p>Start 24-hour passive sessions that produce LUXA. Activate hash multipliers via Sovereign NFTs, complete daily tasks, and convert Shards into native coin balance.</p>
+                        <p>Start 24-hour passive sessions that produce LUXA. Complete daily tasks, spin the bonus wheel, and convert Shards into native coin balance.</p>
                         <ul class="feature-list">
                             <li><i class="fas fa-check"></i> 24h continuous passive cycles</li>
-                            <li><i class="fas fa-check"></i> Sovereign NFT yield multipliers</li>
+                            <li><i class="fas fa-check"></i> Daily tasks: link your X profile first, then claim the reward</li>
                             <li><i class="fas fa-check"></i> Daily bonus wheel and Shard conversions</li>
                         </ul>
                     </div>
@@ -353,11 +350,11 @@
                     <div class="feature-content">
                         <div class="feature-number">02</div>
                         <h3>Non-Custodial Spider Vault</h3>
-                        <p>Generate native Cosmos <code>luxa1...</code> addresses. Your 12-word mnemonic is encrypted client-side using PBKDF2 and AES-256-GCM. Absolute zero-knowledge safety.</p>
+                        <p>Generate native Cosmos <code>luxa1...</code> addresses, up to 10 per account. Your recovery phrase is encrypted client-side using PBKDF2 and AES-256-GCM. Absolute zero-knowledge safety.</p>
                         <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Standard 12-word BIP-39 mnemonic seed</li>
-                            <li><i class="fas fa-check"></i> Client-side AES-256-GCM encryption with local PIN</li>
-                            <li><i class="fas fa-check"></i> Multi-vault management with selective removal</li>
+                            <li><i class="fas fa-check"></i> Standard BIP-39 phrase: 12 or 24 words</li>
+                            <li><i class="fas fa-check"></i> Client-side AES-256-GCM encryption with a local PIN, always masked</li>
+                            <li><i class="fas fa-check"></i> Double confirmation before a local vault can be deleted</li>
                         </ul>
                     </div>
                 </div>
@@ -365,22 +362,22 @@
                 <div class="feature-row">
                     <div class="feature-content">
                         <div class="feature-number">03</div>
-                        <h3>Sovereign NFT Hero Licenses</h3>
-                        <p>Unlock licenses (#4001 Grandmaster, #4002 Valkyrie, #4003 Chrono-Key, #4004 Cyber-Shadow). Anchor your licenses directly on-chain to boost your yield.</p>
+                        <h3>Send, Receive &amp; Scan</h3>
+                        <p>Move funds without friction. Receive in one tap, scan a recipient's QR code straight from the Telegram camera, and choose the wallet you use from a high-contrast selector.</p>
                         <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Cryptographic on-chain registration hash</li>
-                            <li><i class="fas fa-check"></i> Dynamic SVG artwork with holder marquee</li>
-                            <li><i class="fas fa-check"></i> Permanent mining rate multiplier</li>
+                            <li><i class="fas fa-check"></i> Built-in QR scanner in the send screen</li>
+                            <li><i class="fas fa-check"></i> Wallet selector with a clear ACTIVE marker</li>
+                            <li><i class="fas fa-check"></i> Create a new vault or import a phrase from the same screen</li>
                         </ul>
                     </div>
                     <div class="feature-visual">
-                        <div class="feature-card-visual nft-card">
-                            <div class="nft-grid">
-                                <div class="nft-item rare"><i class="fas fa-server"></i></div>
-                                <div class="nft-item epic"><i class="fas fa-gem"></i></div>
-                                <div class="nft-item legendary"><i class="fas fa-crown"></i></div>
+                        <div class="feature-card-visual">
+                            <div class="action-tiles" aria-hidden="true">
+                                <div class="action-tile action-tile--scan"><i class="fas fa-qrcode"></i></div>
+                                <div class="action-tile action-tile--receive"><i class="fas fa-arrow-down"></i></div>
+                                <div class="action-tile action-tile--wallet"><i class="fas fa-wallet"></i></div>
                             </div>
-                            <span>Sovereign NFT Licenses</span>
+                            <span>Scan · Receive · Switch vault</span>
                         </div>
                     </div>
                 </div>
@@ -401,34 +398,80 @@
                     <div class="feature-content">
                         <div class="feature-number">04</div>
                         <h3>Transparent On-Chain Explorer</h3>
-                        <p>Every transaction, minting, and settlement is immutably committed on the <code>luxa-1</code> chain. Verify every block and transfer in real time via our Block Explorer.</p>
+                        <p>Every mainnet transaction and settlement is immutably committed on the <code>luxa-1</code> chain. Verify every block and transfer in real time via our Block Explorer.</p>
                         <ul class="feature-list">
                             <li><i class="fas fa-check"></i> Instant search by Hash, Height, or Address</li>
                             <li><i class="fas fa-check"></i> Live CometBFT block validation monitor</li>
                             <li><i class="fas fa-check"></i> Direct JSON-RPC node transparency</li>
                         </ul>
-                        <a href="explorer.html" class="btn btn-outline btn-page-link" style="margin-top: 18px;"><i class="fas fa-search"></i> <span>Launch Block Explorer</span></a>
+                        <a href="explorer.html" class="btn btn-outline btn-page-link feature-cta"><i class="fas fa-search"></i> <span>Launch Block Explorer</span></a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Tokenomics Section -->
+    <!-- ============================================================
+         TESTNET SANDBOX
+         ============================================================ -->
+    <section id="testnet" class="section section-dark">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Testnet Sandbox</span>
+                <h2>Practice on luxa-testnet<br>Before You Move Real Value</h2>
+                <p>Same wallet, same address, a separate sandbox ledger with simulated tokens. Learn how sending, receiving and history work at zero risk.</p>
+            </div>
+
+            <div class="feature-row">
+                <div class="feature-content">
+                    <h3>One recovery phrase, two networks</h3>
+                    <p>Your <code>luxa1...</code> address is derived from the same recovery phrase on Mainnet and Testnet, just like switching networks in MetaMask or Keplr. Only the ledger changes.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check"></i> <strong>Mainnet (luxa-1)</strong> shows your real on-chain LUXA and Shards</li>
+                        <li><i class="fas fa-check"></i> <strong>Testnet (luxa-testnet)</strong> uses simulated tLUXA and tSHARDS</li>
+                        <li><i class="fas fa-check"></i> Balances belong to each address, so every vault has its own test wallet</li>
+                        <li><i class="fas fa-check"></i> Send to any address, yours or someone else's, and watch balances update instantly</li>
+                    </ul>
+                </div>
+                <div class="feature-visual">
+                    <div class="testnet-card">
+                        <h4><i class="fas fa-faucet-drip"></i> Testnet faucet</h4>
+                        <dl>
+                            <div><dt>You receive</dt><dd>50.00 tLUXA</dd></div>
+                            <div><dt>Plus</dt><dd>5,000 tSHARDS</dd></div>
+                            <div><dt>Cooldown</dt><dd>6 hours per address</dd></div>
+                            <div><dt>Receipt</dt><dd>0xtest_…</dd></div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tokenomics-note tokenomics-note--spaced">
+                <i class="fas fa-flask"></i>
+                <div>
+                    <strong>Sandbox only:</strong> tLUXA and tSHARDS are simulated and have no monetary value. Testnet balances never carry over to Mainnet, and testnet receipts are not recorded on <code>luxa-1</code>, so they do not appear in the Block Explorer. Available in the Telegram Mini App today; the same API is ready for the Chrome extension and the Android app.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         TOKENOMICS
+         ============================================================ -->
     <section id="tokenomics" class="section">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Tokenomics</span>
                 <h2>Clear Economics &amp; Verified Supply</h2>
-                <p>Designed for sustainable ecosystem liquidity, anti-inflationary control, and transparent network rules. Visualizza anche <a href="insights.html" class="page-html-link">Tokenomics Insights</a>.</p>
+                <p>Designed for sustainable ecosystem liquidity, anti-inflationary control, and transparent network rules. See also <a href="insights.html" class="page-html-link">Tokenomics Insights</a>.</p>
             </div>
             <div class="tokenomics-grid">
                 <div class="token-card main-card">
                     <div class="token-header">
-                        <img src="assets/images/logoluxa.png" alt="LUXA">
+                        <img src="assets/images/logoluxa.png" alt="LUXA" width="44" height="44">
                         <div>
                             <h3>LUXA Coin (L1)</h3>
-                            <span class="token-status"><span class="pulse-dot" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#4ade80;margin-right:4px;"></span> Native Asset • luxa-1</span>
+                            <span class="token-status"><span class="pulse-dot"></span> Native Asset • luxa-1</span>
                         </div>
                     </div>
                     <div class="token-stats">
@@ -486,7 +529,7 @@
                 </div>
             </div>
 
-            <div class="tokenomics-note" style="margin-top: 25px;">
+            <div class="tokenomics-note tokenomics-note--spaced">
                 <i class="fas fa-shield-alt"></i>
                 <div>
                     <strong>Transparent Settlement Rules:</strong> When executing an on-chain payout, the application ledger deducts the standard 8% protocol fee from the gross balance to replenish community reserves. The remaining 92% is transferred directly from the Treasury to your <code>luxa1...</code> address with 0 network gas fee on-chain.
@@ -496,142 +539,104 @@
     </section>
 
     <!-- ============================================================
-         SEZIONE MIGRAZIONE MAINNET & 60 GIORNI (STILE PI NETWORK)
+         KYC & SETTLEMENT
          ============================================================ -->
     <section id="settlement" class="section section-dark">
         <div class="container">
             <div class="section-header">
-                <span class="section-tag">Mainnet Settlement Protocol</span>
-                <h2>The 60-Day Mining Rule &amp; Mainnet Migration</h2>
-                <p>A Pi-Network-inspired Proof-of-Commitment model ensuring genuine human participants, botnet eradication, and orderly token bridging to the <code>luxa-1</code> chain. Read official details on the <a href="kyc.html" class="page-html-link">KYC &amp; Migration Portal</a>.</p>
+                <span class="section-tag">Compliance &amp; Security</span>
+                <h2>Mainnet Settlement:<br>60 Days &amp; Identity Check</h2>
+                <p>Mining inside Telegram is free and open to everyone. Moving your balance onto the <code>luxa-1</code> mainnet is earned: it takes proven commitment and a verified identity, which keeps bots and duplicate accounts out. Full guidelines in the <a href="kyc.html" class="page-html-link">KYC Portal</a>.</p>
             </div>
 
-            <!-- CHECKLIST 4 PASSAGGI MIGRAZIONE -->
-            <div class="about-grid" style="margin-bottom: 25px;">
+            <ol class="settlement-steps">
+                <li>
+                    <h3>Initialize your vault</h3>
+                    <p>Create or import a <code>luxa1...</code> Sovereign Vault and link it to your Telegram account.</p>
+                </li>
+                <li>
+                    <h3>Reach 60 mining days</h3>
+                    <p>60 validated daily mining sessions prove commitment. A progress bar in the app tracks your days.</p>
+                </li>
+                <li>
+                    <h3>Verify your identity</h3>
+                    <p>Complete the Sumsub check: 3D liveness and a biometric document scan.</p>
+                </li>
+                <li>
+                    <h3>Enter the migration queue</h3>
+                    <p>Your accumulated balance moves to your verified vault on the <code>luxa-1</code> Cosmos ledger.</p>
+                </li>
+            </ol>
+
+            <div class="about-grid">
                 <div class="about-card">
-                    <div class="about-icon" style="color: var(--secondary);"><i class="fas fa-wallet"></i></div>
-                    <h3>1. Sovereign Vault Binding</h3>
-                    <p>Initialize your client-side encrypted Spider Vault to generate your permanent <code>luxa1...</code> address. The vault is self-custodial via a 12 or 24-word seed phrase.</p>
+                    <div class="about-icon"><i class="fas fa-id-card"></i></div>
+                    <h3>One Identity, All Vaults</h3>
+                    <p>Verification belongs to your Telegram account, not to a single address. Once approved, every vault you manage (up to 10) inherits the verified status.</p>
                 </div>
                 <div class="about-card">
-                    <div class="about-icon" style="color: #f59e0b;"><i class="fas fa-calendar-check"></i></div>
-                    <h3>2. 60-Day Mining Milestone</h3>
-                    <p>Miners must complete at least 60 active 24-hour mining cycles. This cooldown completely neutralizes ephemeral bot farms and rewards committed community members.</p>
+                    <div class="about-icon"><i class="fas fa-robot"></i></div>
+                    <h3>Anti-Sybil Defense</h3>
+                    <p>Bots, fake clickers, duplicate accounts and coordinated farms are detected and banned automatically, and the reason is kept in an audit log.</p>
                 </div>
                 <div class="about-card">
-                    <div class="about-icon" style="color: #00ffcc;"><i class="fas fa-user-check"></i></div>
-                    <h3>3. Sumsub Biometric Attestation</h3>
-                    <p>Pass the certified in-app KYC scan (Passport, National ID or Driver's License + 3D facial liveness). Personal data stays encrypted off-chain; zero personal details touch the ledger.</p>
+                    <div class="about-icon"><i class="fas fa-file-signature"></i></div>
+                    <h3>Verifiable Settlement Proof</h3>
+                    <p>Each payout produces a verifiable document seal containing your Telegram ID, sender Treasury hash, and timestamped block height.</p>
                 </div>
                 <div class="about-card">
-                    <div class="about-icon" style="color: #22c55e;"><i class="fas fa-network-wired"></i></div>
-                    <h3>4. Mainnet Ledger Migration</h3>
-                    <p>Once KYC status is verified, your off-chain mined balance enters the automated migration batch, minting verified native coins directly into your on-chain vault.</p>
+                    <div class="about-icon"><i class="fas fa-user-lock"></i></div>
+                    <h3>Strict Data Protection</h3>
+                    <p>Identity records are processed according to data privacy legislation and are never revealed or stored publicly on the open blockchain ledger.</p>
                 </div>
             </div>
 
-            <!-- PRIVILEGIO CITIZEN ZERO & REGOLA BOT -->
-            <div class="legal-notice" style="border-left: 4px solid #ffd700; background: rgba(255, 215, 0, 0.05); margin-bottom: 15px;">
-                <strong style="color: #ffd700;"><i class="fas fa-crown"></i> Citizen Zero (Relic #0) Origin Exemption:</strong>
-                The holder of <strong>Genesis Progenitor — Citizen Zero (#0)</strong> (Founder wallet: <code>luxa1z4jpt568npsvpass9f93m0v3edn9f6h8nksfaz</code>) acts as the Root Validator and Origin Architect of <code>luxa-1</code>. This key retains instant, unrestricted on-chain bridge capability to maintain validator uptime and protocol staking. All secondary participant nodes follow the standard 60-day milestone and Sumsub schedule.
+            <div class="table-scroll">
+                <table class="eligibility">
+                    <caption>Who can withdraw to Mainnet</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Account profile</th>
+                            <th scope="col">Mining days</th>
+                            <th scope="col">Identity check</th>
+                            <th scope="col">Mainnet withdrawal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">New account</th>
+                            <td>Fewer than 60</td>
+                            <td>Not yet available</td>
+                            <td><span class="pill pill--block">Blocked</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Miner awaiting verification</th>
+                            <td>60 or more</td>
+                            <td>Not completed</td>
+                            <td><span class="pill pill--wait">Blocked until verified</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Certified miner</th>
+                            <td>60 or more</td>
+                            <td>Verified</td>
+                            <td><span class="pill pill--ok">Migration queue</span></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Citizen Zero (#0) holder</th>
+                            <td>Any</td>
+                            <td>Not required</td>
+                            <td><span class="pill pill--ok">Direct settlement</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-
-            <div class="legal-notice" style="border-left: 4px solid #00ffcc;">
-                <strong><i class="fas fa-shield-halved"></i> Anti-Sybil Defense:</strong>
-                One person, one node. Multi-accounting or running farm scripts on shared IPs triggers an automatic security flag and permanent forfeiture of unmigrated balances. Learn more in our <a href="kyc.html" class="page-html-link">Compliance Guidelines</a>.
-            </div>
+            <p class="table-note">Testnet is open to every profile, faucet included. Citizen Zero (#0) is a protocol-level exemption held by the founder wallet, whose movements are publicly trackable in the <a href="explorer.html" class="page-html-link">Block Explorer</a>.</p>
         </div>
     </section>
 
     <!-- ============================================================
-         NUOVA SEZIONE: TESTNET SANDBOX & DEVELOPER FAUCET
+         ROADMAP
          ============================================================ -->
-    <section id="testnet" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Risk-Free Environment</span>
-                <h2>Dual-Engine Architecture:<br>Mainnet &amp; Testnet Sandbox</h2>
-                <p>Experiment, transfer, and test with zero financial risk. Switch networks with a single tap in the Telegram Mini App, Chrome Extension, and Android App — just like MetaMask and Pi Network.</p>
-            </div>
-
-            <div class="about-grid">
-                <div class="about-card">
-                    <div class="about-icon" style="color: #f59e0b;"><i class="fas fa-toggle-on"></i></div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <h3 style="margin:0;">One-Tap Network Switch</h3>
-                        <span class="badge-testnet">tLUXA</span>
-                    </div>
-                    <p>Toggle between <strong>Mainnet (luxa-1)</strong> and <strong>Testnet Sandbox</strong> instantly. The UI changes dynamically with neon indicators to prevent any confusion between real and test balances.</p>
-                </div>
-
-                <div class="about-card">
-                    <div class="about-icon" style="color: #00ffcc;"><i class="fas fa-faucet-drip"></i></div>
-                    <h3>Free Testnet Faucet</h3>
-                    <p>Claim <strong>50.0 tLUXA</strong> and <strong>5,000 tSHARDS</strong> every 6 hours straight into your test vault. Perfect for testing transactions, gas parameters, and node responsiveness.</p>
-                </div>
-
-                <div class="about-card">
-                    <div class="about-icon" style="color: #22c55e;"><i class="fas fa-users-rays"></i></div>
-                    <h3>P2P Practice Transfers</h3>
-                    <p>Send and receive test coins to friends or test wallets using native <code>luxa1...</code> addresses. Inspect simulated block heights and transaction hashes on the dedicated testnet ledger.</p>
-                </div>
-
-                <div class="about-card">
-                    <div class="about-icon" style="color: #38bdf8;"><i class="fas fa-laptop-code"></i></div>
-                    <h3>Universal Multi-Client Sync</h3>
-                    <p>Your same 12-word seed phrase works simultaneously across the <strong>Telegram Mini App</strong>, the <strong>Chrome Extension</strong>, and the <strong>Android APK</strong> in both Mainnet and Testnet modes.</p>
-                </div>
-            </div>
-
-            <div class="tokenomics-note" style="margin-top: 25px; border-color: rgba(246, 196, 83, 0.4); background: rgba(246, 196, 83, 0.04);">
-                <i class="fas fa-flask" style="color: #f6c453;"></i>
-                <div>
-                    <strong>Why a Testnet Sandbox?</strong> Before migrating their hard-earned mined balance to Mainnet, miners can practice receiving, sending, and managing multi-vault keys without fear of losing funds. Testnet tokens (<code>tLUXA</code> / <code>tSHARDS</code>) have no monetary value and are intended solely for simulation and technical audits.
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOUNDER SECTION -->
-    <section id="founder" class="section section-dark section-compact">
-        <div class="container">
-            <div class="section-header" style="margin-bottom:32px;">
-                <span class="section-tag">Leadership</span>
-                <h2>Meet the Founder</h2>
-                <p>A publicly verified builder, accountable to the network. Read the full story on <a href="about.html" class="page-html-link">About</a>.</p>
-            </div>
-
-            <div class="founder-compact">
-                <div class="founder-compact-avatar" title="Citizen Zero · #0000">
-                    <img src="assets/images/yassine.png" alt="Yassine Ouaadil — Founder Photo" class="photo-real">
-                    <img src="assets/images/citizen_zero.jpeg" alt="Yassine Ouaadil — Citizen Zero NFT" class="photo-nft">
-                </div>
-                <div class="founder-compact-info">
-                    <div class="dossier-statusbar" style="margin-bottom:12px;">
-                        <span class="dossier-chip live"><span class="pulse-dot"></span> IDENTITY VERIFIED</span>
-                        <span class="dossier-chip">KYC · LEVEL 3</span>
-                        <span class="dossier-chip mono">CITIZEN ZERO · #0000</span>
-                    </div>
-                    <h3 class="founder-name-v2" style="justify-content:flex-start;margin-bottom:4px;">Yassine Ouaadil <i class="fas fa-circle-check founder-verified" title="Identity Verified"></i></h3>
-                    <p class="founder-role-v2" style="margin-bottom:12px;">Founder &amp; Lead Architect — LUXA Sovereign L1</p>
-                    <p class="founder-compact-bio">
-                        Architect of the <code>luxa-1</code> chain, the Spider Wallet mesh and the Shared-Wealth
-                        tokenomics. First holder of the network — and the first to be accountable to it:
-                        no presale allocations, no insider reserves. Every movement of the founding wallet
-                        is publicly trackable on the explorer.
-                    </p>
-                    <div class="founder-actions-v2" style="justify-content:flex-start;">
-                        <a href="https://www.linkedin.com/in/yassine-ouaadil-32497332a" target="_blank" rel="noopener noreferrer" class="btn-linkedin-v2"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
-                        <a href="https://x.com/luxatoken" target="_blank" rel="noopener noreferrer" class="social-chip" aria-label="X"><i class="fab fa-x-twitter"></i></a>
-                        <a href="https://t.me/LuxaToken_Official" target="_blank" rel="noopener noreferrer" class="social-chip" aria-label="Telegram" title="Official Channel"><i class="fab fa-telegram-plane"></i></a>
-                        <a href="explorer.html?q=luxa1z4jpt568npsvpass9f93m0v3edn9f6h8nksfaz" class="btn btn-outline page-html-link" style="padding:9px 16px;font-size:.78rem;"><i class="fas fa-cubes"></i> Verify Wallet</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Roadmap Section -->
     <section id="roadmap" class="section">
         <div class="container">
             <div class="section-header">
@@ -649,9 +654,9 @@
                         <ul>
                             <li>Launch of LUXA Telegram Mini App and passive mining engine</li>
                             <li>Deployment of Sovereign Cosmos SDK L1 Chain (<code>luxa-1</code>)</li>
-                            <li>Client-side non-custodial Spider Wallet with BIP-39 12-word seed phrase</li>
+                            <li>Client-side non-custodial Spider Wallet with BIP-39 recovery phrase and up to 10 vaults per account</li>
                             <li>Live on-chain Block Explorer and interactive Ledger inspector</li>
-                            <li>Sovereign NFT licenses (#4001 to #4004) with SVG visual anchors</li>
+                            <li>Anti-bot and anti-Sybil protection across mining, sessions and referrals</li>
                         </ul>
                     </div>
                 </div>
@@ -660,12 +665,11 @@
                     <div class="roadmap-content">
                         <span class="phase-label">Phase 2 — Community &amp; Stability</span>
                         <span class="phase-status"><i class="fas fa-spinner fa-spin"></i> In Progress</span>
-                        <h3>Scale, Sandbox &amp; Protocol Hardening</h3>
+                        <h3>Scale &amp; Protocol Hardening</h3>
                         <ul>
-                            <li>Testnet Sandbox &amp; Faucet integration across Telegram, Chrome &amp; Android</li>
+                            <li>Testnet Sandbox (<code>luxa-testnet</code>) with faucet and peer-to-peer transfers</li>
                             <li>Advanced admin management and real-time on-chain KPI monitoring</li>
                             <li>Community airdrop campaigns and revenue sharing pools</li>
-                            <li>Interactive P2P marketplace and expanded NFT catalog</li>
                             <li>Integration of real-time supply calculation directly from Cosmos RPC</li>
                         </ul>
                     </div>
@@ -675,11 +679,10 @@
                     <div class="roadmap-content">
                         <span class="phase-label">Phase 3 — Verified Mainnet Migration</span>
                         <span class="phase-status planned"><i class="fas fa-clock"></i> Next Milestone</span>
-                        <h3>60-Day Mining Gate &amp; Sumsub Migration</h3>
+                        <h3>60-Day Commitment &amp; Sumsub KYC</h3>
                         <ul>
-                            <li>Activation of the 60-day active mining milestone condition</li>
-                            <li>Launch of the automated Sumsub 3D biometric KYC identity portal</li>
-                            <li>Batched balance migration from in-app ledger to verified L1 vaults</li>
+                            <li>60-day mining requirement and Sumsub identity verification (3D liveness and document scan)</li>
+                            <li>Balance migration from the in-app ledger to verified L1 vaults through the migration queue</li>
                             <li>Multi-chain bridge expansion (BNB Smart Chain &amp; IBC Cosmos Hub)</li>
                             <li>Publication of audited smart contracts and token allocation details</li>
                         </ul>
@@ -702,7 +705,50 @@
         </div>
     </section>
 
-    <!-- White Paper Section -->
+    <!-- ============================================================
+         FOUNDER
+         ============================================================ -->
+    <section id="founder" class="section section-dark section-compact">
+        <div class="container">
+            <div class="section-header section-header--tight">
+                <span class="section-tag">Leadership</span>
+                <h2>Meet the Founder</h2>
+                <p>A publicly verified builder, accountable to the network. Read the full story on <a href="about.html" class="page-html-link">About</a>.</p>
+            </div>
+
+            <div class="founder-compact">
+                <div class="founder-compact-avatar" title="Citizen Zero · #0">
+                    <img src="assets/images/yassine.png" alt="Yassine Ouaadil — Founder photo" class="photo-real" width="128" height="128" loading="lazy">
+                    <img src="assets/images/citizen_zero.jpeg" alt="Yassine Ouaadil — Citizen Zero NFT" class="photo-nft" width="128" height="128" loading="lazy">
+                </div>
+                <div class="founder-compact-info">
+                    <div class="dossier-statusbar">
+                        <span class="dossier-chip live"><span class="pulse-dot"></span> IDENTITY VERIFIED</span>
+                        <span class="dossier-chip">ROOT VALIDATOR</span>
+                        <span class="dossier-chip mono">CITIZEN ZERO · #0</span>
+                    </div>
+                    <h3 class="founder-name-v2">Yassine Ouaadil <i class="fas fa-circle-check founder-verified" title="Identity Verified"></i></h3>
+                    <p class="founder-role-v2">Founder &amp; Lead Architect — LUXA Sovereign L1</p>
+                    <p class="founder-compact-bio">
+                        Architect of the <code>luxa-1</code> chain, the Spider Wallet mesh and the Shared-Wealth
+                        tokenomics. First holder of the network — and the first to be accountable to it:
+                        no presale allocations, no insider reserves. Every movement of the founding wallet
+                        is publicly trackable on the explorer. Holding Citizen Zero (#0), the founder carries the protocol's Green Card: exempt from the 60-day rule and the identity check, with settlement that stays fully visible on-chain.
+                    </p>
+                    <div class="founder-actions-v2">
+                        <a href="https://www.linkedin.com/in/yassine-ouaadil-32497332a" target="_blank" rel="noopener noreferrer" class="btn-linkedin-v2"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+                        <a href="https://x.com/luxatoken" target="_blank" rel="noopener noreferrer" class="social-chip" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+                        <a href="https://t.me/LuxaToken_Official" target="_blank" rel="noopener noreferrer" class="social-chip" aria-label="Telegram" title="Official Channel"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="explorer.html?q=luxa1z4jpt568npsvpass9f93m0v3edn9f6h8nksfaz" class="btn btn-outline btn-page-link"><i class="fas fa-cubes"></i> Verify Wallet</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         WHITE PAPER
+         ============================================================ -->
     <section id="whitepaper" class="section section-gradient">
         <div class="container">
             <div class="whitepaper-wrapper">
@@ -720,10 +766,10 @@
                     </a>
                 </div>
                 <div class="whitepaper-visual">
-                    <div class="doc-preview">
+                    <div class="doc-preview" aria-hidden="true">
                         <div class="doc-page">
                             <div class="doc-header">
-                                <img src="assets/images/logoluxa.png" alt="LUXA Ecosystem">
+                                <img src="assets/images/logoluxa.png" alt="">
                                 <span>LUXA SOVEREIGN CHAIN</span>
                             </div>
                             <div class="doc-lines">
@@ -741,176 +787,12 @@
         </div>
     </section>
 
-    <!-- VAULT SHOWCASE -->
-    <section id="vault-showcase" class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Inside the App</span>
-                <h2>LUXA Vault in Action</h2>
-                <p>The sovereign Spider Vault on your screen — PIN-encrypted keys, multi-vault dashboard, live on-chain activity and the Sovereign NFT Vault.</p>
-            </div>
+    </main>
 
-            <div class="showcase-viewport">
-                <div class="showcase-track" id="showcaseTrack">
-                    <article class="showcase-slide">
-                        <div class="showcase-frame"><img src="assets/images/screenshots/01-unlock-pin.webp" alt="LUXA Vault unlock screen with PIN entry" loading="lazy"></div>
-                        <p class="showcase-caption">Unlock with your PIN: keys are decrypted only on your device.</p>
-                    </article>
-                    <article class="showcase-slide">
-                        <div class="showcase-frame"><img src="assets/images/screenshots/02-dashboard.webp" alt="LUXA Vault multi-vault dashboard" loading="lazy"></div>
-                        <p class="showcase-caption">Multi-vault dashboard: balance, address, import and backup.</p>
-                    </article>
-                    <article class="showcase-slide">
-                        <div class="showcase-frame"><img src="assets/images/screenshots/03-activity.webp" alt="Live on-chain activity with dual asset balances" loading="lazy"></div>
-                        <p class="showcase-caption">Live on-chain activity with dual-asset balances (uluxa &amp; ushard).</p>
-                    </article>
-                    <article class="showcase-slide">
-                        <div class="showcase-frame"><img src="assets/images/screenshots/04-history.webp" alt="Transaction history and settlement proof" loading="lazy"></div>
-                        <p class="showcase-caption">Transaction history with verifiable settlement proof.</p>
-                    </article>
-                </div>
-
-                <div class="showcase-nav">
-                    <button class="showcase-arrow" id="showcasePrev" aria-label="Previous screenshot"><i class="fas fa-arrow-left"></i></button>
-                    <button class="showcase-arrow" id="showcaseNext" aria-label="Next screenshot"><i class="fas fa-arrow-right"></i></button>
-                </div>
-                <div class="showcase-dots" id="showcaseDots"></div>
-            </div>
-        </div>
-
-        <script>
-        (function () {
-            var track = document.getElementById('showcaseTrack');
-            if (!track) return;
-            var slides = Array.prototype.slice.call(track.children);
-            var prevBtn = document.getElementById('showcasePrev');
-            var nextBtn = document.getElementById('showcaseNext');
-            var dotsWrap = document.getElementById('showcaseDots');
-            var index = 0, autoTimer = null, hovering = false;
-
-            slides.forEach(function (_, i) {
-                var d = document.createElement('button');
-                d.setAttribute('aria-label', 'Screenshot ' + (i + 1));
-                d.addEventListener('click', function () { goTo(i); restartAuto(); });
-                dotsWrap.appendChild(d);
-            });
-            var dots = Array.prototype.slice.call(dotsWrap.children);
-
-            function step() { return slides[0].getBoundingClientRect().width + 20; }
-            function goTo(i) {
-                index = (i + slides.length) % slides.length;
-                track.scrollTo({ left: index * step(), behavior: 'smooth' });
-                update();
-            }
-            function update() {
-                dots.forEach(function (d, i) { d.classList.toggle('active', i === index); });
-            }
-            function startAuto() {
-                autoTimer = setInterval(function () { if (!hovering) goTo(index + 1); }, 4000);
-            }
-            function restartAuto() { clearInterval(autoTimer); startAuto(); }
-
-            nextBtn.addEventListener('click', function () { goTo(index + 1); restartAuto(); });
-            prevBtn.addEventListener('click', function () { goTo(index - 1); restartAuto(); });
-            track.addEventListener('mouseenter', function () { hovering = true; });
-            track.addEventListener('mouseleave', function () { hovering = false; });
-            track.addEventListener('touchstart', function () { hovering = true; }, { passive: true });
-            track.addEventListener('touchend', function () { hovering = false; restartAuto(); });
-            track.addEventListener('scroll', function () {
-                var i = Math.round(track.scrollLeft / step());
-                i = Math.min(Math.max(i, 0), slides.length - 1);
-                if (i !== index) { index = i; update(); }
-            }, { passive: true });
-
-            update();
-            startAuto();
-        })();
-        </script>
-    </section>
-
-    <!-- DOWNLOAD SECTION -->
-    <section id="vault-app">
-        <div class="container">
-            <div class="section-header" style="margin-bottom: 25px;">
-                <span class="section-tag">Direct Downloads</span>
-                <h2 style="font-size: 1.8rem; margin-bottom: 6px;">Get LUXA Vault</h2>
-                <p style="font-size: 0.9rem; color: #94A3B8;">Sovereign non-custodial wallet with local AES-256-GCM encryption for Mainnet &amp; Testnet.</p>
-            </div>
-
-            <div class="vault-dl-grid">
-                <!-- CHROME EXTENSION -->
-                <div class="vault-dl" id="vault-chrome-card">
-                    <div class="vault-header-compact">
-                        <img src="assets/images/wallet.png" alt="LUXA Vault" class="vault-icon-compact">
-                        <div class="vault-titles">
-                            <h3><i class="fab fa-chrome" style="color: #00FFCC;"></i> Chrome Extension</h3>
-                            <span>Manifest V3 • Store Release</span>
-                        </div>
-                    </div>
-                    <p>Connect seamlessly to dApps, toggle between Mainnet/Testnet, and sign transactions on <code>luxa-1</code> directly from your browser.</p>
-                    <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-compact">
-                        <i class="fab fa-chrome"></i> <span>Install on Chrome</span>
-                    </a>
-                </div>
-
-                <!-- ANDROID APK -->
-                <div class="vault-dl" id="vault-android-card">
-                    <div class="vault-header-compact">
-                        <img src="assets/images/wallet.png" alt="LUXA Vault Android" class="vault-icon-compact">
-                        <div class="vault-titles">
-                            <h3><i class="fab fa-android" style="color: #22c55e;"></i> Android App</h3>
-                            <span>v1.4.2 APK • 5.1 MB</span>
-                        </div>
-                    </div>
-                    <p>Zero-Knowledge encrypted backup to private Google Drive appDataFolder with native Bech32 transactions and dual-mode testing.</p>
-                    
-                    <a href="https://raw.githubusercontent.com/luxaecosystem/luxa-vault-releases/main/assets/downloads/LUXA-Vault-1.4.2.apk" download="LUXA-Vault-1.4.2.apk" target="_self" rel="noopener" class="btn btn-primary btn-compact">
-                        <i class="fas fa-download"></i> <span>Download APK (v1.4.2)</span>
-                    </a>
-
-                    <details class="vault-install-summary">
-                        <summary><i class="fas fa-info-circle"></i> Quick Installation Guide</summary>
-                        <ol>
-                            <li>Open the downloaded APK and allow "Install unknown apps" if prompted.</li>
-                            <li>If Google Play Protect displays a prompt, select "Install anyway".</li>
-                            <li>Set your local security PIN and create or import your 12-word seed phrase.</li>
-                        </ol>
-                    </details>
-
-                    <div class="vault-hash-row">
-                        <span>SHA:</span>
-                        <code id="vaultApkSha">943FF596BE43F22B1C8891C0605120F374199C13101D57AFC0EDE700D479F793</code>
-                        <button type="button" class="vault-copy-mini" id="vaultCopySha">Copy</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script>
-        (function () {
-            var btn = document.getElementById('vaultCopySha');
-            var code = document.getElementById('vaultApkSha');
-            if (!btn || !code || !navigator.clipboard) return;
-            btn.addEventListener('click', function () {
-                navigator.clipboard.writeText(code.textContent.trim()).then(function () {
-                    btn.textContent = 'Copied';
-                    btn.style.background = '#22c55e';
-                    btn.style.color = '#fff';
-                    setTimeout(function () { 
-                        btn.textContent = 'Copy'; 
-                        btn.style.background = '';
-                        btn.style.color = '';
-                    }, 1800);
-                });
-            });
-        })();
-        </script>
-    </section>
-
-    <!-- FOOTER (componente condiviso: partials/footer.html) -->
+    <!-- FOOTER (partials/footer.html) -->
     <div data-include="footer"></div>
 
-    <script src="js/include.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/include.js" defer></script>
+    <script src="js/script.js" defer></script>
 </body>
 </html>
