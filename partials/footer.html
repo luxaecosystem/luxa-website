@@ -1,7 +1,7 @@
 <!-- ============================================================
-     COMPONENTE: footer.html — riorganizzato (stile grandi siti)
-     Colonne distinte: PAGINE (link a pagine complete) |
-     SEZIONI DEL SITO (anchor interne) | COMMUNITY (canali social)
+     COMPONENTE: footer.html
+     Colonne: Pages | Site sections | Legal & Community
+     Iniettato da js/include.js tramite <div data-include="footer"></div>
      ============================================================ -->
 
 <footer id="footer">
@@ -9,67 +9,68 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="index.html" class="footer-logo">
-                        <img src="assets/images/logoluxa.png" alt="LUXA">
+                    <a href="index.html" class="footer-logo" aria-label="LUXA — home">
+                        <img src="assets/images/logoluxa.png" alt="" width="32" height="32">
                         <span>LUXA</span>
                     </a>
                     <p>A sovereign blockchain ecosystem for everyone. Built on true community participation, client-side encryption, and transparent ledger economics.</p>
-                    <div style="margin: 14px 0 16px;">
-                        <a href="mailto:contact@luxaecosystem.xyz" style="color: #22d3ee; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 500;">
-                            <i class="fas fa-envelope"></i> contact@luxaecosystem.xyz
-                        </a>
+                    <div class="footer-contact">
+                        <a href="mailto:contact@luxaecosystem.xyz"><i class="fas fa-envelope"></i> contact@luxaecosystem.xyz</a>
                     </div>
                     <div class="footer-social">
-                        <a href="https://t.me/LuxaToken_Official" target="_blank" rel="noopener noreferrer" title="Official Channel"><i class="fab fa-telegram-plane"></i></a>
-                        <a href="https://t.me/LuxaCommunity" target="_blank" rel="noopener noreferrer" title="Telegram Community"><i class="fas fa-users"></i></a>
-                        <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" title="Mining Bot"><i class="fas fa-robot"></i></a>
-                        <a href="https://x.com/luxatoken" target="_blank" rel="noopener noreferrer" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
-                        <a href="https://github.com/luxatokenofficial" target="_blank" rel="noopener noreferrer" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="https://t.me/LuxaToken_Official" target="_blank" rel="noopener noreferrer" aria-label="Telegram announcements" title="Official Channel"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="https://t.me/LuxaCommunity" target="_blank" rel="noopener noreferrer" aria-label="Telegram community" title="Community Group"><i class="fas fa-users"></i></a>
+                        <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" aria-label="Mining bot" title="Mining Bot"><i class="fas fa-robot"></i></a>
+                        <a href="https://x.com/luxatoken" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)" title="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+                        <a href="https://github.com/luxatokenofficial" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
 
-                <div class="footer-links">
-                    <h4>Pagine</h4>
+                <nav class="footer-links" aria-label="Pages">
+                    <h4>Pages</h4>
                     <ul>
-                        <li><a href="vault.html">Luxa Vault</a></li>
+                        <li><a href="vault.html">LUXA Vault</a></li>
                         <li><a href="kyc.html">KYC Portal</a></li>
                         <li><a href="insights.html">Tokenomics Insights</a></li>
                         <li><a href="explorer.html">Block Explorer</a></li>
-                        <li><a href="assets/docs/LUXA_Whitepaper_EN.pdf" download="LUXA_Whitepaper_EN.pdf">White Paper</a></li>
+                        <li><a href="assets/docs/LUXA_Whitepaper_EN.pdf" download="LUXA_Whitepaper_EN.pdf">White Paper (PDF)</a></li>
                     </ul>
-                </div>
+                </nav>
 
-                <div class="footer-links">
-                    <h4>Sezioni del sito</h4>
+                <nav class="footer-links" aria-label="Site sections">
+                    <h4>Site sections</h4>
                     <ul>
                         <li><a href="index.html#spider-wallet">Spider Wallet</a></li>
                         <li><a href="index.html#shared-wealth">Shared Wealth</a></li>
                         <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#testnet">Testnet Sandbox</a></li>
                         <li><a href="index.html#tokenomics">Tokenomics</a></li>
-                        <li><a href="index.html#settlement">KYC &amp; Security</a></li>
+                        <li><a href="index.html#settlement">Settlement &amp; KYC</a></li>
                         <li><a href="index.html#roadmap">Roadmap</a></li>
                     </ul>
-                </div>
+                </nav>
 
-                <div class="footer-links">
+                <nav class="footer-links" aria-label="Legal and community">
                     <h4>Legal &amp; Community</h4>
                     <ul>
-                        <li><a href="terms.html"><i class="fas fa-file-contract" style="font-size: 11px; margin-right: 4px;"></i> Terms of Service</a></li>
-                        <li><a href="privacy-policy.html"><i class="fas fa-user-shield" style="font-size: 11px; margin-right: 4px;"></i> Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy-policy.html">Privacy Policy</a></li>
                         <li><a href="https://t.me/LuxaToken_Official" target="_blank" rel="noopener noreferrer">Telegram Announcements</a></li>
-                        <li><a href="https://t.me/LuxaTokenCommunity" target="_blank" rel="noopener noreferrer">Telegram Global Group</a></li>
-                        <li><a href="mailto:contact@luxaecosystem.xyz"><i class="fas fa-headset" style="font-size: 11px; margin-right: 4px;"></i> Support Desk</a></li>
+                        <!-- Prima puntava a LuxaTokenCommunity, nel resto del sito a LuxaCommunity: allineato. Verifica quale è quello ufficiale. -->
+                        <li><a href="https://t.me/LuxaCommunity" target="_blank" rel="noopener noreferrer">Telegram Community</a></li>
+                        <li><a href="mailto:contact@luxaecosystem.xyz">Support</a></li>
                     </ul>
-                </div>
+                </nav>
             </div>
         </div>
     </div>
+
     <div class="footer-bottom">
         <div class="container">
-            <p>© 2026 LUXA Ecosystem SARL. All rights reserved. • <a href="terms.html" style="color: #22d3ee; text-decoration: none;">Terms</a> • <a href="privacy-policy.html" style="color: #22d3ee; text-decoration: none;">Privacy</a> • Contact: <a href="mailto:contact@luxaecosystem.xyz" style="color: #22d3ee; text-decoration: none;">contact@luxaecosystem.xyz</a></p>
+            <p>&copy; <span data-year>2026</span> LUXA Ecosystem SARL. All rights reserved.</p>
             <p class="disclaimer">In-app mining rewards are subject to anti-bot verification and compliance checks prior to on-chain Mainnet migration. Participation does not constitute financial investment.</p>
         </div>
     </div>
 </footer>
 
-<button id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+<button type="button" id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
