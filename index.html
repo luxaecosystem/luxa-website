@@ -14,6 +14,9 @@
     <title>LUXA Token — Sovereign L1 Cosmos Ecosystem, Spider Wallet &amp; Shared Wealth</title>
     <meta name="description" content="LUXA Ecosystem - Sovereign Cosmos L1 blockchain, decentralized Spider Wallet mesh, revenue sharing for everyone, and verified KYC mainnet migration.">
     <base target="_blank">
+    <style>
+        html { scroll-behavior: smooth; }
+    </style>
 </head>
 <body>
 
@@ -45,13 +48,14 @@
                 A sovereign blockchain designed to divide economic prosperity among all participants. Featuring the non-custodial <strong>Spider Wallet</strong>, passive zero-barrier mining, and verifiable cryptographic transparency.
             </p>
             <div class="hero-buttons">
-                <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large">
+                <!-- 1. HERO BOT LINK (con referral) -->
+                <a href="https://t.me/LuxaEcosystemBot?start=ref_8659194294" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large">
                     <i class="fab fa-telegram"></i> <span>Start Mining Free</span>
                 </a>
-                <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-large">
+                <a href="#vault-chrome-card" target="_self" class="btn btn-outline btn-large">
                     <i class="fab fa-chrome"></i> <span>Install Chrome Extension</span>
                 </a><!-- LUXA-APK:hero -->
-                <a href="https://raw.githubusercontent.com/luxaecosystem/luxa-vault-releases/main/assets/downloads/LUXA-Vault-1.4.2.apk" download="LUXA-Vault-1.4.2.apk" target="_self" rel="noopener" class="btn btn-outline btn-large">
+                <a href="#vault-android-card" target="_self" class="btn btn-outline btn-large">
                     <i class="fab fa-android"></i> <span>Download Android App</span>
                 </a><!-- /LUXA-APK:hero -->
                 <a href="explorer.html" class="btn btn-outline btn-large">
@@ -59,12 +63,13 @@
                 </a>
             </div>
 
+            <!-- 2. HERO SOCIAL BAR -->
             <div class="hero-social-bar">
                 <span>Connect with our official channels:</span>
                 <div class="social-row">
                     <a href="https://t.me/LuxaEcosystem_Official" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram Channel" title="Official Hub"><i class="fab fa-telegram-plane"></i></a>
                     <a href="https://t.me/LuxaEcosystem_Official" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram Community" title="Community Group"><i class="fas fa-users"></i></a>
-                    <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram Bot" title="Mining Bot"><i class="fas fa-robot"></i></a>
+                    <a href="https://t.me/LuxaEcosystemBot?start=ref_8659194294" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram Bot" title="Mining Bot"><i class="fas fa-robot"></i></a>
                     <a href="https://github.com/luxatokenofficial" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub" title="GitHub"><i class="fab fa-github"></i></a>
                     <a href="https://x.com/luxatoken" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="X / Twitter" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
                 </div>
@@ -134,7 +139,7 @@
                     <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600;">
                         <i class="fab fa-chrome"></i> <span>Install on Chrome</span>
                     </a><!-- LUXA-APK:card -->
-                    <a href="https://raw.githubusercontent.com/luxaecosystem/luxa-vault-releases/main/assets/downloads/LUXA-Vault-1.4.2.apk" download="LUXA-Vault-1.4.2.apk" target="_self" rel="noopener" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600; margin-left: 8px;">
+                    <a href="#vault-android-card" target="_self" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600; margin-left: 8px;">
                         <i class="fab fa-android"></i> <span>Android App</span>
                     </a><!-- /LUXA-APK:card -->
                 </div>
@@ -146,7 +151,27 @@
     <section id="vault-app" class="section section-dark">
         <style>
             #vault-app .vault-dl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
-            #vault-app .vault-dl { display: flex; flex-direction: column; gap: 14px; padding: 28px; border-radius: 18px; border: 1px solid rgba(0, 255, 204, 0.2); background: linear-gradient(135deg, rgba(13, 17, 34, 0.85), rgba(7, 9, 20, 0.95)); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+            #vault-app .vault-dl { 
+                display: flex; 
+                flex-direction: column; 
+                gap: 14px; 
+                padding: 28px; 
+                border-radius: 18px; 
+                border: 1px solid rgba(0, 255, 204, 0.2); 
+                background: linear-gradient(135deg, rgba(13, 17, 34, 0.85), rgba(7, 9, 20, 0.95)); 
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+                scroll-margin-top: 100px;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            }
+            #vault-app .vault-dl:target {
+                border-color: #00FFCC;
+                box-shadow: 0 0 35px rgba(0, 255, 204, 0.35);
+                animation: targetPulse 2s ease-out;
+            }
+            @keyframes targetPulse {
+                0% { transform: scale(1.02); }
+                100% { transform: scale(1); }
+            }
             #vault-app .vault-badge { align-self: flex-start; background: rgba(0, 255, 204, 0.12); color: #00FFCC; border: 1px solid rgba(0, 255, 204, 0.3); font-size: 0.72rem; padding: 4px 10px; border-radius: 6px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
             #vault-app .vault-header-block { display: flex; align-items: center; gap: 16px; }
             #vault-app .vault-icon-img { width: 64px; height: 64px; border-radius: 16px; border: 1.5px solid rgba(0, 255, 204, 0.4); box-shadow: 0 0 18px rgba(0, 255, 204, 0.2); object-fit: cover; background: #05070d; }
@@ -179,7 +204,7 @@
 
             <div class="vault-dl-grid">
                 <!-- CHROME EXTENSION CARD -->
-                <div class="about-card vault-dl">
+                <div class="about-card vault-dl" id="vault-chrome-card">
                     <span class="vault-badge">Web Store Release</span>
                     <div class="vault-header-block">
                         <img src="assets/images/wallet.png" alt="LUXA Vault Icon" class="vault-icon-img">
@@ -197,7 +222,7 @@
                 </div>
 
                 <!-- ANDROID APK CARD -->
-                <div class="about-card vault-dl">
+                <div class="about-card vault-dl" id="vault-android-card">
                     <span class="vault-badge">Official APK &middot; v1.4.2 &middot; 5.1 MB</span>
                     <div class="vault-header-block">
                         <img src="assets/images/wallet.png" alt="LUXA Vault Android" class="vault-icon-img">
@@ -568,6 +593,7 @@
                         movement of the founding wallet is publicly trackable on the explorer.
                     </p>
 
+                    <!-- 3. FOUNDER ACTIONS BAR -->
                     <div class="founder-actions-v2">
                         <a href="https://www.linkedin.com/in/yassine-ouaadil-32497332a" target="_blank" rel="noopener noreferrer" class="btn-linkedin-v2"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
                         <a href="https://x.com/luxatoken" target="_blank" rel="noopener noreferrer" class="social-chip"><i class="fab fa-x-twitter"></i></a>
@@ -657,6 +683,7 @@
                 <div class="sidebar-kv"><span>Presale Allocation</span><strong style="color:#ef4444">None</strong></div>
             </div>
 
+            <!-- 4. FOUNDER SIDEBAR TELEGRAM LINK -->
             <div class="sidebar-section">
                 <span class="sidebar-label">Quick Access</span>
                 <a href="explorer.html?q=luxa1z4jpt568npsvpass9f93m0v3edn9f6h8nksfaz" class="sidebar-link"><i class="fas fa-cubes"></i> Verify Founder Wallet on Explorer</a>
@@ -808,13 +835,14 @@
                 <h2>Ready to Start Your<br>Mining Journey?</h2>
                 <p>Join thousands of active miners generating LUXA directly inside Telegram. Zero initial costs, secured by real cryptography.</p>
                 <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                    <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-xlarge">
+                    <!-- 5. CTA BOT LINK (con referral) -->
+                    <a href="https://t.me/LuxaEcosystemBot?start=ref_8659194294" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-xlarge">
                         <i class="fab fa-telegram"></i> <span>Launch LUXA Mini App</span>
                     </a>
-                    <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-xlarge">
+                    <a href="#vault-chrome-card" target="_self" class="btn btn-outline btn-xlarge">
                         <i class="fab fa-chrome"></i> <span>Chrome Extension</span>
                     </a><!-- LUXA-APK:cta -->
-                    <a href="https://raw.githubusercontent.com/luxaecosystem/luxa-vault-releases/main/assets/downloads/LUXA-Vault-1.4.2.apk" download="LUXA-Vault-1.4.2.apk" target="_self" rel="noopener" class="btn btn-outline btn-xlarge">
+                    <a href="#vault-android-card" target="_self" class="btn btn-outline btn-xlarge">
                         <i class="fab fa-android"></i> <span>Android App</span>
                     </a><!-- /LUXA-APK:cta -->
                     <a href="explorer.html" class="btn btn-outline btn-xlarge">
