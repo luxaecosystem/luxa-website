@@ -1,11 +1,19 @@
 /* ==========================================================================
-   LUXA TOKEN — Interactive Engine, Real-Time Cosmos Sync & Explorer Matrix
+   LUXA — script.js
+   1. Configurazione e utilità globali (nomi invariati: altre pagine li usano)
+   2. Certificati SVG (NFT + trasferimento)
+   3. Explorer: window.triggerSearch
+   4. Tokenomics live
+   5. UI del sito (navbar, menu, preloader, hero, carosello, download)
    ========================================================================== */
 
-// ===== CONFIGURAZIONE ENDPOINTS & ARCHITETTURA ON-CHAIN =====
+// ===== 1. CONFIGURAZIONE =====================================================
 const RPC_ENDPOINT = 'https://rpc.luxaecosystem.xyz';
 const BACKEND_API = 'https://luxaecosystem.alwaysdata.net/api';
 const TREASURY_WALLET = 'luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue';
+// Endpoint REST (LCD) del nodo Cosmos, es. 'https://api.luxaecosystem.xyz'.
+// Serve per la ricerca per indirizzo (saldi). Lasciato vuoto finché non è pubblico.
+const LCD_ENDPOINT = '';
 
 const HERO_IMAGES_WEB = {
   '4001': 'https://app.luxaecosystem.xyz/Nft_Images/Grandmaster_of_Servers.jpeg',
@@ -14,18 +22,27 @@ const HERO_IMAGES_WEB = {
   '4004': 'https://app.luxaecosystem.xyz/Nft_Images/Cyber-Shadow_Node.jpeg'
 };
 
+const NFT_NAMES = {
+  '4001': 'Grandmaster of Servers',
+  '4002': 'Neon Data Valkyrie',
+  '4003': 'Chrono-Key Master',
+  '4004': 'Cyber-Shadow Node'
+};
+
 function escapeXml(value) {
   return String(value ?? '').replace(/[&<>"']/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;'
   })[char]);
 }
+const escapeHtml = escapeXml; // stesso escaping, nome più chiaro quando si scrive HTML
 
 /* ==========================================================================
-   GENERAZIONE CERTIFICATI GRAFICI VETTORIALI (SVG DYNAMIC SEALS)
+   2. CERTIFICATI GRAFICI VETTORIALI (SVG)
    ========================================================================== */
 function generateSovereignNftSvg(name, id, wallet, txHash) {
-  const displayId = String(id || '4001');
-  const imageUrl = HERO_IMAGES_WEB[displayId] || HERO_IMAGES_WEB['4001'];
+  const rawId = String(id || '4001');
+  const displayId = escapeXml(rawId);
+  const imageUrl = HERO_IMAGES_WEB[rawId] || HERO_IMAGES_WEB['4001'];
   const displayName = escapeXml(name || 'Grandmaster of Servers');
   const displayWallet = escapeXml(wallet || 'luxa1...');
   const marquee = ` • HOLDER: ${displayWallet} • LEDGER: LUXA-1 • ASSET: ${displayName.toUpperCase()} • STATUS: ANCHORED • `;
@@ -86,7 +103,7 @@ function generateCoinTransferSvg(amount, sender, recipient, txHash) {
       </linearGradient>
     </defs>
     <rect x="6" y="6" width="408" height="328" rx="16" fill="url(#coinBg)" stroke="#00C878" stroke-width="1.8"/>
-    
+
     <g transform="translate(30, 24)">
       <text x="0" y="16" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="900" fill="#00FFCC">🪙 NATIVE COIN SETTLEMENT</text>
       <text x="360" y="16" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="bold" fill="#22c55e" text-anchor="end">FINALIZED</text>
@@ -118,382 +135,632 @@ function generateCoinTransferSvg(amount, sender, recipient, txHash) {
 }
 
 /* ==========================================================================
-   RICERCA ON-CHAIN & LEDGER INSPECTOR (GLOBAL TRIGGER)
+   3. EXPLORER — ricerca on-chain (blocco, transazione, indirizzo)
+
+   Correzioni principali:
+   - tutti i dati provenienti da RPC/backend/utente sono ora escapati
+     (prima finivano in innerHTML e in un onclick inline: rischio XSS);
+   - se la ricerca non trova nulla NON vengono più mostrati importi,
+     indirizzi e gas inventati come "CONFIRMED ON-CHAIN";
+   - la ricerca per indirizzo luxa1... (usata dal link "Verify Wallet")
+     ora è gestita: legge i saldi dall'endpoint LCD se configurato.
    ========================================================================== */
-window.triggerSearch = async function(overrideQuery) {
+window.triggerSearch = async function (overrideQuery) {
   const input = document.getElementById('explorerSearchInput');
-  const query = (overrideQuery || input?.value || '').trim();
+  const query = String(overrideQuery || input?.value || '').trim();
   const container = document.getElementById('explorerSearchResult');
   if (!query || !container) return;
 
-  container.innerHTML = `<div style="text-align:center; padding:18px; color:#00FFCC; font-family:monospace;">🔍 Inspecting ledger entry on luxa-1...</div>`;
+  const safeQuery = escapeHtml(query);
+  const box = (border, glow) =>
+    `margin-top:16px;background:rgba(0,0,0,.65);border:1px solid ${border};border-radius:16px;padding:20px;text-align:left;box-shadow:0 0 25px ${glow};`;
+  const rowHead = (title, badge, badgeStyle) =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:8px;">
+       <span style="color:inherit;font-weight:bold;font-size:12px;font-family:'Space Grotesk',sans-serif;">${title}</span>
+       <span style="${badgeStyle}font-weight:bold;font-size:10px;padding:2px 8px;border-radius:4px;">${badge}</span>
+     </div>`;
+  const OK_BADGE = 'background:rgba(34,197,94,.2);color:#22c55e;';
+  const WARN_BADGE = 'background:rgba(245,158,11,.15);color:#f59e0b;';
+  const render = html => { container.innerHTML = html; };
+
+  const notFound = (what) => render(`
+    <div style="${box('rgba(245,158,11,.5)', 'rgba(245,158,11,.1)')}color:#cbd5e1;font-size:13px;line-height:1.6;">
+      ${rowHead('NO RESULT', 'NOT FOUND', WARN_BADGE)}
+      No ${what} found on <strong>luxa-1</strong> for <span style="font-family:'JetBrains Mono',monospace;word-break:break-all;color:#88BBFF;">${safeQuery}</span>.
+      Check the value and try again.
+    </div>`);
+
+  render(`<div style="text-align:center;padding:18px;color:#00FFCC;font-family:monospace;">🔍 Inspecting ledger entry on luxa-1…</div>`);
 
   const cleanHash = query.startsWith('0x') ? query.slice(2) : query;
-  const isNumericBlock = /^\d+$/.test(query);
 
   try {
-    if (isNumericBlock) {
-      const blockNum = parseInt(query, 10);
-      let blk = null;
+    // ---- Blocco per altezza
+    if (/^\d+$/.test(query)) {
+      const data = await fetchJson(`${RPC_ENDPOINT}/block?height=${parseInt(query, 10)}`);
+      const blk = data?.result?.block;
+      if (!blk) return notFound('block');
 
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
-        const res = await fetch(`${RPC_ENDPOINT}/block?height=${blockNum}`, { signal: controller.signal });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          const data = await res.json();
-          blk = data.result?.block;
-        }
-      } catch (_) {}
-
-      container.innerHTML = `
-        <div style="background:rgba(0,0,0,0.6); border:1px solid #00FFCC; border-radius:16px; padding:20px; margin-top:16px; text-align:left;">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
-            <span style="font-family:'Space Grotesk',sans-serif; color:#00FFCC; font-weight:bold; font-size:13px;">BLOCK #${blockNum} CONFIRMED</span>
-            <span style="background:rgba(34,197,94,0.2); color:#22c55e; font-weight:bold; font-size:10px; padding:2px 8px; border-radius:4px;">COMMITTED</span>
+      render(`
+        <div style="${box('#00FFCC', 'rgba(0,255,204,.15)')}color:#00FFCC;">
+          ${rowHead(`BLOCK #${safeQuery} CONFIRMED`, 'COMMITTED', OK_BADGE)}
+          <div style="font-size:12px;line-height:1.7;color:#cbd5e1;">
+            <div><strong>Timestamp:</strong> ${blk.header?.time ? escapeHtml(new Date(blk.header.time).toLocaleString()) : '—'}</div>
+            <div><strong>Total Transactions:</strong> <span style="color:#FFD700;font-weight:bold;">${escapeHtml(blk.data?.txs?.length ?? 0)}</span></div>
+            <div><strong>Proposer:</strong> <span style="font-family:monospace;color:#88BBFF;word-break:break-all;">${escapeHtml(blk.header?.proposer_address || '—')}</span></div>
           </div>
-          <div style="font-size:12px; line-height:1.7; color:#cbd5e1;">
-            <div><strong>Timestamp:</strong> ${blk?.header?.time ? new Date(blk.header.time).toLocaleString() : new Date().toLocaleString()}</div>
-            <div><strong>Total Transactions:</strong> <span style="color:#FFD700; font-weight:bold;">${blk?.data?.txs?.length || 1}</span></div>
-            <div><strong>Proposer:</strong> <span style="font-family:monospace; color:#88BBFF; word-break:break-all;">${blk?.header?.proposer_address || 'luxavaloper1...'}</span></div>
-          </div>
-        </div>
-      `;
+        </div>`);
       return;
     }
 
+    // ---- Indirizzo luxa1...
+    if (/^luxa1[0-9a-z]{20,}$/i.test(query)) {
+      if (!LCD_ENDPOINT) {
+        render(`
+          <div style="${box('rgba(245,158,11,.5)', 'rgba(245,158,11,.1)')}color:#cbd5e1;font-size:13px;line-height:1.6;">
+            ${rowHead('ADDRESS LOOKUP', 'COMING SOON', WARN_BADGE)}
+            Balance lookup for <span style="font-family:'JetBrains Mono',monospace;word-break:break-all;color:#88BBFF;">${safeQuery}</span> isn't available yet.
+            Search by transaction hash or block height instead.
+          </div>`);
+        return;
+      }
+      const data = await fetchJson(`${LCD_ENDPOINT}/cosmos/bank/v1beta1/balances/${encodeURIComponent(query)}`, 5000);
+      if (!data) return notFound('account');
+      const rows = (data.balances || []).map(b => {
+        const isLuxa = b.denom === 'uluxa';
+        const value = isLuxa ? formatNumber(Number(b.amount) / 1e6, 6) + ' LUXA' : `${escapeHtml(b.amount)} ${escapeHtml(b.denom)}`;
+        return `<div style="display:flex;justify-content:space-between;gap:12px;"><span>${escapeHtml(isLuxa ? 'LUXA' : b.denom)}</span><strong style="color:#fff;">${value}</strong></div>`;
+      }).join('') || '<div>No balance on this address yet.</div>';
+
+      render(`
+        <div style="${box('#00FFCC', 'rgba(0,255,204,.15)')}color:#00FFCC;">
+          ${rowHead('ACCOUNT BALANCES', 'ON-CHAIN', OK_BADGE)}
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#88BBFF;word-break:break-all;margin-bottom:12px;">${safeQuery}</div>
+          <div style="font-size:12px;line-height:1.9;color:#cbd5e1;">${rows}</div>
+        </div>`);
+      return;
+    }
+
+    // ---- Ricevuta Testnet (0xtest_...): vive nel ledger sandbox, non su luxa-1
+    if (/^0xtest_/i.test(query)) {
+      render(`
+        <div style="${box('rgba(245,158,11,.5)', 'rgba(245,158,11,.1)')}color:#cbd5e1;font-size:13px;line-height:1.6;">
+          ${rowHead('TESTNET RECEIPT', 'SANDBOX', WARN_BADGE)}
+          <span style="font-family:'JetBrains Mono',monospace;word-break:break-all;color:#88BBFF;">${safeQuery}</span><br>
+          This receipt belongs to <strong>luxa-testnet</strong>, a simulated ledger. It is not recorded on luxa-1, so it does not appear in the mainnet explorer.
+        </div>`);
+      return;
+    }
+
+    // ---- Transazione (hash o id ledger interno)
+    let found = false;
+    let height = '—';
+    let gasInfo = '—';
+    let sender = '—';
+    let recipient = '—';
+    let amount = '—';
     let isSuccess = true;
-    let height = 'luxa-1';
-    let gasInfo = '50,376 / 200,000';
-    let sender = 'luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue';
-    let recipient = 'luxa1...';
-    let amount = '56.11 LUXA';
     let isNft = false;
     let nftId = '4001';
 
-    // 1. Chiamata diretta RPC Cosmos (Tendermint/CometBFT)
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3500);
-      const rpcRes = await fetch(`${RPC_ENDPOINT}/tx?hash=0x${cleanHash}`, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (rpcRes.ok) {
-        const rpcData = await rpcRes.json();
-        if (rpcData.result) {
-          const tx = rpcData.result;
-          height = tx.height || height;
-          isSuccess = tx.tx_result?.code === 0 || !tx.tx_result?.code;
-          gasInfo = `${tx.tx_result?.gas_used || '50,376'} / ${tx.tx_result?.gas_wanted || '200,000'}`;
-        }
+    // 1. RPC CometBFT (solo hash esadecimali a 64 caratteri)
+    if (/^[0-9a-f]{64}$/i.test(cleanHash)) {
+      const rpcData = await fetchJson(`${RPC_ENDPOINT}/tx?hash=0x${cleanHash}`);
+      const tx = rpcData?.result;
+      if (tx) {
+        found = true;
+        height = tx.height ?? height;
+        isSuccess = !tx.tx_result?.code;
+        gasInfo = `${tx.tx_result?.gas_used ?? '—'} / ${tx.tx_result?.gas_wanted ?? '—'}`;
       }
-    } catch (_) {}
-
-    // 2. Chiamata Backend Alwaysdata / Ledger
-    try {
-      const beRes = await fetch(`${BACKEND_API}/ecosystem/chain/tx/${cleanHash}`);
-      if (beRes.ok) {
-        const beData = await beRes.json();
-        if (beData.tx) {
-          const b = beData.tx;
-          if (b.nftKey || b.assetName || b.type === 'SOVEREIGN_NFT_MINT' || b.isNft) {
-            isNft = true;
-            nftId = b.nftKey || b.id || nftId;
-          }
-          sender = b.senderAddress || sender;
-          recipient = b.recipientAddress || b.holder || recipient;
-          if (b.amount) amount = `${b.amount} ${b.currency ? b.currency.toUpperCase() : 'LUXA'}`;
-        }
-      }
-    } catch (_) {}
-
-    if (cleanHash.toUpperCase().includes('BC25D0B') || cleanHash.startsWith('tx_reg_')) {
-      isNft = true;
     }
 
+    // 2. Ledger applicativo (backend)
+    const beData = await fetchJson(`${BACKEND_API}/ecosystem/chain/tx/${encodeURIComponent(cleanHash)}`);
+    if (beData?.tx) {
+      found = true;
+      const b = beData.tx;
+      if (b.nftKey || b.assetName || b.type === 'SOVEREIGN_NFT_MINT' || b.isNft) {
+        isNft = true;
+        nftId = String(b.nftKey || b.id || nftId);
+      }
+      sender = b.senderAddress || sender;
+      recipient = b.recipientAddress || b.holder || recipient;
+      if (b.amount) amount = `${b.amount} ${b.currency ? String(b.currency).toUpperCase() : 'LUXA'}`;
+    }
+
+    // Transazione di registrazione NFT nota (hash con prefisso BC25D0B) e id ledger tx_reg_*
+    if (found && (cleanHash.toUpperCase().includes('BC25D0B') || cleanHash.startsWith('tx_reg_'))) isNft = true;
+
+    if (!found) return notFound('transaction');
+
+    const accent = isNft ? '#FFD700' : '#00FFCC';
     const cardSvgUri = isNft
-      ? generateSovereignNftSvg('Grandmaster of Servers', nftId, recipient !== 'luxa1...' ? recipient : sender, query)
+      ? generateSovereignNftSvg(NFT_NAMES[nftId] || 'Sovereign License', nftId, recipient !== '—' ? recipient : sender, query)
       : generateCoinTransferSvg(amount, sender, recipient, query);
 
-    container.innerHTML = `
-      <div style="margin-top:16px; background:rgba(0,0,0,0.65); border:1px solid ${isNft ? '#FFD700' : '#00FFCC'}; border-radius:16px; padding:20px; box-shadow:0 0 25px ${isNft ? 'rgba(255,215,0,0.2)' : 'rgba(0,255,204,0.15)'}; text-align:left;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
-          <span style="color:${isNft ? '#FFD700' : '#00FFCC'}; font-weight:bold; font-size:12px; font-family:'Space Grotesk',sans-serif;">
-            ${isNft ? `🏛️ SOVEREIGN NFT LICENSE (#${nftId})` : '🪙 NATIVE COIN SETTLEMENT'}
-          </span>
-          <span style="background:rgba(34,197,94,0.2); color:#22c55e; font-weight:bold; font-size:10px; padding:2px 8px; border-radius:4px;">
-            ${isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED'}
-          </span>
+    render(`
+      <div style="${box(accent, isNft ? 'rgba(255,215,0,.2)' : 'rgba(0,255,204,.15)')}color:${accent};">
+        ${rowHead(isNft ? `🏛️ SOVEREIGN NFT LICENSE (#${escapeHtml(nftId)})` : '🪙 NATIVE COIN SETTLEMENT',
+                  isSuccess ? 'CONFIRMED ON-CHAIN' : 'FAILED',
+                  isSuccess ? OK_BADGE : 'background:rgba(239,68,68,.15);color:#ef4444;')}
+
+        <div style="text-align:center;margin:15px 0 20px;">
+          <img src="${cardSvgUri}" alt="Visual card for this transaction" style="width:100%;max-width:320px;aspect-ratio:${isNft ? '600/780' : '420/340'};border-radius:16px;border:2px solid ${accent};object-fit:contain;display:inline-block;">
         </div>
 
-        <div style="text-align:center; margin:15px 0 20px;">
-          <img src="${cardSvgUri}" alt="Visual Card" style="width:100%; max-width:320px; aspect-ratio:${isNft ? '600/780' : '420/340'}; border-radius:16px; border:2px solid ${isNft ? '#FFD700' : '#00FFCC'}; object-fit:contain; display:inline-block;">
+        <div style="font-size:12px;line-height:1.7;color:#cbd5e1;">
+          <div><strong>Amount:</strong> <strong style="color:#fff;">${escapeHtml(amount)}</strong></div>
+          <div><strong>From:</strong> <span style="font-family:'JetBrains Mono',monospace;color:#88BBFF;word-break:break-all;">${escapeHtml(sender)}</span></div>
+          <div><strong>To:</strong> <span style="font-family:'JetBrains Mono',monospace;word-break:break-all;">${escapeHtml(recipient)}</span></div>
+          <div><strong>Block:</strong> ${escapeHtml(height)}</div>
+          <div><strong>Gas Used/Wanted:</strong> ${escapeHtml(gasInfo)}</div>
         </div>
 
-        <div style="font-size:12px; line-height:1.7; color:#cbd5e1;">
-          <div><strong>Amount:</strong> <strong style="color:#fff;">${amount}</strong></div>
-          <div><strong>From:</strong> <span style="font-family:'JetBrains Mono',monospace; color:#88BBFF; word-break:break-all;">${sender}</span></div>
-          <div><strong>To:</strong> <span style="font-family:'JetBrains Mono',monospace; word-break:break-all;">${recipient}</span></div>
-          <div><strong>Block:</strong> #${height}</div>
-          <div><strong>Gas Used/Wanted:</strong> ${gasInfo}</div>
-        </div>
-
-        <button type="button" style="width:100%; margin-top:16px; background:transparent; border:1px solid ${isNft ? '#FFD700' : '#00FFCC'}; color:${isNft ? '#FFD700' : '#00FFCC'}; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="navigator.clipboard.writeText('${query}'); alert('Transaction hash copied!');">
+        <button type="button" data-copy="${safeQuery}" style="width:100%;margin-top:16px;background:transparent;border:1px solid ${accent};color:${accent};padding:10px;border-radius:8px;font-weight:bold;cursor:pointer;">
           📋 Copy Transaction Hash
         </button>
-      </div>
-    `;
+      </div>`);
+
+    const copyBtn = container.querySelector('[data-copy]');
+    copyBtn?.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(query); copyBtn.textContent = '✅ Copied'; }
+      catch (_) { copyBtn.textContent = 'Select and copy manually'; }
+      setTimeout(() => { copyBtn.textContent = '📋 Copy Transaction Hash'; }, 1800);
+    });
   } catch (err) {
-    container.innerHTML = `<div style="padding:16px; color:#ef4444; text-align:center;">Lookup failed: ${err.message}</div>`;
+    render(`<div style="padding:16px;color:#ef4444;text-align:center;">Lookup failed: ${escapeHtml(err.message)}</div>`);
   }
 };
 
 /* ==========================================================================
-   SINCRONIZZAZIONE SUPPLY PULITA (ZERO ERRORI 404 IN CONSOLE)
+   Utilità condivise (fuori dall'IIFE perché usate anche da triggerSearch)
    ========================================================================== */
-async function syncTokenomicsMetrics() {
-  const elTotal = document.getElementById('liveTotalSupply');
-  const elTreasury = document.getElementById('liveTreasuryVault');
-  const elCirculating = document.getElementById('liveCirculatingSupply');
-
-  if (!elTotal && !elTreasury && !elCirculating) return;
-
-  // Valori certi consolidati on-chain (luxa-1)
-  let totalLuxa = 1002500000.00;
-  let treasuryLuxa = 999903910.11;
-
+async function fetchJson(url, timeout = 3500) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-    // Chiamata sicura al backend Node.js (Alwaysdata)
-    const beRes = await fetch(`${BACKEND_API}/admin/stats`, { signal: controller.signal })
-      .then(r => (r.ok ? r.json() : null))
-      .catch(() => null);
-
-    clearTimeout(timeoutId);
-
-    if (beRes && beRes.circulatingSupply) {
-      const circ = Number(beRes.circulatingSupply);
-      const treas = Number(beRes.treasuryBalance || treasuryLuxa);
-      if (circ > 0) {
-        treasuryLuxa = treas;
-        totalLuxa = circ + treas;
-      }
-    }
+    const res = await fetch(url, { signal: controller.signal });
+    return res.ok ? await res.json() : null;
   } catch (_) {
-    // Silenzioso, usa i valori consolidati
-  }
-
-  const circulatingLuxa = Math.max(0, totalLuxa - treasuryLuxa);
-
-  if (elTotal) {
-    elTotal.innerHTML = `${totalLuxa.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>LUXA</small>`;
-  }
-  if (elTreasury) {
-    elTreasury.innerHTML = `${treasuryLuxa.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>LUXA</small>`;
-  }
-  if (elCirculating) {
-    elCirculating.innerHTML = `${circulatingLuxa.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>LUXA</small>`;
+    return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
-/* ==========================================================================
-   EVENTI INTERFACCIA DOM & INTERAZIONI
-   ========================================================================== */
-/* ==========================================================================
-   COMPONENTI CONDIVISI (navbar / mobile menu / back-to-top)
-   Questi elementi arrivano nel DOM in modo asincrono, iniettati da
-   js/include.js dentro <div data-include="nav"> e <div data-include="footer">.
-   Per questo la loro inizializzazione NON parte su DOMContentLoaded (che
-   potrebbe scattare prima che nav/footer siano stati caricati), ma
-   sull'evento "luxa:components-ready" lanciato da include.js quando ha
-   finito di iniettarli. Se una pagina non usa include.js (es. pagine
-   standalone con nav/footer già presenti nell'HTML), questa funzione può
-   comunque essere richiamata a mano: initComponentDependentUI().
-   ========================================================================== */
-function initComponentDependentUI() {
+function formatNumber(n, decimals = 2) {
+  return Number(n).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+}
 
-  // Navbar Scroll Style
-  const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll', () => {
-    if (!navbar) return;
-    if (window.pageYOffset > 50) navbar.classList.add('scrolled');
-    else navbar.classList.remove('scrolled');
-  });
+/* ==========================================================================
+   4–5. TOKENOMICS LIVE + UI DEL SITO
+   Tutto dentro una IIFE: nessuna variabile globale in più (evita conflitti
+   con gli script inline delle altre pagine).
+   ========================================================================== */
+(function () {
+  'use strict';
 
-  // Mobile Menu Toggle
-  const mobileToggle = document.querySelector('.mobile-menu-toggle');
-  const mobileMenu = document.querySelector('.mobile-menu');
-  if (mobileToggle && mobileMenu) {
-    mobileToggle.addEventListener('click', () => {
-      mobileMenu.classList.toggle('open');
-      const spans = mobileToggle.querySelectorAll('span');
-      if (mobileMenu.classList.contains('open')) {
-        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-        spans[1].style.opacity = '0';
-        spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
-      } else {
-        spans[0].style.transform = 'none';
-        spans[1].style.opacity = '1';
-        spans[2].style.transform = 'none';
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const byId = id => document.getElementById(id);
+  const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const onReady = fn => (document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', fn) : fn());
+
+  /* ---------- Tokenomics live ---------- */
+  // Valori consolidati usati SOLO se il backend non risponde.
+  const SUPPLY_FALLBACK = { total: 1002500000.00, treasury: 999903910.11 };
+
+  async function syncTokenomicsMetrics() {
+    const elTotal = byId('liveTotalSupply');
+    const elTreasury = byId('liveTreasuryVault');
+    const elCirculating = byId('liveCirculatingSupply');
+    if (!elTotal && !elTreasury && !elCirculating) return;
+
+    let total = SUPPLY_FALLBACK.total;
+    let treasury = SUPPLY_FALLBACK.treasury;
+
+    const stats = await fetchJson(`${BACKEND_API}/admin/stats`, 3000);
+    if (stats && Number(stats.circulatingSupply) > 0) {
+      treasury = Number(stats.treasuryBalance || treasury);
+      total = Number(stats.circulatingSupply) + treasury;
+    }
+
+    const circulating = Math.max(0, total - treasury);
+    const fmt = n => `${formatNumber(n)} <small>LUXA</small>`;
+    if (elTotal) elTotal.innerHTML = fmt(total);
+    if (elTreasury) elTreasury.innerHTML = fmt(treasury);
+    if (elCirculating) elCirculating.innerHTML = fmt(circulating);
+  }
+
+  /* ---------- Altezza blocchi live (hero) ---------- */
+  function initLiveBlockHeight() {
+    const el = byId('statBlocks');
+    if (!el) return;
+    let animated = false;
+
+    function animateCounter(target) {
+      let current = Math.max(0, target - 50);
+      const timer = setInterval(() => {
+        current += 1;
+        el.textContent = Math.min(current, target).toLocaleString('en-US');
+        if (current >= target) clearInterval(timer);
+      }, 15);
+    }
+
+    async function tick() {
+      if (document.hidden) return;
+      const data = await fetchJson(`${RPC_ENDPOINT}/status`, 2500);
+      const height = parseInt(data?.result?.sync_info?.latest_block_height || 0, 10);
+      if (height > 0) {
+        if (animated) el.textContent = height.toLocaleString('en-US');
+        else if (prefersReducedMotion()) { el.textContent = height.toLocaleString('en-US'); animated = true; }
+        else { animateCounter(height); animated = true; }
+      } else if (!animated) {
+        el.textContent = '—'; // nodo non raggiungibile: niente numeri inventati
       }
-    });
+    }
 
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.remove('open');
-        const spans = mobileToggle.querySelectorAll('span');
-        spans[0].style.transform = 'none';
-        spans[1].style.opacity = '1';
-        spans[2].style.transform = 'none';
+    tick();
+    setInterval(tick, 6000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
+  }
+
+  /* ---------- Navbar, menu mobile, back-to-top ----------
+     Questi elementi sono iniettati da include.js: si inizializzano
+     dopo l'evento "luxa:components-ready". */
+  let componentsInitialised = false;
+  function initComponentDependentUI() {
+    if (componentsInitialised) return;
+    componentsInitialised = true;
+
+    const navbar = byId('navbar');
+    const updateNavbar = () => navbar?.classList.toggle('scrolled', window.scrollY > 50);
+    window.addEventListener('scroll', updateNavbar, { passive: true });
+    updateNavbar();
+
+    const toggle = $('.mobile-menu-toggle');
+    const menu = $('.mobile-menu');
+    if (toggle && menu) {
+      const setOpen = open => {
+        menu.classList.toggle('open', open);
+        toggle.classList.toggle('is-open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+      };
+      toggle.addEventListener('click', () => setOpen(!menu.classList.contains('open')));
+      menu.addEventListener('click', e => { if (e.target.closest('a')) setOpen(false); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+      document.addEventListener('click', e => {
+        if (menu.classList.contains('open') && !menu.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
       });
-    });
-  }
+      window.matchMedia('(min-width: 991px)').addEventListener('change', e => { if (e.matches) setOpen(false); });
+    }
 
-  // Back to top button
-  const backToTop = document.getElementById('backToTop');
-  if (backToTop) {
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 500) backToTop.classList.add('visible');
-      else backToTop.classList.remove('visible');
-    });
-    backToTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-  }
-}
-
-// Pagine con include.js: aspetta che nav/footer siano stati iniettati.
-document.addEventListener('luxa:components-ready', initComponentDependentUI);
-// Pagine senza include.js (nav/footer già presenti nell'HTML): fallback diretto.
-if (!document.querySelector('[data-include]')) {
-  document.addEventListener('DOMContentLoaded', initComponentDependentUI);
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-
-  // 1. Preloader
-  const preloader = document.getElementById('preloader');
-  if (preloader) {
-    setTimeout(() => { preloader.classList.add('hidden'); }, 600);
-  }
-
-  // 2. Smooth Scroll per ancora interna
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      const targetId = this.getAttribute('href');
-      if (targetId === '#' || targetId === '') return;
-      const target = document.querySelector(targetId);
-      if (target) {
-        e.preventDefault();
-        const offset = 80;
-        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
-        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
-      }
-    });
-  });
-
-  // 3. Generazione Particelle Hero
-  const particlesContainer = document.getElementById('particles');
-  if (particlesContainer) {
-    for (let i = 0; i < 28; i++) {
-      const particle = document.createElement('div');
-      particle.classList.add('particle');
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDuration = (Math.random() * 8 + 8) + 's';
-      particle.style.animationDelay = (Math.random() * 6) + 's';
-      particle.style.width = (Math.random() * 3 + 2) + 'px';
-      particle.style.height = particle.style.width;
-      particlesContainer.appendChild(particle);
+    const backToTop = byId('backToTop');
+    if (backToTop) {
+      window.addEventListener('scroll', () => backToTop.classList.toggle('visible', window.scrollY > 500), { passive: true });
+      backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' }));
     }
   }
 
-  // 4. Card 3D Tilt su schermi desktop
-  if (window.innerWidth > 768) {
-    document.querySelectorAll('.about-card, .token-card').forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = (y - centerY) / 22;
-        const rotateY = (centerX - x) / 22;
+  if (window.luxaComponentsReady) initComponentDependentUI();
+  else document.addEventListener('luxa:components-ready', initComponentDependentUI, { once: true });
+  if (!document.querySelector('[data-include]')) onReady(initComponentDependentUI);
+
+  /* ---------- Preloader ---------- */
+  function initPreloader() {
+    const preloader = byId('preloader');
+    if (!preloader) return;
+    const hide = () => preloader.classList.add('hidden');
+    if (document.readyState === 'complete') setTimeout(hide, 250);
+    else {
+      window.addEventListener('load', () => setTimeout(hide, 250), { once: true });
+      setTimeout(hide, 2500); // rete lenta: non bloccare mai la pagina
+    }
+  }
+
+  /* ---------- Particelle hero ---------- */
+  function initParticles() {
+    const container = byId('particles');
+    if (!container || prefersReducedMotion()) return;
+    const count = window.innerWidth < 640 ? 12 : 28;
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      const size = (Math.random() * 3 + 2) + 'px';
+      p.className = 'particle';
+      p.style.cssText = `left:${Math.random() * 100}%;width:${size};height:${size};animation-duration:${Math.random() * 8 + 8}s;animation-delay:${Math.random() * 6}s`;
+      frag.appendChild(p);
+    }
+    container.appendChild(frag);
+  }
+
+  /* ---------- Tilt 3D sulle card (solo mouse) ---------- */
+  function initCardTilt() {
+    if (prefersReducedMotion() || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    $$('.about-card, .token-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const rotateX = (e.clientY - r.top - r.height / 2) / 22;
+        const rotateY = (r.width / 2 - (e.clientX - r.left)) / 22;
         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
       });
       card.addEventListener('mouseleave', () => { card.style.transform = ''; });
     });
   }
 
-  // 5. Sync altezza blocchi con contatore animato via CometBFT /status
-  let hasAnimatedFirstTime = false;
-  async function fetchLiveChainMetrics() {
-    const statBlocks = document.getElementById('statBlocks');
-    const statMiners = document.getElementById('statMiners');
-    const statCountries = document.getElementById('statCountries');
+  /* ==========================================================================
+     CAROSELLO — Vault Showcase
 
-    if (statMiners && statMiners.textContent !== 'Actif') statMiners.textContent = 'Actif';
-    if (statCountries && statCountries.textContent !== 'Actif') statCountries.textContent = 'Actif';
+     Rispetto alla versione precedente:
+     - slide attiva a piena opacità, le vicine attenuate; prima e ultima si centrano;
+     - stato attivo calcolato con IntersectionObserver (niente più dot che
+       "sfarfallano" durante lo scroll animato) + blocco durante gli spostamenti;
+     - autoplay guidato dalla barra di avanzamento del dot attivo: si mette in
+       pausa da solo con hover, focus da tastiera, sezione fuori schermo,
+       scheda in background; pulsante play/pausa; disattivato con
+       "riduci movimento";
+     - tastiera (← → Home End), swipe nativo, trascinamento con il mouse;
+     - click sulla slide attiva = anteprima ingrandita (lightbox); click su
+       una slide laterale = la porta al centro;
+     - se un'immagine manca (es. 05-nft-vault.webp non ancora caricata) la slide
+       viene rimossa e i controlli si ricalcolano da soli;
+     - gap letto dal CSS, ricentratura al resize, ARIA (region, "n of N").
+     ========================================================================== */
+  function initShowcase() {
+    const root = byId('showcase');
+    if (!root) return;
 
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
-      const res = await fetch(`${RPC_ENDPOINT}/status`, { signal: controller.signal });
-      clearTimeout(timeoutId);
+    const track = $('.showcase-track', root);
+    const dotsWrap = $('.showcase-dots', root);
+    const prevBtn = $('[data-showcase="prev"]', root);
+    const nextBtn = $('[data-showcase="next"]', root);
+    const toggleBtn = $('[data-showcase="toggle"]', root);
+    const curEl = $('[data-showcase-current]', root);
+    const totalEl = $('[data-showcase-total]', root);
+    const reduced = prefersReducedMotion();
 
-      if (res.ok) {
-        const data = await res.json();
-        const latestHeight = parseInt(data.result?.sync_info?.latest_block_height || 0, 10);
+    let slides = [];
+    let dots = [];
+    let index = 0;
+    let autoplay = !reduced;
+    let lockTarget = null; // durante uno scroll programmato l'observer non cambia la slide attiva
+    let lockTimer = null;
+    const hold = { hover: false, focus: false, offscreen: false, hidden: false };
+    const pad = n => String(n).padStart(2, '0');
 
-        if (latestHeight > 0 && statBlocks) {
-          if (!hasAnimatedFirstTime) {
-            animateBlockCounter(statBlocks, latestHeight);
-            hasAnimatedFirstTime = true;
-          } else {
-            statBlocks.textContent = `${latestHeight.toLocaleString('en-US')} +`;
-          }
-        }
-      }
-    } catch (_) {
-      if (statBlocks && (statBlocks.textContent === '' || statBlocks.querySelector('.fa-spinner'))) {
-        statBlocks.textContent = '120,800 +';
+    /* -- stato -- */
+    function setActive(i) {
+      index = i;
+      slides.forEach((s, k) => s.classList.toggle('is-active', k === i));
+      dots.forEach((d, k) => {
+        d.classList.toggle('active', k === i);
+        if (k === i) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current');
+      });
+      if (curEl) curEl.textContent = pad(i + 1);
+    }
+
+    function syncPlayState() {
+      root.classList.toggle('is-playing', autoplay);
+      root.classList.toggle('is-paused', Object.values(hold).some(Boolean));
+      if (toggleBtn) {
+        toggleBtn.setAttribute('aria-label', autoplay ? 'Pause automatic slideshow' : 'Start automatic slideshow');
+        toggleBtn.innerHTML = `<i class="fas ${autoplay ? 'fa-pause' : 'fa-play'}"></i>`;
       }
     }
-  }
 
-  function animateBlockCounter(element, target) {
-    let current = Math.max(0, target - 50);
-    const step = 1;
-    const timer = setInterval(() => {
-      current += step;
-      if (current >= target) {
-        element.textContent = `${target.toLocaleString('en-US')} +`;
-        clearInterval(timer);
-      } else {
-        element.textContent = `${current.toLocaleString('en-US')}`;
+    function goTo(i, instant) {
+      if (!slides.length) return;
+      const n = (i + slides.length) % slides.length;
+      const slide = slides[n];
+      const left = slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2;
+      const jump = instant || reduced;
+
+      lockTarget = n;
+      clearTimeout(lockTimer);
+      lockTimer = setTimeout(() => { lockTarget = null; }, 1200); // rete di sicurezza se "scrollend" non esiste
+      setActive(n);
+      track.scrollTo({ left, behavior: jump ? 'auto' : 'smooth' });
+    }
+
+    function nearestIndex() {
+      const center = track.scrollLeft + track.clientWidth / 2;
+      let best = 0;
+      let dist = Infinity;
+      slides.forEach((s, i) => {
+        const d = Math.abs(s.offsetLeft + s.offsetWidth / 2 - center);
+        if (d < dist) { dist = d; best = i; }
+      });
+      return best;
+    }
+
+    /* -- costruzione (richiamata anche se una slide viene rimossa) -- */
+    const observer = 'IntersectionObserver' in window
+      ? new IntersectionObserver(entries => {
+          if (lockTarget !== null) return;
+          entries.forEach(e => {
+            if (!e.isIntersecting) return;
+            const i = slides.indexOf(e.target);
+            if (i > -1 && i !== index) setActive(i);
+          });
+        }, { root: track, threshold: 0.6 })
+      : null;
+
+    function refresh() {
+      slides = $$('.showcase-slide', track);
+      if (!slides.length) { root.closest('section')?.setAttribute('hidden', ''); return; }
+
+      slides.forEach((s, i) => s.setAttribute('aria-label', `${i + 1} of ${slides.length}`));
+      dotsWrap.innerHTML = '';
+      dots = slides.map((_, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.setAttribute('aria-label', `Show screenshot ${i + 1}`);
+        b.appendChild(document.createElement('span'));
+        b.addEventListener('click', () => goTo(i));
+        dotsWrap.appendChild(b);
+        return b;
+      });
+      if (totalEl) totalEl.textContent = pad(slides.length);
+
+      observer?.disconnect();
+      slides.forEach(s => observer?.observe(s));
+      setActive(Math.min(index, slides.length - 1));
+    }
+
+    /* -- immagini mancanti -- */
+    $$('.showcase-slide img', track).forEach(img => {
+      const drop = () => {
+        img.closest('.showcase-slide')?.remove();
+        refresh();
+        goTo(index, true);
+      };
+      if (img.complete && img.naturalWidth === 0 && img.getAttribute('src')) drop();
+      else img.addEventListener('error', drop, { once: true });
+    });
+
+    /* -- controlli -- */
+    prevBtn?.addEventListener('click', () => goTo(index - 1));
+    nextBtn?.addEventListener('click', () => goTo(index + 1));
+    toggleBtn?.addEventListener('click', () => { autoplay = !autoplay; syncPlayState(); });
+
+    track.addEventListener('keydown', e => {
+      const target = { ArrowLeft: index - 1, ArrowRight: index + 1, Home: 0, End: slides.length - 1 }[e.key];
+      if (target === undefined) return;
+      e.preventDefault();
+      goTo(target);
+    });
+    track.addEventListener('scrollend', () => { lockTarget = null; });
+
+    // Autoplay: la barra di avanzamento del dot attivo finisce → slide successiva
+    dotsWrap.addEventListener('animationend', e => {
+      if (e.animationName === 'showcase-progress') goTo(index + 1);
+    });
+
+    /* -- pause automatiche -- */
+    root.addEventListener('mouseenter', () => { hold.hover = true; syncPlayState(); });
+    root.addEventListener('mouseleave', () => { hold.hover = false; syncPlayState(); });
+    root.addEventListener('focusin', () => { hold.focus = !!root.querySelector(':focus-visible'); syncPlayState(); });
+    root.addEventListener('focusout', () => { hold.focus = false; syncPlayState(); });
+    document.addEventListener('visibilitychange', () => { hold.hidden = document.hidden; syncPlayState(); });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => { hold.offscreen = !entry.isIntersecting; syncPlayState(); }, { threshold: 0.25 }).observe(root);
+    }
+
+    /* -- trascinamento con il mouse (touch e trackpad usano lo scroll nativo) -- */
+    let dragging = false;
+    let startX = 0;
+    let startScroll = 0;
+    let moved = 0;
+    track.addEventListener('pointerdown', e => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      dragging = true; moved = 0; startX = e.clientX; startScroll = track.scrollLeft;
+      track.classList.add('is-dragging');
+    });
+    window.addEventListener('pointermove', e => {
+      if (!dragging) return;
+      const dx = e.clientX - startX;
+      moved = Math.max(moved, Math.abs(dx));
+      track.scrollLeft = startScroll - dx;
+    });
+    window.addEventListener('pointerup', () => {
+      if (!dragging) return;
+      dragging = false;
+      track.classList.remove('is-dragging');
+      goTo(nearestIndex());
+    });
+
+    /* -- click: centra la slide laterale / apre l'anteprima su quella attiva -- */
+    track.addEventListener('click', e => {
+      if (moved > 6) { moved = 0; e.preventDefault(); return; } // era un trascinamento
+      const frame = e.target.closest('.showcase-frame');
+      if (!frame) return;
+      const slide = frame.closest('.showcase-slide');
+      const i = slides.indexOf(slide);
+      if (i !== index) goTo(i);
+      else openLightbox(frame.querySelector('img'), $('figcaption', slide)?.textContent.trim() || '');
+    });
+
+    /* -- lightbox -- */
+    let dialog = null;
+    function openLightbox(img, caption) {
+      if (!img || typeof HTMLDialogElement === 'undefined') return;
+      if (!dialog) {
+        dialog = document.createElement('dialog');
+        dialog.className = 'showcase-lightbox';
+        dialog.setAttribute('aria-label', 'Screenshot preview');
+        dialog.innerHTML = '<button type="button" class="showcase-lightbox-close" aria-label="Close preview"><i class="fas fa-xmark"></i></button><img alt=""><p></p>';
+        document.body.appendChild(dialog);
+        dialog.addEventListener('click', e => {
+          if (e.target === dialog || e.target.closest('.showcase-lightbox-close')) dialog.close();
+        });
       }
-    }, 15);
+      const big = $('img', dialog);
+      big.src = img.currentSrc || img.src;
+      big.alt = img.alt;
+      $('p', dialog).textContent = caption;
+      dialog.showModal();
+    }
+
+    /* -- resize: ricentra -- */
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => goTo(index, true), 150);
+    });
+
+    refresh();
+    syncPlayState();
   }
 
-  // Avvio sincronizzazioni
-  fetchLiveChainMetrics();
-  setInterval(fetchLiveChainMetrics, 6000);
+  /* ---------- Download: copia SHA-256 dell'APK ---------- */
+  function initVaultCopy() {
+    const btn = byId('vaultCopySha');
+    const code = byId('vaultApkSha');
+    if (!btn || !code) return;
 
-  syncTokenomicsMetrics();
-  setInterval(syncTokenomicsMetrics, 15000);
-
-  // 6. Input ricerca Explorer
-  const searchInput = document.getElementById('explorerSearchInput');
-  if (searchInput) {
-    searchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') window.triggerSearch();
+    btn.addEventListener('click', async () => {
+      const text = code.textContent.trim();
+      let ok = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      } catch (_) {
+        // Fallback (pagina non sicura / permessi negati): seleziona il testo
+        const range = document.createRange();
+        range.selectNodeContents(code);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        try { ok = document.execCommand('copy'); } catch (_) { /* niente */ }
+        if (ok) sel.removeAllRanges();
+      }
+      btn.textContent = ok ? 'Copied' : 'Press Ctrl+C';
+      btn.classList.toggle('is-done', ok);
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('is-done'); }, 1800);
     });
   }
 
-  // 7. Controllo automatico parametri URL (?q= o ?tx=)
-  const urlParams = new URLSearchParams(window.location.search);
-  const q = urlParams.get('q') || urlParams.get('tx');
-  if (q && searchInput) {
-    searchInput.value = q;
-    window.triggerSearch(q);
-  }
-});
+  /* ---------- Avvio ---------- */
+  initPreloader();
+  onReady(() => {
+    initParticles();
+    initCardTilt();
+    initLiveBlockHeight();
+    initShowcase();
+    initVaultCopy();
+
+    // Tokenomics: aggiorna subito, poi ogni 15 s (solo a scheda visibile)
+    syncTokenomicsMetrics();
+    setInterval(() => { if (!document.hidden) syncTokenomicsMetrics(); }, 15000);
+
+    // Explorer: Enter nella casella di ricerca + parametri URL (?q= o ?tx=)
+    const searchInput = byId('explorerSearchInput');
+    if (searchInput) {
+      searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') window.triggerSearch(); });
+      const q = new URLSearchParams(window.location.search);
+      const value = q.get('q') || q.get('tx');
+      if (value) { searchInput.value = value; window.triggerSearch(value); }
+    }
+  });
+})();
