@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
+    <title>Spider Vault Architecture &amp; Mainnet Migration — LUXA Ecosystem</title>
+    <meta name="description" content="An overview of the LUXA Ecosystem Spider Vault architecture, cryptographic security model, Sybil-resistance mechanisms, and the migration framework from mined Shards to native LUXA on the luxa-1 mainnet.">
+    <meta name="keywords" content="LUXA Ecosystem, LUXA, luxa-1, Spider Vault, Cosmos L1, CometBFT, Shards, mainnet migration, PBKDF2, AES-256-GCM, Sybil resistance">
+    <link rel="canonical" href="https://luxaecosystem.xyz/spider-vault-architecture.html">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="LUXA Ecosystem">
+    <meta property="og:title" content="Spider Vault Architecture &amp; Mainnet Migration">
+    <meta property="og:description" content="Client-side custody, PBKDF2 + AES-256-GCM key protection, and the three-requirement path from mined Shards to native LUXA on luxa-1.">
+    <meta property="og:url" content="https://luxaecosystem.xyz/spider-vault-architecture.html">
+    <meta property="og:image" content="https://luxaecosystem.xyz/assets/images/logoluxa.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@luxatoken">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Spider Vault Architecture and the Mainnet Migration Framework",
+      "author": { "@type": "Person", "name": "Yassine Ouaadil" },
+      "publisher": {
+        "@type": "Organization",
+        "name": "LUXA Ecosystem SARL",
+        "url": "https://luxaecosystem.xyz/",
+        "logo": "https://luxaecosystem.xyz/assets/images/logoluxa.png"
+      },
+      "url": "https://luxaecosystem.xyz/spider-vault-architecture.html"
+    }
+    </script>
+</head>
+<body>
+
+    <!-- NAV + MOBILE MENU (componente condiviso: partials/nav.html) -->
+    <div data-include="nav"></div>
+
+    <!-- Header -->
+    <section class="legal-hero">
+        <span class="section-tag">Protocol Overview · Security &amp; Migration</span>
+        <h1>Spider Vault Architecture &amp; Mainnet Migration</h1>
+        <p class="last-updated">Client-side custody, cryptographic key protection and the path from mined Shards to native LUXA · 9 min read</p>
+    </section>
+
+    <section class="section" style="padding-top: 20px;">
+        <div class="container">
+            <div class="legal-card">
+
+                <p>The <strong>Spider Vault</strong> and the <strong>mainnet migration framework</strong> are two of the foundational components of the LUXA Ecosystem. The first protects the cryptographic keys that give you control of your funds. The second defines how activity accumulated inside the Telegram Mini App is verified and settled on the native <code>luxa-1</code> blockchain.</p>
+
+                <p>Together, they are built around three principles: client-side security, controlled identity verification, and resistance to large-scale Sybil activity.</p>
+
+                <h2>1. The Spider Vault Architecture</h2>
+                <p>The Spider Vault is a decentralized, non-custodial custody matrix integrated directly into the LUXA Telegram Mini App. It is designed around a zero-knowledge-oriented model: private secrets stay on the user's device rather than being sent to backend infrastructure or stored as plaintext database records.</p>
+
+                <h3>Client-Side Key Isolation</h3>
+                <p>Key generation, encryption, decryption and transaction signing all happen locally, inside the sandbox of the user's device — browser or mobile webview. This separates the blockchain interface from the sensitive cryptographic material that controls an account: the backend never needs access to your plaintext private key.</p>
+
+                <h3>Multi-Vault Mesh</h3>
+                <p>Each Telegram account can initialize and manage up to <strong>10 independent vaults</strong>, each with its own native address in Bech32 format using the <code>luxa1...</code> prefix. Different blockchain identities can be kept independent from one another while remaining accessible from the same Mini App.</p>
+
+                <h2>2. Private-Key Protection</h2>
+
+                <h3>PBKDF2 Key Derivation</h3>
+                <p>Encrypted private-key material is protected with <strong>PBKDF2</strong> (Password-Based Key Derivation Function 2). Your locally chosen numerical PIN is combined with a cryptographically generated salt and run through a large number of HMAC-SHA256 iterations, making repeated PIN guesses computationally expensive compared to a simple hash comparison. The overall security depends on the iteration count, salt generation, PIN entropy and implementation.</p>
+
+                <h3>AES-256-GCM Authenticated Encryption</h3>
+                <p>The resulting encrypted key payload is protected with <strong>AES-256-GCM</strong> (Galois/Counter Mode), which provides both confidentiality and integrity. Alongside encryption, GCM produces an authentication tag — if the ciphertext is altered, tag verification fails and the payload is not decrypted.</p>
+
+                <div class="legal-notice">
+                    <strong>Security principle:</strong> encryption alone isn't enough for secure key storage. Authenticated encryption such as AES-GCM also detects unauthorized modification of protected ciphertext.
+                </div>
+
+                <h2>3. From Mined Shards to Native LUXA</h2>
+                <p>The migration framework bridges activity accumulated inside the Mini App with settlement on the <code>luxa-1</code> Layer 1. Conceptually:</p>
+
+                <div class="about-grid" style="grid-template-columns: 1fr; margin: 24px 0;">
+                    <div class="about-card">
+                        <p style="margin:0; font-family:'JetBrains Mono', monospace; font-size:.85rem; line-height:2;">
+                            Mining activity → Shard accumulation<br>
+                            ↓<br>
+                            Eligibility verification<br>
+                            ↓<br>
+                            Identity / Sybil verification<br>
+                            ↓<br>
+                            Migration settlement<br>
+                            ↓<br>
+                            Native LUXA on <code>luxa-1</code>
+                        </p>
+                    </div>
+                </div>
+
+                <p>The protocol description defines the eligibility and settlement conditions but does not itself fix a numerical <strong>Shard-to-LUXA conversion ratio</strong> — the exact amount of native LUXA generated from a given Shard balance can't be calculated from these parameters alone.</p>
+
+                <h2>4. The Three Mainnet Migration Requirements</h2>
+
+                <h3>Requirement #1 — 60 Active Mining Days</h3>
+                <p>A participant must accumulate a minimum of <strong>60 active 24-hour mining sessions</strong>. This establishes a temporal participation threshold, distinguishing sustained participation from accounts created solely for opportunistic reward extraction.</p>
+
+                <h3>Requirement #2 — Biometric Identity Verification</h3>
+                <p>Migration to mainnet requires identity verification through <strong>Sumsub</strong>, including 3D liveness and document checks. The goal is to establish a one-person-to-one protocol identity relationship, making large-scale Sybil structures substantially harder to run.</p>
+
+                <h3>Requirement #3 — 8% Settlement Fee</h3>
+                <p>At final settlement and bridging, an <strong>8% protocol fee</strong> applies, directed to the Community Treasury Reserve:</p>
+                <p style="font-family:'JetBrains Mono', monospace; font-size:.85rem; word-break:break-all;">luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue</p>
+                <p>The reserve's stated purpose is to support liquidity for a zero-gas-fee ecosystem and fund network incentives.</p>
+
+                <h2>5. Understanding the Settlement Calculation</h2>
+                <p>Even without an official Shard-to-LUXA rate, the settlement process can be expressed mathematically. Let <strong>S</strong> be eligible Shards, <strong>R</strong> the protocol-defined conversion rate, <strong>G</strong> gross LUXA before fees, and <strong>N</strong> net LUXA after settlement:</p>
+
+                <div class="legal-notice" style="font-family:'JetBrains Mono', monospace;">
+                    G = S × R<br>
+                    F = G × 0.08<br>
+                    N = G × 0.92 = S × R × 0.92
+                </div>
+
+                <p>The key unknown is <strong>R</strong>. Until it is published, this should be read as the settlement model, not as a fixed economic conversion rate.</p>
+
+                <h3>A Practical Example</h3>
+                <p>Take a hypothetical participant with <strong>100,000 eligible Shards</strong> who has met all migration requirements. If the protocol were to define a hypothetical rate of <strong>1 LUXA per 100 Shards</strong>:</p>
+                <ul>
+                    <li>Gross: 100,000 ÷ 100 = <strong>1,000 LUXA</strong></li>
+                    <li>Fee (8%): 1,000 × 0.08 = <strong>80 LUXA</strong></li>
+                    <li>Net settlement: 1,000 − 80 = <strong>920 LUXA</strong></li>
+                </ul>
+                <p class="note" style="color:var(--text-muted); font-size:.85rem;">Illustrative only — the 1:100 ratio is not an official LUXA protocol parameter.</p>
+
+                <h2>6. Genesis Exemption — Citizen Zero</h2>
+                <p>The protocol defines a special genesis identity, <strong>Citizen Zero (#0)</strong>, with architectural root-genesis immunity, exempt from the standard migration constraints and settlement fee — a protocol-level exception rather than a standard participant pathway.</p>
+
+                <h2>7. Why the Two-Layer Security Model Matters</h2>
+                <p>LUXA separates two problems that are often treated as one:</p>
+                <ul>
+                    <li><strong>Cryptographic security</strong> — the Spider Vault, protecting private-key material client-side with PBKDF2 and AES-256-GCM.</li>
+                    <li><strong>Identity &amp; Sybil resistance</strong> — the migration framework, controlling eligibility for mainnet settlement.</li>
+                </ul>
+
+                <h2>Conclusion</h2>
+                <p>A participant first accumulates eligible Shards through sustained mining. The account then satisfies the 60-day activity threshold, completes Sumsub identity verification, and passes the protocol's migration conditions. At settlement, the eligible balance is converted at the protocol-defined Shard-to-LUXA rate, with an 8% fee allocated to the Community Treasury Reserve — while the Spider Vault keeps key material on-device throughout, protected by PBKDF2 and AES-256-GCM.</p>
+
+                <div class="legal-contact">
+                    <span class="lbl">Go Further</span><br>
+                    Explore live balances and treasury data on the <a href="explorer.html">Block Explorer</a>, review verification steps on the <a href="kyc.html">KYC &amp; Migration</a> page, or read <a href="insights.html">Tokenomics Insights</a>.
+                </div>
+
+            </div>
+
+            <p class="legal-footer">LUXA Ecosystem · Protocol Research &amp; Security Working Group</p>
+        </div>
+    </section>
+
+    <!-- Static internal links for crawlers -->
+    <nav class="crawl-links" aria-label="Site links" style="max-width:1100px;margin:0 auto 40px;padding:0 20px;font-size:.8rem;color:var(--text-dim);display:flex;flex-wrap:wrap;gap:14px;justify-content:center;">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/explorer.html">Block Explorer</a>
+        <a href="/vault.html">LUXA Vault</a>
+        <a href="/insights.html">Insights</a>
+        <a href="/spider-vault-architecture.html">Spider Vault Architecture</a>
+        <a href="/kyc.html">KYC Guidelines</a>
+        <a href="/terms.html">Terms of Service</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+    </nav>
+    <div data-include="footer"></div>
+
+    <script src="js/include.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
