@@ -491,21 +491,28 @@ html {
 /* ---------- 9. LUXA Agent chat ---------- */
 .luxa-agent-fab {
     position: fixed;
-    right: 24px;
-    bottom: 24px;
+    right: 22px;
+    bottom: 22px;
     z-index: 9999;
     display: grid;
     place-items: center;
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
+    padding: 0;
     border: 1px solid rgba(255, 255, 255, .2);
     border-radius: 50%;
     background: linear-gradient(135deg, #8774e1, #5d48b8);
-    color: #fff;
-    font-size: 1.25rem;
-    cursor: pointer;
     box-shadow: 0 8px 24px rgba(135, 116, 225, .4);
     transition: transform .2s ease, box-shadow .2s ease;
+    overflow: hidden;
+    cursor: pointer;
+}
+.luxa-agent-fab img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    display: block;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,.25));
 }
 .luxa-agent-fab:hover { transform: scale(1.08); box-shadow: 0 12px 28px rgba(135, 116, 225, .6); }
 
