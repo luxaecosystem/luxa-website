@@ -3,920 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="wFg7fq4UzbK3x8YV6zHNMm76KRvZyKHvbE-hD4bnY1s">
-    <meta name="theme-color" content="#080711">
-
-    <title>LUXA Ecosystem — Sovereign Cosmos L1, Spider Wallet &amp; Shared Wealth</title>
-    <meta name="description" content="LUXA Ecosystem - Sovereign Cosmos L1 blockchain, decentralized Spider Wallet mesh, revenue sharing for everyone, and verified KYC mainnet migration.">
-
-    <!-- Verifica che dominio e immagine siano quelli corretti -->
-    <link rel="canonical" href="https://luxaecosystem.xyz/">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="LUXA Ecosystem — Sovereign Cosmos L1 &amp; Spider Wallet">
-    <meta property="og:description" content="Sovereign Cosmos L1, non-custodial Spider Wallet and shared-wealth tokenomics.">
-    <meta property="og:url" content="https://luxaecosystem.xyz/">
-    <meta property="og:image" content="https://luxaecosystem.xyz/assets/images/logoluxa.png">
-    <meta name="twitter:card" content="summary">
-
     <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
+    <title>Spider Vault Architecture &amp; Mainnet Migration — LUXA Ecosystem</title>
+    <meta name="description" content="An overview of the LUXA Ecosystem Spider Vault architecture, cryptographic security model, Sybil-resistance mechanisms, and the migration framework from mined Shards to native LUXA on the luxa-1 mainnet.">
+    <meta name="keywords" content="LUXA Ecosystem, LUXA, luxa-1, Spider Vault, Cosmos L1, CometBFT, Shards, mainnet migration, PBKDF2, AES-256-GCM, Sybil resistance">
+    <link rel="canonical" href="https://luxaecosystem.xyz/spider-vault-architecture.html">
+    <meta name="robots" content="index, follow, max-image-preview:large">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="LUXA Ecosystem">
+    <meta property="og:title" content="Spider Vault Architecture &amp; Mainnet Migration">
+    <meta property="og:description" content="Client-side custody, PBKDF2 + AES-256-GCM key protection, and the three-requirement path from mined Shards to native LUXA on luxa-1.">
+    <meta property="og:url" content="https://luxaecosystem.xyz/spider-vault-architecture.html">
+    <meta property="og:image" content="https://luxaecosystem.xyz/assets/images/logoluxa.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@luxatoken">
 
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/home.css">
-    <!-- NB: rimosso <base target="_blank"> (era presente due volte): faceva aprire in una nuova scheda
-         anche i link interni. I link esterni hanno già target="_blank" rel="noopener noreferrer". -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Spider Vault Architecture and the Mainnet Migration Framework",
+      "author": { "@type": "Person", "name": "Yassine Ouaadil" },
+      "publisher": {
+        "@type": "Organization",
+        "name": "LUXA Ecosystem SARL",
+        "url": "https://luxaecosystem.xyz/",
+        "logo": "https://luxaecosystem.xyz/assets/images/logoluxa.png"
+      },
+      "url": "https://luxaecosystem.xyz/spider-vault-architecture.html"
+    }
+    </script>
 </head>
 <body>
 
-    <a class="skip-link" href="#main">Skip to content</a>
-
-    <!-- Preloader -->
-    <div id="preloader" aria-hidden="true">
-        <div class="preloader-content">
-            <img src="assets/images/logoluxa.png" alt="" class="preloader-logo">
-            <div class="preloader-bar"><div class="preloader-progress"></div></div>
-        </div>
-    </div>
-
-    <!-- NAV + MOBILE MENU (partials/nav.html) -->
+    <!-- NAV + MOBILE MENU (componente condiviso: partials/nav.html) -->
     <div data-include="nav"></div>
 
-    <main id="main">
-
-    <!-- ============================================================
-         HERO
-         ============================================================ -->
-    <section id="hero">
-        <div class="hero-bg">
-            <div class="particles" id="particles"></div>
-        </div>
-        <div class="hero-content">
-            <div class="hero-badge">
-                <span class="pulse-dot"></span>
-                LUXA-1 Sovereign Chain Active • CometBFT Consensus
-            </div>
-            <h1 class="hero-title">
-                LUXA Ecosystem — <span class="gradient-text">Shared Wealth &amp; True Ownership</span>
-            </h1>
-            <p class="hero-desc">
-                A sovereign blockchain designed to divide economic prosperity among all participants. Featuring the non-custodial <strong>Spider Wallet</strong>, passive zero-barrier mining, and verifiable cryptographic transparency.
-            </p>
-            <div class="hero-buttons">
-                <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large">
-                    <i class="fab fa-telegram"></i> <span>Start Mining Free</span>
-                </a>
-                <a href="#vault-chrome-card" class="btn btn-outline btn-large">
-                    <i class="fab fa-chrome"></i> <span>Install Chrome Extension</span>
-                </a><!-- LUXA-APK:hero -->
-                <a href="#vault-android-card" class="btn btn-outline btn-large">
-                    <i class="fab fa-android"></i> <span>Download Android App</span>
-                </a><!-- /LUXA-APK:hero -->
-                <a href="explorer.html" class="btn btn-outline btn-large btn-page-link">
-                    <i class="fas fa-cubes"></i> <span>Live Block Explorer</span>
-                </a>
-                <a href="https://zealy.io/cw/luxaecosystem/questboard/e996d1fe-8c4b-4f5e-ab28-ac3afd1a9c79" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-large">
-                    <i class="fas fa-trophy" style="color: #FFD700;"></i> <span>Zealy Quests (Earn XP)</span>
-                </a>
-            </div>
-
-            <div class="hero-social-bar">
-                <span>Connect with our official channels:</span>
-                <div class="social-row">
-                    <a href="https://t.me/LuxaToken_Official" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram Channel" title="Official Channel"><i class="fab fa-telegram-plane"></i></a>
-                    <a href="https://t.me/LuxaCommunity" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram Community" title="Community Group"><i class="fas fa-users"></i></a>
-                    <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram Bot" title="Mining Bot"><i class="fas fa-robot"></i></a>
-                    <a href="https://github.com/luxatokenofficial" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub" title="GitHub"><i class="fab fa-github"></i></a>
-                    <a href="https://x.com/luxatoken" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="X / Twitter" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
-                </div>
-            </div>
-
-            <!-- Prima: "Miners Network: Actif" e "Global Access: Actif" (testo francese, nessun dato reale).
-                 Ora solo fatti verificabili: altezza blocchi live + regole di rete già dichiarate in pagina. -->
-            <div class="hero-stats">
-                <div class="stat">
-                    <span class="stat-number" id="statBlocks"><i class="fas fa-spinner fa-spin"></i></span>
-                    <span class="stat-label">L1 Blocks Verified</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">0 LUXA</span>
-                    <span class="stat-label">L1 Network Gas</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">8%</span>
-                    <span class="stat-label">Settlement Fee</span>
-                </div>
-            </div>
-        </div>
+    <!-- Header -->
+    <section class="legal-hero">
+        <span class="section-tag">Protocol Overview · Security &amp; Migration</span>
+        <h1>Spider Vault Architecture &amp; Mainnet Migration</h1>
+        <p class="last-updated">Client-side custody, cryptographic key protection and the path from mined Shards to native LUXA · 9 min read</p>
     </section>
 
-    <!-- ============================================================
-         PRODUCT — Vault in azione + download (subito dopo l'hero)
-         ============================================================ -->
-    <section id="vault-showcase" class="section section-dark">
+    <section class="section" style="padding-top: 20px;">
         <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Inside the App</span>
-                <h2>LUXA Vault in Action</h2>
-                <p>The sovereign Spider Vault on your screen — PIN-encrypted keys, multi-vault dashboard, live on-chain activity and a clear wallet selector.</p>
-            </div>
+            <div class="legal-card">
 
-            <!-- Tutti gli screenshot presenti in assets/images/screenshots/, ordinati 01-06. -->
-            <div class="showcase" id="showcase" role="region" aria-roledescription="carousel" aria-label="LUXA Vault screenshots">
-                <div class="showcase-track" tabindex="0">
-                    <figure class="showcase-slide" role="group" aria-roledescription="slide">
-                        <button type="button" class="showcase-frame" aria-label="Enlarge screenshot: LUXA Ecosystem sovereign blockchain cover">
-                            <img src="assets/images/screenshots/luxa05.webp" alt="LUXA Ecosystem sovereign blockchain cover with the LUXA coin mark" width="1280" height="720" loading="lazy" draggable="false">
-                            <span class="showcase-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
-                        </button>
-                        <figcaption class="showcase-caption"><strong><span class="showcase-step">01</span>LUXA Ecosystem</strong><span>Sovereign blockchain identity and the official LUXA Ecosystem mark.</span></figcaption>
-                    </figure>
-                    <figure class="showcase-slide" role="group" aria-roledescription="slide">
-                        <button type="button" class="showcase-frame" aria-label="Enlarge screenshot: unlock screen">
-                            <img src="assets/images/screenshots/01-unlock-pin.webp" alt="LUXA Vault unlock screen with PIN entry" width="1280" height="720" loading="lazy" draggable="false">
-                            <span class="showcase-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
-                        </button>
-                        <figcaption class="showcase-caption"><strong><span class="showcase-step">02</span>Unlock with your PIN</strong><span>Keys are decrypted only on your device.</span></figcaption>
-                    </figure>
-                    <figure class="showcase-slide" role="group" aria-roledescription="slide">
-                        <button type="button" class="showcase-frame" aria-label="Enlarge screenshot: multi-vault dashboard">
-                            <img src="assets/images/screenshots/02-dashboard.webp" alt="LUXA Vault multi-vault dashboard" width="1280" height="720" loading="lazy" draggable="false">
-                            <span class="showcase-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
-                        </button>
-                        <figcaption class="showcase-caption"><strong><span class="showcase-step">03</span>Multi-vault dashboard</strong><span>Balance, address, import and backup for every vault.</span></figcaption>
-                    </figure>
-                    <figure class="showcase-slide" role="group" aria-roledescription="slide">
-                        <button type="button" class="showcase-frame" aria-label="Enlarge screenshot: live on-chain activity and dual assets">
-                            <img src="assets/images/screenshots/03-activity.webp" alt="LUXA Vault on-chain activity screen with uluxa and ushard balances and recent transactions" width="1280" height="720" loading="lazy" draggable="false">
-                            <span class="showcase-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
-                        </button>
-                        <figcaption class="showcase-caption"><strong><span class="showcase-step">04</span>Live on-chain activity</strong><span>Live CometBFT telemetry, dual-asset balances and verified transaction activity across uluxa and ushard.</span></figcaption>
-                    </figure>
-                    <figure class="showcase-slide" role="group" aria-roledescription="slide">
-                        <button type="button" class="showcase-frame" aria-label="Enlarge screenshot: ledger telemetry">
-                            <img src="assets/images/screenshots/04-history.webp" alt="LUXA ledger telemetry overview with CometBFT block explorer, dual-token accounting and sovereign NFT gateway" width="1280" height="720" loading="lazy" draggable="false">
-                            <span class="showcase-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
-                        </button>
-                        <figcaption class="showcase-caption"><strong><span class="showcase-step">05</span>Live ledger telemetry</strong><span>Block-by-block transaction verification, dual-token accounting and access to the Genesis Relics registry.</span></figcaption>
-                    </figure>
-                    <figure class="showcase-slide" role="group" aria-roledescription="slide">
-                        <button type="button" class="showcase-frame" aria-label="Enlarge screenshot: receive assets with a Bech32 QR code">
-                            <img src="assets/images/screenshots/06-receive-qr.webp" alt="LUXA Vault receive screen generating a Bech32 QR code and offering a copy address action" width="1280" height="720" loading="lazy" draggable="false">
-                            <span class="showcase-zoom" aria-hidden="true"><i class="fas fa-expand"></i></span>
-                        </button>
-                        <figcaption class="showcase-caption"><strong><span class="showcase-step">06</span>Receive with Bech32 QR</strong><span>Generate a high-contrast QR code, copy the wallet address and receive assets with <code>luxa1...</code> address validation.</span></figcaption>
-                    </figure>
+                <p>The <strong>Spider Vault</strong> and the <strong>mainnet migration framework</strong> are two of the foundational components of the LUXA Ecosystem. The first protects the cryptographic keys that give you control of your funds. The second defines how activity accumulated inside the Telegram Mini App is verified and settled on the native <code>luxa-1</code> blockchain.</p>
+
+                <p>Together, they are built around three principles: client-side security, controlled identity verification, and resistance to large-scale Sybil activity.</p>
+
+                <h2>1. The Spider Vault Architecture</h2>
+                <p>The Spider Vault is a decentralized, non-custodial custody matrix integrated directly into the LUXA Telegram Mini App. It is designed around a zero-knowledge-oriented model: private secrets stay on the user's device rather than being sent to backend infrastructure or stored as plaintext database records.</p>
+
+                <h3>Client-Side Key Isolation</h3>
+                <p>Key generation, encryption, decryption and transaction signing all happen locally, inside the sandbox of the user's device — browser or mobile webview. This separates the blockchain interface from the sensitive cryptographic material that controls an account: the backend never needs access to your plaintext private key.</p>
+
+                <h3>Multi-Vault Mesh</h3>
+                <p>Each Telegram account can initialize and manage up to <strong>10 independent vaults</strong>, each with its own native address in Bech32 format using the <code>luxa1...</code> prefix. Different blockchain identities can be kept independent from one another while remaining accessible from the same Mini App.</p>
+
+                <h2>2. Private-Key Protection</h2>
+
+                <h3>PBKDF2 Key Derivation</h3>
+                <p>Encrypted private-key material is protected with <strong>PBKDF2</strong> (Password-Based Key Derivation Function 2). Your locally chosen numerical PIN is combined with a cryptographically generated salt and run through a large number of HMAC-SHA256 iterations, making repeated PIN guesses computationally expensive compared to a simple hash comparison. The overall security depends on the iteration count, salt generation, PIN entropy and implementation.</p>
+
+                <h3>AES-256-GCM Authenticated Encryption</h3>
+                <p>The resulting encrypted key payload is protected with <strong>AES-256-GCM</strong> (Galois/Counter Mode), which provides both confidentiality and integrity. Alongside encryption, GCM produces an authentication tag — if the ciphertext is altered, tag verification fails and the payload is not decrypted.</p>
+
+                <div class="legal-notice">
+                    <strong>Security principle:</strong> encryption alone isn't enough for secure key storage. Authenticated encryption such as AES-GCM also detects unauthorized modification of protected ciphertext.
                 </div>
 
-                <div class="showcase-controls">
-                    <button type="button" class="showcase-arrow" data-showcase="prev" aria-label="Previous screenshot"><i class="fas fa-arrow-left"></i></button>
-                    <div class="showcase-dots"></div>
-                    <button type="button" class="showcase-arrow" data-showcase="next" aria-label="Next screenshot"><i class="fas fa-arrow-right"></i></button>
-                    <span class="showcase-counter" aria-hidden="true"><span data-showcase-current>01</span> / <span data-showcase-total>06</span></span>
-                    <button type="button" class="showcase-toggle" data-showcase="toggle" aria-label="Pause automatic slideshow"><i class="fas fa-pause"></i></button>
+                <h2>3. From Mined Shards to Native LUXA</h2>
+                <p>The migration framework bridges activity accumulated inside the Mini App with settlement on the <code>luxa-1</code> Layer 1. Conceptually:</p>
+
+                <div class="about-grid" style="grid-template-columns: 1fr; margin: 24px 0;">
+                    <div class="about-card">
+                        <p style="margin:0; font-family:'JetBrains Mono', monospace; font-size:.85rem; line-height:2;">
+                            Mining activity → Shard accumulation<br>
+                            ↓<br>
+                            Eligibility verification<br>
+                            ↓<br>
+                            Identity / Sybil verification<br>
+                            ↓<br>
+                            Migration settlement<br>
+                            ↓<br>
+                            Native LUXA on <code>luxa-1</code>
+                        </p>
+                    </div>
                 </div>
+
+                <p>The protocol description defines the eligibility and settlement conditions but does not itself fix a numerical <strong>Shard-to-LUXA conversion ratio</strong> — the exact amount of native LUXA generated from a given Shard balance can't be calculated from these parameters alone.</p>
+
+                <h2>4. The Three Mainnet Migration Requirements</h2>
+
+                <h3>Requirement #1 — 60 Active Mining Days</h3>
+                <p>A participant must accumulate a minimum of <strong>60 active 24-hour mining sessions</strong>. This establishes a temporal participation threshold, distinguishing sustained participation from accounts created solely for opportunistic reward extraction.</p>
+
+                <h3>Requirement #2 — Biometric Identity Verification</h3>
+                <p>Migration to mainnet requires identity verification through <strong>Sumsub</strong>, including 3D liveness and document checks. The goal is to establish a one-person-to-one protocol identity relationship, making large-scale Sybil structures substantially harder to run.</p>
+
+                <h3>Requirement #3 — 8% Settlement Fee</h3>
+                <p>At final settlement and bridging, an <strong>8% protocol fee</strong> applies, directed to the Community Treasury Reserve:</p>
+                <p style="font-family:'JetBrains Mono', monospace; font-size:.85rem; word-break:break-all;">luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue</p>
+                <p>The reserve's stated purpose is to support liquidity for a zero-gas-fee ecosystem and fund network incentives.</p>
+
+                <h2>5. Understanding the Settlement Calculation</h2>
+                <p>Even without an official Shard-to-LUXA rate, the settlement process can be expressed mathematically. Let <strong>S</strong> be eligible Shards, <strong>R</strong> the protocol-defined conversion rate, <strong>G</strong> gross LUXA before fees, and <strong>N</strong> net LUXA after settlement:</p>
+
+                <div class="legal-notice" style="font-family:'JetBrains Mono', monospace;">
+                    G = S × R<br>
+                    F = G × 0.08<br>
+                    N = G × 0.92 = S × R × 0.92
+                </div>
+
+                <p>The key unknown is <strong>R</strong>. Until it is published, this should be read as the settlement model, not as a fixed economic conversion rate.</p>
+
+                <h3>A Practical Example</h3>
+                <p>Take a hypothetical participant with <strong>100,000 eligible Shards</strong> who has met all migration requirements. If the protocol were to define a hypothetical rate of <strong>1 LUXA per 100 Shards</strong>:</p>
+                <ul>
+                    <li>Gross: 100,000 ÷ 100 = <strong>1,000 LUXA</strong></li>
+                    <li>Fee (8%): 1,000 × 0.08 = <strong>80 LUXA</strong></li>
+                    <li>Net settlement: 1,000 − 80 = <strong>920 LUXA</strong></li>
+                </ul>
+                <p class="note" style="color:var(--text-muted); font-size:.85rem;">Illustrative only — the 1:100 ratio is not an official LUXA protocol parameter.</p>
+
+                <h2>6. Genesis Exemption — Citizen Zero</h2>
+                <p>The protocol defines a special genesis identity, <strong>Citizen Zero (#0)</strong>, with architectural root-genesis immunity, exempt from the standard migration constraints and settlement fee — a protocol-level exception rather than a standard participant pathway.</p>
+
+                <h2>7. Why the Two-Layer Security Model Matters</h2>
+                <p>LUXA separates two problems that are often treated as one:</p>
+                <ul>
+                    <li><strong>Cryptographic security</strong> — the Spider Vault, protecting private-key material client-side with PBKDF2 and AES-256-GCM.</li>
+                    <li><strong>Identity &amp; Sybil resistance</strong> — the migration framework, controlling eligibility for mainnet settlement.</li>
+                </ul>
+
+                <h2>Conclusion</h2>
+                <p>A participant first accumulates eligible Shards through sustained mining. The account then satisfies the 60-day activity threshold, completes Sumsub identity verification, and passes the protocol's migration conditions. At settlement, the eligible balance is converted at the protocol-defined Shard-to-LUXA rate, with an 8% fee allocated to the Community Treasury Reserve — while the Spider Vault keeps key material on-device throughout, protected by PBKDF2 and AES-256-GCM.</p>
+
+                <div class="legal-contact">
+                    <span class="lbl">Go Further</span><br>
+                    Explore live balances and treasury data on the <a href="explorer.html">Block Explorer</a>, review verification steps on the <a href="kyc.html">KYC &amp; Migration</a> page, or read <a href="insights.html">Tokenomics Insights</a>.
+                </div>
+
             </div>
+
+            <p class="legal-footer">LUXA Ecosystem · Protocol Research &amp; Security Working Group</p>
         </div>
     </section>
 
-    <!-- LUXA-APK:section -->
-    <section id="vault-app">
-        <div class="container">
-            <div class="section-header section-header--tight">
-                <span class="section-tag">Direct Downloads</span>
-                <h2>Get LUXA Vault</h2>
-                <p>Sovereign non-custodial wallet with local AES-256-GCM encryption.</p>
-            </div>
-
-            <div class="vault-dl-grid">
-                <div class="vault-dl" id="vault-chrome-card">
-                    <div class="vault-header-compact">
-                        <img src="assets/images/wallet.png" alt="" class="vault-icon-compact" width="46" height="46">
-                        <div class="vault-titles">
-                            <h3><i class="fab fa-chrome" style="color:#00FFCC;"></i> Chrome Extension</h3>
-                            <span>Manifest V3 • Chrome Web Store</span>
-                        </div>
-                    </div>
-                    <p>Connect seamlessly to dApps and sign transactions on <code>luxa-1</code> directly from your browser.</p>
-                    <a href="https://chromewebstore.google.com/detail/luxa-vault-spiders-nest/jfhaclclifggggclkpeakpgddohpdbmm" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-compact">
-                        <i class="fab fa-chrome"></i> <span>Install on Chrome</span>
-                    </a>
-                </div>
-
-                <div class="vault-dl" id="vault-android-card">
-                    <div class="vault-header-compact">
-                        <img src="assets/images/wallet.png" alt="" class="vault-icon-compact" width="46" height="46">
-                        <div class="vault-titles">
-                            <h3><i class="fab fa-android" style="color:#22c55e;"></i> Android App</h3>
-                            <span>v1.4.2 APK • 5.1 MB</span>
-                        </div>
-                    </div>
-                    <p>Zero-knowledge encrypted backup to your private Google Drive appDataFolder, with native Bech32 transactions.</p>
-
-                    <a href="https://raw.githubusercontent.com/luxaecosystem/luxa-vault-releases/main/assets/downloads/LUXA-Vault-1.4.2.apk" download="LUXA-Vault-1.4.2.apk" rel="noopener" class="btn btn-primary btn-compact">
-                        <i class="fas fa-download"></i> <span>Download APK (v1.4.2)</span>
-                    </a>
-
-                    <details class="vault-install-summary">
-                        <summary><i class="fas fa-info-circle"></i> Quick installation guide</summary>
-                        <ol>
-                            <li>Open the downloaded APK and allow "Install unknown apps" if prompted.</li>
-                            <li>If Google Play Protect displays a prompt, select "Install anyway".</li>
-                            <li>Set your local security PIN, then create or import your 12-word seed phrase.</li>
-                            <li>Optional: check the file before installing. On Windows run <code>certutil -hashfile LUXA-Vault-1.4.2.apk SHA256</code>, on macOS/Linux <code>sha256sum LUXA-Vault-1.4.2.apk</code>, and compare it with the checksum below.</li>
-                        </ol>
-                    </details>
-
-                    <div class="vault-hash-row">
-                        <span>SHA-256:</span>
-                        <code id="vaultApkSha">943FF596BE43F22B1C8891C0605120F374199C13101D57AFC0EDE700D479F793</code>
-                        <button type="button" class="vault-copy-mini" id="vaultCopySha">Copy</button>
-                    </div>
-                </div>
-            </div>
-
-            <p class="vault-note">Only download LUXA Vault from this page or the official Chrome Web Store. LUXA will never ask for your seed phrase.</p>
-        </div>
-    </section>
-    <!-- /LUXA-APK:section -->
-
-    <!-- ============================================================
-         SPIDER WALLET
-         ============================================================ -->
-    <section id="spider-wallet" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Next-Gen Architecture</span>
-                <h2>The Spider Wallet System<br>Decentralized Multi-Vault Mesh</h2>
-                <p>No more single point of failure. One Telegram account can manage up to 10 native Cosmos <code>luxa1...</code> vaults, each encrypted locally and fully under your control.</p>
-            </div>
-            <div class="about-grid">
-                <div class="about-card">
-                    <div class="about-icon" style="color: var(--secondary);"><i class="fas fa-project-diagram"></i></div>
-                    <h3>Multi-Vault Web</h3>
-                    <p>Keep daily mining, savings and long-term cold storage in separate <code>luxa1...</code> vaults under one account, and switch between them from the wallet selector.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon" style="color: #c084fc;"><i class="fas fa-shield-virus"></i></div>
-                    <h3>Compartmentalized Safety</h3>
-                    <p>Even if one satellite address is shared or inspected, your primary reserve vaults remain independent, encrypted, and impervious to unauthorized draining.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon" style="color: #22c55e;"><i class="fas fa-key"></i></div>
-                    <h3>Zero-Knowledge BIP-39</h3>
-                    <p>Your recovery phrase (12 or 24 words) is encrypted locally with AES-256-GCM. The network and its administrators never see or hold it, and your PIN is always masked.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon" style="color: #f59e0b;"><i class="fas fa-qrcode"></i></div>
-                    <h3>Scan, Send &amp; Receive</h3>
-                    <p>Pick the active vault, scan a recipient's QR code with the Telegram camera, and send in a few taps. Transfers between vaults are recognised by the ledger immediately.</p>
-                </div>
-            </div>
-            <div style="text-align:center; margin-top: 36px;">
-                <a href="spider-vault-architecture.html" class="btn btn-outline btn-large btn-page-link"><i class="fas fa-shield-alt"></i> <span>Read the Full Architecture</span></a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         SHARED WEALTH
-         ============================================================ -->
-    <section id="shared-wealth" class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Economic Justice</span>
-                <h2>Dividing the Profits:<br>A Coin Built to Share Wealth</h2>
-                <p>Traditional platforms enrich founders and venture funds. LUXA is architected to redistribute generated protocol value back to the active community.</p>
-            </div>
-            <div class="about-grid">
-                <div class="about-card">
-                    <div class="about-icon" style="color: #00ffcc;"><i class="fas fa-hand-holding-usd"></i></div>
-                    <h3>Community Revenue Share</h3>
-                    <p>Protocol fees gathered from settlements and marketplace trades feed community reward pools, staking yields, and periodic gift airdrops.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon" style="color: #f59e0b;"><i class="fas fa-coins"></i></div>
-                    <h3>Zero-Capital Access</h3>
-                    <p>Wealth distribution begins with equal opportunity: anyone can mine daily without paying upfront subscriptions, gas, or entry fees.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon" style="color: #c084fc;"><i class="fas fa-balance-scale"></i></div>
-                    <h3>Democratic Tokenomics</h3>
-                    <p>With an on-chain Treasury reserve backing user payouts, reward halving and boosts are calibrated to protect long-term purchasing power.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon" style="color: #00ffcc;"><i class="fas fa-chart-pie"></i></div>
-                    <h3>Complete Ledger Audit</h3>
-                    <p>Every single token movement and settlement fee is permanently trackable on the public explorer. Zero hidden accounts, zero dark pools.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         ZEALY COMMUNITY QUESTS &amp; REWARDS
-         ============================================================ -->
-    <section id="community-quests" class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Community Acceleration</span>
-                <h2>Official Zealy Quests:<br>Prove Contribution, Earn Ecosystem XP</h2>
-                <p>
-                    Participate in automated Web3 missions, stress-test the Cosmos L1 sandbox, and climb the global leaderboard.
-                    Every quest completion is verified via native backend webhooks and automated review pipelines.
-                </p>
-            </div>
-
-            <div class="about-grid">
-                <div class="about-card">
-                    <div class="about-icon" style="color: #00FFCC;">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Automated Ledger Verification</h3>
-                    <p>
-                        API tasks verify on-chain activity—including Spider Vault backups, daily mining check-ins, testnet faucet redemptions, and sandbox transfers—directly on MongoDB without manual ticket delays.
-                    </p>
-                </div>
-
-                <div class="about-card">
-                    <div class="about-icon" style="color: #c084fc;">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h3>Autonomous Review Engine</h3>
-                    <p>
-                        Qualitative contributions, community reviews, and ecosystem feedback are evaluated around the clock by our dedicated background review agent, guaranteeing fast and objective XP distribution.
-                    </p>
-                </div>
-
-                <div class="about-card">
-                    <div class="about-icon" style="color: #f59e0b;">
-                        <i class="fas fa-award"></i>
-                    </div>
-                    <h3>True Shared Wealth Rewards</h3>
-                    <p>
-                        XP accrued across the official Zealy campaign reflects genuine participation and counts directly toward future community allocation pools, airdrop weightings, and priority protocol access.
-                    </p>
-                </div>
-
-                <div class="about-card">
-                    <div class="about-icon" style="color: #22c55e;">
-                        <i class="fas fa-users-gear"></i>
-                    </div>
-                    <h3>Sybil-Resistant Growth</h3>
-                    <p>
-                        One verified Telegram identity connects all your actions. Coordinated bot farms and fake entries are filtered out automatically, ensuring that rewards flow strictly to real miners and validators.
-                    </p>
-                </div>
-            </div>
-
-            <div style="margin-top: 36px; padding: 28px 24px; background: linear-gradient(145deg, rgba(0, 255, 204, 0.08) 0%, rgba(11, 11, 28, 0.95) 100%); border: 1px solid rgba(0, 255, 204, 0.3); border-radius: 18px; text-align: center; box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);">
-                <div style="display: inline-flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #00FFCC; background: rgba(0, 255, 204, 0.12); padding: 4px 12px; border-radius: 99px; margin-bottom: 12px;">
-                    <span class="pulse-dot"></span> LIVE SPRINT CAMPAIGN ACTIVE
-                </div>
-                <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 22px; color: #fff; margin-bottom: 8px;">
-                    Ready to Claim Your Starting XP?
-                </h3>
-                <p style="font-size: 13.5px; color: #94a3b8; max-width: 620px; margin: 0 auto 20px; line-height: 1.5;">
-                    Open the LUXA Ecosystem Zealy questboard, link your account ID, and start earning experience points across 8 protocol tasks.
-                </p>
-                <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
-                    <a href="https://zealy.io/cw/luxaecosystem/questboard/e996d1fe-8c4b-4f5e-ab28-ac3afd1a9c79" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large">
-                        <i class="fas fa-trophy"></i> <span>Launch Zealy Questboard</span>
-                    </a>
-                    <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-large">
-                        <i class="fab fa-telegram"></i> <span>Open Telegram Mini App</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         FEATURES
-         ============================================================ -->
-    <section id="features" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Core Features</span>
-                <h2>Everything You Need<br>in One Integrated Mini App</h2>
-            </div>
-            <div class="features-wrapper">
-                <div class="feature-row">
-                    <div class="feature-content">
-                        <div class="feature-number">01</div>
-                        <h3>Free Mining Engine</h3>
-                        <p>Start 24-hour passive sessions that produce LUXA. Complete daily tasks, spin the bonus wheel, and convert Shards into native coin balance.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> 24h continuous passive cycles</li>
-                            <li><i class="fas fa-check"></i> Daily tasks: link your X profile first, then claim the reward</li>
-                            <li><i class="fas fa-check"></i> Daily bonus wheel and Shard conversions</li>
-                        </ul>
-                    </div>
-                    <div class="feature-visual">
-                        <div class="feature-card-visual mining-card">
-                            <div class="mining-animation">
-                                <div class="coin-float"></div>
-                                <div class="coin-float"></div>
-                                <div class="coin-float"></div>
-                                <i class="fas fa-coins"></i>
-                            </div>
-                            <span>Mining Engine Active</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="feature-row reverse">
-                    <div class="feature-visual">
-                        <div class="feature-card-visual wallet-card">
-                            <div class="wallet-visual">
-                                <div class="wallet-chip"></div>
-                                <i class="fas fa-wallet"></i>
-                            </div>
-                            <span>Spider Vault Mesh</span>
-                        </div>
-                    </div>
-                    <div class="feature-content">
-                        <div class="feature-number">02</div>
-                        <h3>Non-Custodial Spider Vault</h3>
-                        <p>Generate native Cosmos <code>luxa1...</code> addresses, up to 10 per account. Your recovery phrase is encrypted client-side using PBKDF2 and AES-256-GCM. Absolute zero-knowledge safety.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Standard BIP-39 phrase: 12 or 24 words</li>
-                            <li><i class="fas fa-check"></i> Client-side AES-256-GCM encryption with a local PIN, always masked</li>
-                            <li><i class="fas fa-check"></i> Double confirmation before a local vault can be deleted</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="feature-row">
-                    <div class="feature-content">
-                        <div class="feature-number">03</div>
-                        <h3>Send, Receive &amp; Scan</h3>
-                        <p>Move funds without friction. Receive in one tap, scan a recipient's QR code straight from the Telegram camera, and choose the wallet you use from a high-contrast selector.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Built-in QR scanner in the send screen</li>
-                            <li><i class="fas fa-check"></i> Wallet selector with a clear ACTIVE marker</li>
-                            <li><i class="fas fa-check"></i> Create a new vault or import a phrase from the same screen</li>
-                        </ul>
-                    </div>
-                    <div class="feature-visual">
-                        <div class="feature-card-visual">
-                            <div class="action-tiles" aria-hidden="true">
-                                <div class="action-tile action-tile--scan"><i class="fas fa-qrcode"></i></div>
-                                <div class="action-tile action-tile--receive"><i class="fas fa-arrow-down"></i></div>
-                                <div class="action-tile action-tile--wallet"><i class="fas fa-wallet"></i></div>
-                            </div>
-                            <span>Scan · Receive · Switch vault</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="feature-row reverse">
-                    <div class="feature-visual">
-                        <div class="feature-card-visual ledger-card">
-                            <div class="ledger-visual">
-                                <div class="block-chain">
-                                    <div class="block"><i class="fas fa-cube"></i></div>
-                                    <div class="block"><i class="fas fa-link"></i></div>
-                                    <div class="block"><i class="fas fa-cube"></i></div>
-                                </div>
-                            </div>
-                            <span>Cosmos SDK L1 (luxa-1)</span>
-                        </div>
-                    </div>
-                    <div class="feature-content">
-                        <div class="feature-number">04</div>
-                        <h3>Transparent On-Chain Explorer</h3>
-                        <p>Every mainnet transaction and settlement is immutably committed on the <code>luxa-1</code> chain. Verify every block and transfer in real time via our Block Explorer.</p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check"></i> Instant search by Hash, Height, or Address</li>
-                            <li><i class="fas fa-check"></i> Live CometBFT block validation monitor</li>
-                            <li><i class="fas fa-check"></i> Direct JSON-RPC node transparency</li>
-                        </ul>
-                        <a href="explorer.html" class="btn btn-outline btn-page-link feature-cta"><i class="fas fa-search"></i> <span>Launch Block Explorer</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         TESTNET SANDBOX
-         ============================================================ -->
-    <section id="testnet" class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Testnet Sandbox</span>
-                <h2>Practice on luxa-testnet<br>Before You Move Real Value</h2>
-                <p>Same wallet, same address, a separate sandbox ledger with simulated tokens. Learn how sending, receiving and history work at zero risk.</p>
-            </div>
-
-            <div class="feature-row">
-                <div class="feature-content">
-                    <h3>One recovery phrase, two networks</h3>
-                    <p>Your <code>luxa1...</code> address is derived from the same recovery phrase on Mainnet and Testnet, just like switching networks in MetaMask or Keplr. Only the ledger changes.</p>
-                    <ul class="feature-list">
-                        <li><i class="fas fa-check"></i> <strong>Mainnet (luxa-1)</strong> shows your real on-chain LUXA and Shards</li>
-                        <li><i class="fas fa-check"></i> <strong>Testnet (luxa-testnet)</strong> uses simulated tLUXA and tSHARDS</li>
-                        <li><i class="fas fa-check"></i> Balances belong to each address, so every vault has its own test wallet</li>
-                        <li><i class="fas fa-check"></i> Send to any address, yours or someone else's, and watch balances update instantly</li>
-                    </ul>
-                </div>
-                <div class="feature-visual">
-                    <div class="testnet-card">
-                        <h4><i class="fas fa-faucet-drip"></i> Testnet faucet</h4>
-                        <dl>
-                            <div><dt>You receive</dt><dd>50.00 tLUXA</dd></div>
-                            <div><dt>Plus</dt><dd>5,000 tSHARDS</dd></div>
-                            <div><dt>Cooldown</dt><dd>6 hours per address</dd></div>
-                            <div><dt>Receipt</dt><dd>0xtest_…</dd></div>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tokenomics-note tokenomics-note--spaced">
-                <i class="fas fa-flask"></i>
-                <div>
-                    <strong>Sandbox only:</strong> tLUXA and tSHARDS are simulated and have no monetary value. Testnet balances never carry over to Mainnet, and testnet receipts are not recorded on <code>luxa-1</code>, so they do not appear in the Block Explorer. Available in the Telegram Mini App today; the same API is ready for the Chrome extension and the Android app.
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         TOKENOMICS
-         ============================================================ -->
-    <section id="tokenomics" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Tokenomics</span>
-                <h2>Clear Economics &amp; Verified Supply</h2>
-                <p>Designed for sustainable ecosystem liquidity, anti-inflationary control, and transparent network rules. See also <a href="insights.html" class="page-html-link">Tokenomics Insights</a>.</p>
-            </div>
-            <div class="tokenomics-grid">
-                <div class="token-card main-card">
-                    <div class="token-header">
-                        <img src="assets/images/logoluxa.png" alt="LUXA" width="44" height="44">
-                        <div>
-                            <h3>LUXA Coin (L1)</h3>
-                            <span class="token-status"><span class="pulse-dot"></span> Native Asset • luxa-1</span>
-                        </div>
-                    </div>
-                    <div class="token-stats">
-                        <div class="t-stat">
-                            <span class="t-label">Total On-Chain Supply</span>
-                            <span class="t-value" id="liveTotalSupply">Loading...</span>
-                        </div>
-                        <div class="t-stat">
-                            <span class="t-label">Treasury Reserve Vault</span>
-                            <span class="t-value" id="liveTreasuryVault">Loading...</span>
-                        </div>
-                        <div class="t-stat">
-                            <span class="t-label">Circulating Ecosystem Supply</span>
-                            <span class="t-value" id="liveCirculatingSupply" style="color: #00FFCC;">Loading...</span>
-                        </div>
-                        <div class="t-stat">
-                            <span class="t-label">Daily Mining Base</span>
-                            <span class="t-value">Dynamic <small>Adjustable rate</small></span>
-                        </div>
-                        <div class="t-stat">
-                            <span class="t-label">Micro-Denomination</span>
-                            <span class="t-value">1 LUXA = 1,000,000 <small>uluxa</small></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="token-card">
-                    <div class="token-icon"><i class="fas fa-gem"></i></div>
-                    <h3>Shards Asset</h3>
-                    <p class="token-desc">Secondary utility unit earned through tasks, games, and wheel bonuses.</p>
-                    <div class="token-highlight">
-                        <span class="big">10,000</span>
-                        <span>Shards = 1.0 LUXA Conversion</span>
-                    </div>
-                </div>
-
-                <div class="token-card">
-                    <div class="token-icon"><i class="fas fa-percentage"></i></div>
-                    <h3>Settlement Protocol Fee</h3>
-                    <p class="token-desc">When claiming mined balances to L1 vaults, an 8% protocol fee is retained to fund liquidity pools, airdrops, and buybacks.</p>
-                    <div class="token-highlight">
-                        <span class="big">8%</span>
-                        <span>Protocol Fee (92% Net Delivered)</span>
-                    </div>
-                </div>
-
-                <div class="token-card">
-                    <div class="token-icon"><i class="fas fa-gas-pump"></i></div>
-                    <h3>Zero Network Gas</h3>
-                    <p class="token-desc">The sovereign LUXA blockchain processes native transfers without burning miner gas fees.</p>
-                    <div class="token-highlight">
-                        <span class="big">0 LUXA</span>
-                        <span>Free L1 Network Gas Fee</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tokenomics-note tokenomics-note--spaced">
-                <i class="fas fa-shield-alt"></i>
-                <div>
-                    <strong>Transparent Settlement Rules:</strong> When executing an on-chain payout, the application ledger deducts the standard 8% protocol fee from the gross balance to replenish community reserves. The remaining 92% is transferred directly from the Treasury to your <code>luxa1...</code> address with 0 network gas fee on-chain.
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         KYC & SETTLEMENT
-         ============================================================ -->
-    <section id="settlement" class="section section-dark">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Compliance &amp; Security</span>
-                <h2>Mainnet Settlement:<br>60 Days &amp; Identity Check</h2>
-                <p>Mining inside Telegram is free and open to everyone. Moving your balance onto the <code>luxa-1</code> mainnet is earned: it takes proven commitment and a verified identity, which keeps bots and duplicate accounts out. Full guidelines in the <a href="kyc.html" class="page-html-link">KYC Portal</a>.</p>
-            </div>
-
-            <ol class="settlement-steps">
-                <li>
-                    <h3>Initialize your vault</h3>
-                    <p>Create or import a <code>luxa1...</code> Sovereign Vault and link it to your Telegram account.</p>
-                </li>
-                <li>
-                    <h3>Reach 60 mining days</h3>
-                    <p>60 validated daily mining sessions prove commitment. A progress bar in the app tracks your days.</p>
-                </li>
-                <li>
-                    <h3>Verify your identity</h3>
-                    <p>Complete the Sumsub check: 3D liveness and a biometric document scan.</p>
-                </li>
-                <li>
-                    <h3>Enter the migration queue</h3>
-                    <p>Your accumulated balance moves to your verified vault on the <code>luxa-1</code> Cosmos ledger.</p>
-                </li>
-            </ol>
-
-            <div class="about-grid">
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-id-card"></i></div>
-                    <h3>One Identity, All Vaults</h3>
-                    <p>Verification belongs to your Telegram account, not to a single address. Once approved, every vault you manage (up to 10) inherits the verified status.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-robot"></i></div>
-                    <h3>Anti-Sybil Defense</h3>
-                    <p>Bots, fake clickers, duplicate accounts and coordinated farms are detected and banned automatically, and the reason is kept in an audit log.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-file-signature"></i></div>
-                    <h3>Verifiable Settlement Proof</h3>
-                    <p>Each payout produces a verifiable document seal containing your Telegram ID, sender Treasury hash, and timestamped block height.</p>
-                </div>
-                <div class="about-card">
-                    <div class="about-icon"><i class="fas fa-user-lock"></i></div>
-                    <h3>Strict Data Protection</h3>
-                    <p>Identity records are processed according to data privacy legislation and are never revealed or stored publicly on the open blockchain ledger.</p>
-                </div>
-            </div>
-
-            <div class="table-scroll">
-                <table class="eligibility">
-                    <caption>Who can withdraw to Mainnet</caption>
-                    <thead>
-                        <tr>
-                            <th scope="col">Account profile</th>
-                            <th scope="col">Mining days</th>
-                            <th scope="col">Identity check</th>
-                            <th scope="col">Mainnet withdrawal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">New account</th>
-                            <td>Fewer than 60</td>
-                            <td>Not yet available</td>
-                            <td><span class="pill pill--block">Blocked</span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Miner awaiting verification</th>
-                            <td>60 or more</td>
-                            <td>Not completed</td>
-                            <td><span class="pill pill--wait">Blocked until verified</span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Certified miner</th>
-                            <td>60 or more</td>
-                            <td>Verified</td>
-                            <td><span class="pill pill--ok">Migration queue</span></td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Citizen Zero (#0) holder</th>
-                            <td>Any</td>
-                            <td>Not required</td>
-                            <td><span class="pill pill--ok">Direct settlement</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p class="table-note">Testnet is open to every profile, faucet included. Citizen Zero (#0) is a protocol-level exemption held by the founder wallet, whose movements are publicly trackable in the <a href="explorer.html" class="page-html-link">Block Explorer</a>.</p>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         ROADMAP
-         ============================================================ -->
-    <section id="roadmap" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">Roadmap</span>
-                <h2>Our Journey<br>Forward</h2>
-            </div>
-            <div class="roadmap-timeline">
-                <div class="timeline-line"></div>
-                <div class="roadmap-item active">
-                    <div class="roadmap-marker"><div class="marker-dot"></div></div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 1 — Core Infrastructure</span>
-                        <span class="phase-status"><i class="fas fa-check-circle"></i> Completed</span>
-                        <h3>Genesis &amp; Mini App Launch</h3>
-                        <ul>
-                            <li>Launch of LUXA Telegram Mini App and passive mining engine</li>
-                            <li>Deployment of Sovereign Cosmos SDK L1 Chain (<code>luxa-1</code>)</li>
-                            <li>Client-side non-custodial Spider Wallet with BIP-39 recovery phrase and up to 10 vaults per account</li>
-                            <li>Live on-chain Block Explorer and interactive Ledger inspector</li>
-                            <li>Anti-bot and anti-Sybil protection across mining, sessions and referrals</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="roadmap-item active">
-                    <div class="roadmap-marker"><div class="marker-dot"></div></div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 2 — Community &amp; Stability</span>
-                        <span class="phase-status"><i class="fas fa-spinner fa-spin"></i> In Progress</span>
-                        <h3>Scale &amp; Protocol Hardening</h3>
-                        <ul>
-                            <li>Testnet Sandbox (<code>luxa-testnet</code>) with faucet and peer-to-peer transfers</li>
-                            <li>Advanced admin management and real-time on-chain KPI monitoring</li>
-                            <li>Community airdrop campaigns and revenue sharing pools</li>
-                            <li>Integration of real-time supply calculation directly from Cosmos RPC</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="roadmap-item">
-                    <div class="roadmap-marker"><div class="marker-dot"></div></div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 3 — Verified Mainnet Migration</span>
-                        <span class="phase-status planned"><i class="fas fa-clock"></i> Next Milestone</span>
-                        <h3>60-Day Commitment &amp; Sumsub KYC</h3>
-                        <ul>
-                            <li>60-day mining requirement and Sumsub identity verification (3D liveness and document scan)</li>
-                            <li>Balance migration from the in-app ledger to verified L1 vaults through the migration queue</li>
-                            <li>Multi-chain bridge expansion (BNB Smart Chain &amp; IBC Cosmos Hub)</li>
-                            <li>Publication of audited smart contracts and token allocation details</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="roadmap-item">
-                    <div class="roadmap-marker"><div class="marker-dot"></div></div>
-                    <div class="roadmap-content">
-                        <span class="phase-label">Phase 4 — Global Ecosystem</span>
-                        <span class="phase-status planned"><i class="fas fa-rocket"></i> Future</span>
-                        <h3>Market Listings &amp; Real Utility</h3>
-                        <ul>
-                            <li>Decentralized and Centralized Exchange (DEX/CEX) listing evaluations</li>
-                            <li>Decentralized merchant payment gateway integration</li>
-                            <li>On-chain governance voting using bonded LUXA validator power</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         FOUNDER
-         ============================================================ -->
-    <section id="founder" class="section section-dark section-compact">
-        <div class="container">
-            <div class="section-header section-header--tight">
-                <span class="section-tag">Leadership</span>
-                <h2>Meet the Founder</h2>
-                <p>A publicly verified builder, accountable to the network. Read the full story on <a href="about.html" class="page-html-link">About</a>.</p>
-            </div>
-
-            <div class="founder-compact">
-                <div class="founder-compact-avatar" title="Citizen Zero · #0">
-                    <img src="assets/images/yassine.png" alt="Yassine Ouaadil — Founder photo" class="photo-real" width="128" height="128" loading="lazy">
-                    <img src="assets/images/citizen_zero.jpeg" alt="Yassine Ouaadil — Citizen Zero NFT" class="photo-nft" width="128" height="128" loading="lazy">
-                </div>
-                <div class="founder-compact-info">
-                    <div class="dossier-statusbar">
-                        <span class="dossier-chip live"><span class="pulse-dot"></span> IDENTITY VERIFIED</span>
-                        <span class="dossier-chip">ROOT VALIDATOR</span>
-                        <span class="dossier-chip mono">CITIZEN ZERO · #0</span>
-                    </div>
-                    <h3 class="founder-name-v2">Yassine Ouaadil <i class="fas fa-circle-check founder-verified" title="Identity Verified"></i></h3>
-                    <p class="founder-role-v2">Founder &amp; Lead Architect — LUXA Sovereign L1</p>
-                    <p class="founder-compact-bio">
-                        Architect of the <code>luxa-1</code> chain, the Spider Wallet mesh and the Shared-Wealth
-                        tokenomics. First holder of the network — and the first to be accountable to it:
-                        no presale allocations, no insider reserves. Every movement of the founding wallet
-                        is publicly trackable on the explorer. Holding Citizen Zero (#0), the founder carries the protocol's Green Card: exempt from the 60-day rule and the identity check, with settlement that stays fully visible on-chain.
-                    </p>
-                    <div class="founder-actions-v2">
-                        <a href="https://www.linkedin.com/in/yassine-ouaadil-32497332a" target="_blank" rel="noopener noreferrer" class="btn-linkedin-v2"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
-                        <a href="https://x.com/luxatoken" target="_blank" rel="noopener noreferrer" class="social-chip" aria-label="X"><i class="fab fa-x-twitter"></i></a>
-                        <a href="https://t.me/LuxaToken_Official" target="_blank" rel="noopener noreferrer" class="social-chip" aria-label="Telegram" title="Official Channel"><i class="fab fa-telegram-plane"></i></a>
-                        <a href="explorer.html?q=luxa1z4jpt568npsvpass9f93m0v3edn9f6h8nksfaz" class="btn btn-outline btn-page-link"><i class="fas fa-cubes"></i> Verify Wallet</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================================
-         WHITE PAPER
-         ============================================================ -->
-    <section id="whitepaper" class="section section-gradient">
-        <div class="container">
-            <div class="whitepaper-wrapper">
-                <div class="whitepaper-content">
-                    <span class="section-tag light">Documentation</span>
-                    <h2>Read the Full<br>White Paper</h2>
-                    <p>Explore the complete technical specifications, sovereign L1 consensus details, tokenomic formulas, and security architecture.</p>
-                    <div class="whitepaper-meta">
-                        <div class="meta-item"><i class="fas fa-file-pdf"></i><span>PDF Document</span></div>
-                        <div class="meta-item"><i class="fas fa-calendar"></i><span>Updated 2026</span></div>
-                        <div class="meta-item"><i class="fas fa-code-branch"></i><span>Version 2.0</span></div>
-                    </div>
-                    <a href="assets/docs/LUXA_Whitepaper_EN.pdf" target="_blank" rel="noopener noreferrer" class="btn btn-light btn-large">
-                        <i class="fas fa-download"></i> <span>Download White Paper</span>
-                    </a>
-                </div>
-                <div class="whitepaper-visual">
-                    <div class="doc-preview" aria-hidden="true">
-                        <div class="doc-page">
-                            <div class="doc-header">
-                                <img src="assets/images/logoluxa.png" alt="">
-                                <span>LUXA SOVEREIGN CHAIN</span>
-                            </div>
-                            <div class="doc-lines">
-                                <div class="doc-line long"></div>
-                                <div class="doc-line"></div>
-                                <div class="doc-line medium"></div>
-                                <div class="doc-line"></div>
-                                <div class="doc-line short"></div>
-                            </div>
-                            <div class="doc-footer">v2.0 — Sovereign L1 Cosmos Edition</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    </main>
-
-    <!-- FOOTER (partials/footer.html) -->
+    <!-- Static internal links for crawlers -->
+    <nav class="crawl-links" aria-label="Site links" style="max-width:1100px;margin:0 auto 40px;padding:0 20px;font-size:.8rem;color:var(--text-dim);display:flex;flex-wrap:wrap;gap:14px;justify-content:center;">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/explorer.html">Block Explorer</a>
+        <a href="/vault.html">LUXA Vault</a>
+        <a href="/insights.html">Insights</a>
+        <a href="/spider-vault-architecture.html">Spider Vault Architecture</a>
+        <a href="/kyc.html">KYC Guidelines</a>
+        <a href="/terms.html">Terms of Service</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+    </nav>
     <div data-include="footer"></div>
 
-    <button id="luxa-agent-fab" class="luxa-agent-fab" type="button" title="Chat with LUXA AI Agent" aria-label="Open LUXA AI Agent">
-        <i class="fas fa-robot" aria-hidden="true"></i>
-    </button>
-
-    <div id="luxa-agent-modal" class="luxa-agent-modal" role="dialog" aria-modal="true" aria-labelledby="luxa-agent-title" aria-hidden="true">
-        <div class="luxa-modal-header">
-            <div class="header-info">
-                <div class="agent-avatar" aria-hidden="true"><i class="fas fa-robot"></i></div>
-                <div>
-                    <div id="luxa-agent-title" class="agent-title">LUXA Sovereign AI</div>
-                    <div class="agent-subtitle"><span class="status-indicator"></span> CometBFT Core</div>
-                </div>
-            </div>
-            <button id="luxa-modal-close" class="modal-close-btn" type="button" aria-label="Close AI chat">&times;</button>
-        </div>
-
-        <div id="luxa-chat-messages" class="luxa-chat-messages" aria-live="polite">
-            <div class="chat-bubble agent-bubble">Greetings. I am the Sovereign Agent for the LUXA L1 protocol (<code>luxa-1</code>). How can I assist you with Spider Vault, tokenomics, or zero-gas transactions?</div>
-        </div>
-
-        <div id="luxa-typing-indicator" class="typing-indicator" hidden aria-label="Agent is typing">
-            <span></span><span></span><span></span>
-        </div>
-
-        <div class="luxa-modal-footer">
-            <textarea id="luxa-agent-input" placeholder="Ask the LUXA Agent..." rows="1"></textarea>
-            <button id="luxa-agent-send" class="luxa-send-btn" type="button" aria-label="Send message">
-                <i class="fas fa-paper-plane" aria-hidden="true"></i>
-            </button>
-        </div>
-    </div>
-
-    <script src="js/include.js" defer></script>
-    <script src="js/script.js" defer></script>
-    <script src="js/agent-chat.js" defer></script>
+    <script src="js/include.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
