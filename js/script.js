@@ -503,7 +503,7 @@ function formatNumber(n, decimals = 2) {
      - tastiera (← → Home End), swipe nativo, trascinamento con il mouse;
      - click sulla slide attiva = anteprima ingrandita (lightbox); click su
        una slide laterale = la porta al centro;
-     - se un'immagine manca (es. 05-nft-vault.webp non ancora caricata) la slide
+    - se un'immagine manca, la slide
        viene rimossa e i controlli si ricalcolano da soli;
      - gap letto dal CSS, ricentratura al resize, ARIA (region, "n of N").
      ========================================================================== */
