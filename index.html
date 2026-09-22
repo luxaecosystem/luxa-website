@@ -880,7 +880,40 @@
     <!-- FOOTER (partials/footer.html) -->
     <div data-include="footer"></div>
 
+    <button id="luxa-agent-fab" class="luxa-agent-fab" type="button" title="Chat with LUXA AI Agent" aria-label="Open LUXA AI Agent">
+        <i class="fas fa-robot" aria-hidden="true"></i>
+    </button>
+
+    <div id="luxa-agent-modal" class="luxa-agent-modal" role="dialog" aria-modal="true" aria-labelledby="luxa-agent-title" aria-hidden="true">
+        <div class="luxa-modal-header">
+            <div class="header-info">
+                <div class="agent-avatar" aria-hidden="true"><i class="fas fa-robot"></i></div>
+                <div>
+                    <div id="luxa-agent-title" class="agent-title">LUXA Sovereign AI</div>
+                    <div class="agent-subtitle"><span class="status-indicator"></span> CometBFT Core</div>
+                </div>
+            </div>
+            <button id="luxa-modal-close" class="modal-close-btn" type="button" aria-label="Close AI chat">&times;</button>
+        </div>
+
+        <div id="luxa-chat-messages" class="luxa-chat-messages" aria-live="polite">
+            <div class="chat-bubble agent-bubble">Saluti. Sono l'Agente Sovrano del protocollo LUXA L1 (<code>luxa-1</code>). Come posso assisterti riguardo a Spider Vault, tokenomics o transazioni a gas zero?</div>
+        </div>
+
+        <div id="luxa-typing-indicator" class="typing-indicator" hidden aria-label="Agent is typing">
+            <span></span><span></span><span></span>
+        </div>
+
+        <div class="luxa-modal-footer">
+            <textarea id="luxa-agent-input" placeholder="Chiedi all'Agente LUXA..." rows="1"></textarea>
+            <button id="luxa-agent-send" class="luxa-send-btn" type="button" aria-label="Send message">
+                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
     <script src="js/include.js" defer></script>
     <script src="js/script.js" defer></script>
+    <script src="js/agent-chat.js" defer></script>
 </body>
 </html>
