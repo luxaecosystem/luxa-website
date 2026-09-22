@@ -491,7 +491,7 @@ html {
 /* ---------- 9. LUXA Agent chat ---------- */
 .luxa-agent-fab {
     position: fixed;
-    right: 76px;
+    right: 20px;              /* Spostato al bordo destro */
     bottom: 20px;
     z-index: 9999;
     display: grid;
@@ -518,8 +518,8 @@ html {
 
 .luxa-agent-modal {
     position: fixed;
-    right: 76px;
-    bottom: 92px;
+    right: 20px;
+    bottom: 90px;
     z-index: 10000;
     display: flex;
     flex-direction: column;
@@ -564,6 +564,19 @@ html {
 .luxa-send-btn:disabled { cursor: wait; opacity: .55; }
 
 @media (max-width: 640px) {
-    .luxa-agent-fab { right: 64px; bottom: 16px; }
-    .luxa-agent-modal { right: 16px; bottom: 84px; width: calc(100vw - 32px); }
+    .luxa-agent-fab { 
+        right: 16px; 
+        bottom: 16px; 
+        width: 52px; 
+        height: 52px; 
+    }
+    .luxa-agent-modal { 
+        right: 16px; 
+        bottom: 78px; 
+        width: calc(100vw - 32px); 
+    }
+    #backToTop { 
+        right: 22px; 
+        bottom: 76px; 
+    }
 }
