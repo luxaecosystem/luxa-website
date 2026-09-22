@@ -66,7 +66,7 @@
       conversationHistory.push({ role: 'assistant', text: data.reply });
     } catch (error) {
       console.error('[LUXA AI Chat Error]', error);
-      appendMessage('Impossibile comunicare con il nodo AI in questo momento. Riprova tra poco.', 'agent');
+      appendMessage('Unable to reach the AI node right now. Please try again shortly.', 'agent');
     } finally {
       isSending = false;
       sendButton.disabled = false;
