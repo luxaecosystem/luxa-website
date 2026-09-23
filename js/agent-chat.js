@@ -37,7 +37,9 @@
   function setOpen(isOpen) {
     modal.classList.toggle('active', isOpen);
     modal.setAttribute('aria-hidden', String(!isOpen));
-    if (isOpen) input.focus();
+    if (isOpen) {
+      setTimeout(() => input.focus(), 150);
+    }
   }
 
   async function handleSend() {
@@ -53,17 +55,29 @@
     try {
       const response = await fetch(endpointUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json'
+          // Se hai mantenuto isAuthorized obbligatorio nel backend, decommenta la riga sotto:
+          // 'x-agent-secret': 'choose-a-long-random-agent-secret-here'
+        },
         body: JSON.stringify({ prompt: userText, history: conversationHistory })
       });
-      const data = await response.json();
+
+      const data = await response.json().catch(() => ({}));
+
       if (!response.ok || !data.success || typeof data.reply !== 'string') {
-        throw new Error(data.error || 'Server rejected the request.');
+        throw new Error(data.error || `Server status ${response.status}`);
       }
 
       appendMessage(data.reply, 'agent');
-      conversationHistory.push({ role: 'user', text: userText });
-      conversationHistory.push({ role: 'assistant', text: data.reply });
+      
+      conversationHistory.push({ role: 'user', content: userText });
+      conversationHistory.push({ role: 'assistant', content: data.reply });
+
+      // Mantiene la cronologia locale snella (ultimi 10 scambi)
+      if (conversationHistory.length > 20) {
+        conversationHistory = conversationHistory.slice(-20);
+      }
     } catch (error) {
       console.error('[LUXA AI Chat Error]', error);
       appendMessage('Unable to reach the AI node right now. Please try again shortly.', 'agent');
