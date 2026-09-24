@@ -541,6 +541,7 @@ html {
 .luxa-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: #1c1c24; border-bottom: 1px solid rgba(255, 255, 255, .06); }
 .header-info { display: flex; align-items: center; gap: 12px; }
 .agent-avatar { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid #8774e1; border-radius: 10px; background: rgba(135, 116, 225, .15); color: #fff; }
+.agent-avatar img { width: 30px; height: 30px; object-fit: contain; display: block; }
 .agent-title { color: #fff; font-size: .88rem; font-weight: 600; }
 .agent-subtitle { display: flex; align-items: center; gap: 6px; color: #8c8c9e; font-size: .69rem; }
 .status-indicator { width: 7px; height: 7px; border-radius: 50%; background: #00e676; box-shadow: 0 0 8px #00e676; }
