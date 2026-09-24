@@ -514,7 +514,17 @@ html {
     display: block;
     filter: drop-shadow(0 0 8px rgba(255,255,255,.25));
 }
+.luxa-agent-badge { position: absolute; top: -4px; right: -4px; display: grid; place-items: center; width: 20px; height: 20px; border: 2px solid #141419; border-radius: 50%; background: #ff4d8d; color: #fff; font-size: .68rem; font-weight: 700; }
+.luxa-agent-badge[hidden], .luxa-agent-prompt[hidden] { display: none; }
 .luxa-agent-fab:hover { transform: scale(1.08); box-shadow: 0 12px 28px rgba(135, 116, 225, .6); }
+
+.luxa-agent-prompt { position: fixed; right: 20px; bottom: 92px; z-index: 9998; display: grid; gap: 6px; width: min(300px, calc(100vw - 40px)); padding: 16px 38px 16px 16px; border: 1px solid rgba(135, 116, 225, .45); border-radius: 12px; background: #1c1c24; box-shadow: 0 14px 32px rgba(0, 0, 0, .45); color: #e8e7f2; animation: agent-prompt-in .3s ease both; }
+.luxa-agent-prompt strong { color: #fff; font-size: .9rem; }
+.luxa-agent-prompt span { color: #b9b7c8; font-size: .8rem; line-height: 1.4; }
+.luxa-agent-prompt-open { justify-self: start; margin-top: 4px; padding: 7px 12px; border: 0; border-radius: 6px; background: #8774e1; color: #fff; font-size: .76rem; font-weight: 600; cursor: pointer; }
+.luxa-agent-prompt-close { position: absolute; top: 7px; right: 10px; border: 0; background: transparent; color: #8c8c9e; font-size: 1.2rem; cursor: pointer; }
+.luxa-agent-prompt-close:hover { color: #fff; }
+@keyframes agent-prompt-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
 .luxa-agent-modal {
     position: fixed;
