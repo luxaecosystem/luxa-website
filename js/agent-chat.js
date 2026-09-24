@@ -1,5 +1,5 @@
 (() => {
-  const endpointUrl = 'https://luxaecosystem.alwaysdata.net/api/agent/chat';
+  const endpointUrl = 'https://ailuxa.alwaysdata.net/api/agent/chat';
   const fab = document.getElementById('luxa-agent-fab');
   const modal = document.getElementById('luxa-agent-modal');
   const closeButton = document.getElementById('luxa-modal-close');
