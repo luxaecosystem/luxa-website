@@ -35,6 +35,13 @@
   }
 
   function setOpen(isOpen) {
+    if (!isOpen) {
+      // Rimuove il focus dal modale prima di nasconderlo (Fix avviso ARIA)
+      if (document.activeElement && modal.contains(document.activeElement)) {
+        document.activeElement.blur();
+        fab.focus();
+      }
+    }
     modal.classList.toggle('active', isOpen);
     modal.setAttribute('aria-hidden', String(!isOpen));
     if (isOpen) {
@@ -57,8 +64,6 @@
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json'
-          // Se hai mantenuto isAuthorized obbligatorio nel backend, decommenta la riga sotto:
-          // 'x-agent-secret': 'choose-a-long-random-agent-secret-here'
         },
         body: JSON.stringify({ prompt: userText, history: conversationHistory })
       });
