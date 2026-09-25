@@ -98,6 +98,53 @@
                         <li>Automated bot farms and sporadic clickers resetting midway forfeit their compounding factor, drastically increasing the capital and time cost of Sybil attacks.</li>
                     </ul>
 
+                    <!-- Official Fibonacci mining multiplier guide -->
+                    <div class="fibo-guide-container">
+                        <div class="fibo-guide-header">
+                            <span class="fibo-guide-badge"><i class="fas fa-ruler-combined"></i> Official Mining Algorithm</span>
+                            <h2>How the Fibonacci Multiplier Works and Why It Matters</h2>
+                            <p>Mathematical transparency, anti-bot protection, and compounding growth for miners who remain active every day.</p>
+                        </div>
+                        <div class="fibo-guide-card highlight-card">
+                            <div class="card-icon"><i class="fas fa-bolt"></i></div>
+                            <div class="card-content">
+                                <h3>Why does the multiplier not increase every single day?</h3>
+                                <p>The mining engine <strong>does not use a flat linear progression</strong>. It rewards consistency through <strong>Fibonacci milestones</strong> (1, 2, 3, 5, 8, 13, 21, 34, and 55 days).</p>
+                                <div class="example-box">
+                                    <div class="example-line"><span class="ex-label">Practical example:</span><strong>Day 19 (continuous) &rarr; 2.00x boost</strong></div>
+                                    <ul class="example-list">
+                                        <li>From <strong>Day 13 to Day 20</strong>, the multiplier remains at <strong>2.00x</strong>.</li>
+                                        <li>Production doubles, from <code>0.00000001</code> to <code>0.00000002 LUXA/hr</code>.</li>
+                                        <li>On <strong>Day 21</strong>, the progress bar reaches the next Fibonacci peak and the boost automatically increases to <strong>2.50x</strong>.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fibo-table-wrapper">
+                            <h3 class="table-title"><i class="fas fa-chart-column"></i> Mining Milestone Matrix</h3>
+                            <table class="fibo-matrix-guide-table">
+                                <thead><tr><th>Continuous days</th><th>Fibonacci level</th><th>Effective multiplier</th><th>Production status</th></tr></thead>
+                                <tbody>
+                                    <tr><td><strong>Day 1</strong></td><td>F<sub>1</sub></td><td>1.00x</td><td><span class="status-badge base">Base rate</span></td></tr>
+                                    <tr><td><strong>Day 2</strong></td><td>F<sub>2</sub></td><td>1.20x</td><td><span class="status-badge boost">+20% boost</span></td></tr>
+                                    <tr><td><strong>Days 3 - 4</strong></td><td>F<sub>3</sub></td><td>1.30x</td><td><span class="status-badge boost">+30% boost</span></td></tr>
+                                    <tr><td><strong>Days 5 - 7</strong></td><td>F<sub>5</sub></td><td>1.50x</td><td><span class="status-badge boost">+50% boost</span></td></tr>
+                                    <tr><td><strong>Days 8 - 12</strong></td><td>F<sub>8</sub></td><td>1.62x (&Phi;)</td><td><span class="status-badge golden">Golden ratio</span></td></tr>
+                                    <tr class="active-example-row"><td><strong>Days 13 - 20</strong></td><td>F<sub>13</sub></td><td>2.00x</td><td><span class="status-badge double">2x multiplier</span></td></tr>
+                                    <tr><td><strong>Days 21 - 33</strong></td><td>F<sub>21</sub></td><td>2.50x</td><td><span class="status-badge high">+150% boost</span></td></tr>
+                                    <tr><td><strong>Days 34 - 54</strong></td><td>F<sub>34</sub></td><td>3.00x</td><td><span class="status-badge high">3x multiplier</span></td></tr>
+                                    <tr class="peak-row"><td><strong>Day 55+ (&infin;)</strong></td><td>F<sub>55</sub></td><td>3.62x</td><td><span class="status-badge peak">Sustainable maximum</span></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="fibo-pillars-grid">
+                            <div class="pillar-card"><div class="pillar-icon pillar-green"><i class="fas fa-shield-halved"></i></div><h4>1. A Strong Anti-Bot Barrier</h4><p>Automated scripts and bot farms operate intermittently. Missing even one day resets the streak to Day 1: bots remain at 1.00x while real community members unlock higher multipliers.</p></div>
+                            <div class="pillar-card"><div class="pillar-icon pillar-cyan"><i class="fas fa-gem"></i></div><h4>2. No Token Hyperinflation</h4><p>Projects promising extreme 50x or 100x multipliers can damage a token's market value. A sustainable 3.62x ceiling protects treasury emissions and supports long-term LUXA economics.</p></div>
+                            <div class="pillar-card"><div class="pillar-icon pillar-gold"><i class="fas fa-handshake"></i></div><h4>3. Fairness for Real Participants</h4><p>People who activate mining every day build a larger allocation than occasional participants. No financial investment is required: consistency is what counts.</p></div>
+                        </div>
+                        <div class="fibo-warning-box"><span class="warning-icon"><i class="fas fa-triangle-exclamation"></i></span><div class="warning-text"><strong>Continuity rule:</strong> Letting a 24-hour mining session expire resets the streak to Day 1 and displays the red loss indicator (<code>&#9660; LOSS</code>). Keep your mining level active.</div></div>
+                    </div>
+
                     <h2>4. Frontend Holographic Integration</h2>
                     <p>
                         The Telegram Mini App mining orb displays this architecture visually:
@@ -122,5 +169,6 @@
 
     <script src="js/include.js" defer></script>
     <script src="js/script.js" defer></script>
+    <script src="js/agent-chat.js" defer></script>
 </body>
 </html>

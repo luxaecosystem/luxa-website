@@ -319,6 +319,42 @@ html {
 @media (max-width: 860px) { .neural-terminal-grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 520px) { .neural-terminal-grid { grid-template-columns: 1fr; } .neural-terminal-box { padding: 22px 18px; } }
 
+/* ---------- Fibonacci multiplier guide ---------- */
+.fibo-guide-container { width: 100%; max-width: 860px; margin: 34px auto 6px; padding: 24px 18px; color: #e2e8f0; line-height: 1.6; }
+.fibo-guide-header { margin-bottom: 28px; text-align: center; }
+.fibo-guide-badge { display: inline-block; margin-bottom: 10px; padding: 4px 12px; border: 1px solid rgba(0,255,204,.35); border-radius: 99px; background: rgba(0,255,204,.08); color: #00ffcc; font: 700 11px var(--font-mono); letter-spacing: 1.2px; text-transform: uppercase; }
+.fibo-guide-header h2 { margin: 0 0 10px; color: #fff; font: 700 clamp(1.4rem,3.5vw,2rem) var(--font-display); }
+.fibo-guide-header p { max-width: 620px; margin: 0 auto; color: #94a3b8; font-size: .84rem; }
+.fibo-guide-card { display: flex; gap: 16px; margin-bottom: 26px; padding: 20px; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: linear-gradient(145deg,rgba(14,16,32,.85),rgba(7,9,20,.95)); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
+.fibo-guide-card.highlight-card { border-color: rgba(0,255,204,.4); box-shadow: 0 12px 35px rgba(0,255,204,.1); }
+.card-icon { flex-shrink: 0; color: #ffd700; font-size: 28px; }
+.card-content h3 { margin: 0 0 8px; color: #fff; font: 700 1rem var(--font-display); }
+.card-content p { margin: 0 0 12px; color: #cbd5e1; font-size: .81rem; }
+.example-box { padding: 12px 14px; border: 1px solid rgba(0,255,204,.25); border-radius: 10px; background: rgba(0,0,0,.5); font-size: .75rem; }
+.example-line { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,.1); }
+.ex-label { color: #94a3b8; font-family: var(--font-mono); }
+.example-line strong { color: #ffd700; }
+.example-list { display: grid; gap: 5px; margin: 0; padding-left: 18px; color: #cbd5e1; }
+.example-list code { padding: 2px 5px; border-radius: 4px; background: rgba(0,0,0,.4); color: #00ffcc; font-family: var(--font-mono); }
+.fibo-table-wrapper { margin-bottom: 26px; padding: 20px; overflow-x: auto; border: 1px solid rgba(255,255,255,.08); border-radius: 16px; background: rgba(7,9,20,.7); }
+.table-title { margin: 0 0 14px; color: #fff; font: 700 .95rem var(--font-display); }
+.fibo-matrix-guide-table { width: 100%; min-width: 500px; border-collapse: collapse; font-size: .75rem; }
+.fibo-matrix-guide-table th { padding: 10px 12px; border-bottom: 1.5px solid rgba(255,255,255,.1); color: #94a3b8; font: 10.5px var(--font-mono); text-align: left; }
+.fibo-matrix-guide-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.active-example-row { border-left: 3px solid #00ffcc; background: rgba(0,255,204,.08); }
+.active-example-row td { color: #fff; font-weight: 700; }
+.peak-row { background: rgba(74,222,128,.08); }
+.status-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font: 700 10px var(--font-mono); }
+.status-badge.base { background: rgba(255,255,255,.08); color: #94a3b8; } .status-badge.boost { background: rgba(0,153,255,.15); color: #38bdf8; } .status-badge.golden { border: 1px solid rgba(255,215,0,.3); background: rgba(255,215,0,.15); color: #ffd700; } .status-badge.double { border: 1px solid #00ffcc; background: rgba(0,255,204,.18); color: #00ffcc; } .status-badge.high { background: rgba(168,85,247,.18); color: #c084fc; } .status-badge.peak { border: 1px solid #22c55e; background: rgba(34,197,94,.2); color: #4ade80; }
+.fibo-pillars-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 24px; }
+.pillar-card { padding: 16px; border: 1px solid rgba(255,255,255,.06); border-radius: 14px; background: rgba(10,12,24,.85); }
+.pillar-icon { margin-bottom: 10px; font-size: 22px; } .pillar-green { color: #22c55e; } .pillar-cyan { color: #00ffcc; } .pillar-gold { color: #ffd700; }
+.pillar-card h4 { margin: 0 0 6px; color: #fff; font: 700 .84rem var(--font-display); } .pillar-card p { margin: 0; color: #94a3b8; font-size: .72rem; line-height: 1.5; }
+.fibo-warning-box { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid rgba(239,68,68,.35); border-radius: 12px; background: rgba(239,68,68,.08); color: #fca5a5; font-size: .75rem; }
+.warning-icon { flex-shrink: 0; color: #f87171; font-size: 20px; }
+@media (max-width: 768px) { .fibo-pillars-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .fibo-guide-container { padding: 20px 0; } .fibo-guide-card { flex-direction: column; } }
+
 /* ---------- 6. Download (Chrome + Android) ---------- */
 #vault-app {
     padding: 56px 0 72px;
