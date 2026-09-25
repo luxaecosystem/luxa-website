@@ -1,4 +1,5 @@
 (() => {
+  function initAgentChat() {
   const endpointUrl = 'https://ailuxa.alwaysdata.net/api/agent/chat';
   const fab = document.getElementById('luxa-agent-fab');
   const modal = document.getElementById('luxa-agent-modal');
@@ -152,4 +153,12 @@
     if (conversationHistory.length) setUnread(true);
   });
   window.setTimeout(showPrompt, 20000);
+  }
+
+  if (window.luxaComponentsReady) {
+    initAgentChat();
+  } else {
+    document.addEventListener('luxa:components-ready', initAgentChat, { once: true });
+    document.addEventListener('DOMContentLoaded', initAgentChat, { once: true });
+  }
 })();

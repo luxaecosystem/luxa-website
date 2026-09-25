@@ -74,3 +74,37 @@
 </footer>
 
 <button type="button" id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
+<!-- LUXA Sovereign AI Agent Chat -->
+<button id="luxa-agent-fab" class="luxa-agent-fab" type="button" title="Chat with LUXA AI Agent" aria-label="Open LUXA AI Agent">
+    <img src="assets/images/luxa_agent.png" alt="" width="54" height="54" aria-hidden="true">
+    <span id="luxa-agent-badge" class="luxa-agent-badge" hidden aria-label="New agent message">1</span>
+</button>
+
+<div id="luxa-agent-prompt" class="luxa-agent-prompt" role="status" aria-live="polite" hidden>
+    <button id="luxa-agent-prompt-close" class="luxa-agent-prompt-close" type="button" aria-label="Close agent message">&times;</button>
+    <strong>LUXA Agent</strong>
+    <span>Would you like some information about the LUXA ecosystem?</span>
+    <button id="luxa-agent-prompt-open" class="luxa-agent-prompt-open" type="button">Let&apos;s talk</button>
+</div>
+
+<div id="luxa-agent-modal" class="luxa-agent-modal" role="dialog" aria-modal="true" aria-labelledby="luxa-agent-title" aria-hidden="true">
+    <div class="luxa-modal-header">
+        <div class="header-info">
+            <div class="agent-avatar" aria-hidden="true"><img src="assets/images/luxa_agent.png" alt="" width="36" height="36"></div>
+            <div>
+                <div id="luxa-agent-title" class="agent-title">LUXA Sovereign AI</div>
+                <div class="agent-subtitle"><span class="status-indicator"></span> CometBFT Core</div>
+            </div>
+        </div>
+        <button id="luxa-modal-close" class="modal-close-btn" type="button" aria-label="Close AI chat">&times;</button>
+    </div>
+    <div id="luxa-chat-messages" class="luxa-chat-messages" aria-live="polite">
+        <div class="chat-bubble agent-bubble">Greetings. I am the Sovereign Agent for the LUXA L1 protocol (<code>luxa-1</code>). How can I assist you with Spider Vault, tokenomics, or zero-gas transactions?</div>
+    </div>
+    <div id="luxa-typing-indicator" class="typing-indicator" hidden aria-label="Agent is typing"><span></span><span></span><span></span></div>
+    <div class="luxa-modal-footer">
+        <textarea id="luxa-agent-input" placeholder="Ask the LUXA Agent..." rows="1"></textarea>
+        <button id="luxa-agent-send" class="luxa-send-btn" type="button" aria-label="Send message"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+    </div>
+</div>

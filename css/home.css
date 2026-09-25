@@ -491,8 +491,8 @@ html {
 /* ---------- 9. LUXA Agent chat ---------- */
 .luxa-agent-fab {
     position: fixed;
-    right: 20px;              /* Spostato al bordo destro */
-    bottom: 20px;
+    right: 24px;
+    bottom: 24px;
     z-index: 9999;
     display: grid;
     place-items: center;
@@ -504,18 +504,20 @@ html {
     background: linear-gradient(135deg, #8774e1, #5d48b8);
     box-shadow: 0 8px 24px rgba(135, 116, 225, .4);
     transition: transform .2s ease, box-shadow .2s ease;
-    overflow: hidden;
+    overflow: visible !important;
     cursor: pointer;
 }
 .luxa-agent-fab img {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    object-fit: cover;
     display: block;
     filter: drop-shadow(0 0 8px rgba(255,255,255,.25));
 }
-.luxa-agent-badge { position: absolute; top: -4px; right: -4px; display: grid; place-items: center; width: 20px; height: 20px; border: 2px solid #141419; border-radius: 50%; background: #ff4d8d; color: #fff; font-size: .68rem; font-weight: 700; }
-.luxa-agent-badge[hidden], .luxa-agent-prompt[hidden] { display: none; }
+.luxa-agent-badge { position: absolute; top: -2px; right: -2px; z-index: 10000; display: flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 5px; border: 2px solid #080711; border-radius: 999px; background: #ff3366; color: #fff; font-family: var(--font-mono, monospace); font-size: .72rem; font-weight: 800; line-height: 1; box-shadow: 0 2px 8px rgba(255, 51, 102, .6); pointer-events: none; animation: badge-pop .3s cubic-bezier(.175,.885,.32,1.275); }
+.luxa-agent-badge[hidden], .luxa-agent-prompt[hidden] { display: none !important; }
+@keyframes badge-pop { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 .luxa-agent-fab:hover { transform: scale(1.08); box-shadow: 0 12px 28px rgba(135, 116, 225, .6); }
 
 .luxa-agent-prompt { position: fixed; right: 20px; bottom: 92px; z-index: 9998; display: grid; gap: 6px; width: min(300px, calc(100vw - 40px)); padding: 16px 38px 16px 16px; border: 1px solid rgba(135, 116, 225, .45); border-radius: 12px; background: #1c1c24; box-shadow: 0 14px 32px rgba(0, 0, 0, .45); color: #e8e7f2; animation: agent-prompt-in .3s ease both; }
@@ -528,15 +530,15 @@ html {
 
 .luxa-agent-modal {
     position: fixed;
-    right: 20px;
-    bottom: 90px;
+    right: 24px;
+    bottom: 96px;
     z-index: 10000;
     display: flex;
     flex-direction: column;
     width: 380px;
     max-width: calc(100vw - 32px);
-    height: 520px;
-    max-height: calc(100vh - 120px);
+    height: 530px;
+    max-height: calc(100dvh - 120px);
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, .08);
     border-radius: 18px;
@@ -550,8 +552,8 @@ html {
 .luxa-agent-modal.active { opacity: 1; pointer-events: auto; transform: none; }
 .luxa-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: #1c1c24; border-bottom: 1px solid rgba(255, 255, 255, .06); }
 .header-info { display: flex; align-items: center; gap: 12px; }
-.agent-avatar { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid #8774e1; border-radius: 10px; background: rgba(135, 116, 225, .15); color: #fff; }
-.agent-avatar img { width: 30px; height: 30px; object-fit: contain; display: block; }
+.agent-avatar { display: grid; place-items: center; width: 38px; height: 38px; border: 1.5px solid #8774e1; border-radius: 50%; background: rgba(135, 116, 225, .15); overflow: hidden; }
+.agent-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .agent-title { color: #fff; font-size: .88rem; font-weight: 600; }
 .agent-subtitle { display: flex; align-items: center; gap: 6px; color: #8c8c9e; font-size: .69rem; }
 .status-indicator { width: 7px; height: 7px; border-radius: 50%; background: #00e676; box-shadow: 0 0 8px #00e676; }
