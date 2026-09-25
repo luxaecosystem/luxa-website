@@ -297,6 +297,28 @@ html {
     .showcase-counter { display: none; }
 }
 
+/* ---------- Neural Core terminal ---------- */
+.neural-section-tag { color: #ffd700; }
+.neural-icon-cyan { color: #00ffcc; }
+.neural-icon-gold { color: #ffd700; }
+.neural-icon-purple { color: #c084fc; }
+.neural-icon-green { color: #22c55e; }
+.neural-terminal-box { position: relative; overflow: hidden; margin-top: 36px; padding: 26px 28px; border: 1.5px solid rgba(0,255,204,.35); border-radius: 18px; background: linear-gradient(160deg,rgba(14,13,28,.95),rgba(7,9,20,.98)); box-shadow: 0 16px 45px rgba(0,0,0,.65),0 0 25px rgba(0,255,204,.12); }
+.neural-terminal-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.neural-terminal-status { display: flex; align-items: center; gap: 8px; color: #4ade80; font: 700 .75rem var(--font-mono); letter-spacing: .05em; }
+.neural-terminal-tag { padding: 3px 10px; border: 1px solid rgba(34,211,238,.3); border-radius: 999px; background: rgba(34,211,238,.08); color: var(--secondary); font: .7rem var(--font-mono); }
+.neural-terminal-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 26px; }
+.terminal-metric { padding: 14px; border: 1px solid rgba(255,255,255,.06); border-radius: 12px; background: rgba(0,0,0,.45); text-align: left; }
+.terminal-metric .t-label { display: block; margin-bottom: 6px; color: var(--text-dim); font-size: .65rem; letter-spacing: .08em; text-transform: uppercase; }
+.terminal-metric .t-val { font-size: .95rem; font-weight: 700; }
+.neural-value-cyan { color: #00ffcc; }
+.neural-value-gold { color: #ffd700; }
+.neural-value-green { color: #22c55e; }
+.neural-value-purple { color: #c084fc; }
+.neural-terminal-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+@media (max-width: 860px) { .neural-terminal-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 520px) { .neural-terminal-grid { grid-template-columns: 1fr; } .neural-terminal-box { padding: 22px 18px; } }
+
 /* ---------- 6. Download (Chrome + Android) ---------- */
 #vault-app {
     padding: 56px 0 72px;

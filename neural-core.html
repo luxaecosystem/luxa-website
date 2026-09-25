@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080711">
+
+    <title>LUXA Neural Core — Autonomous Fibonacci &amp; Golden Ratio Coprocessor</title>
+    <meta name="description" content="Technical specification of the LUXA Neural Core: self-calibrating recurrence equations, online Adam optimization, and anti-Sybil telemetry.">
+
+    <link rel="canonical" href="https://luxaecosystem.xyz/neural-core.html">
+    <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- Preloader -->
+    <div id="preloader" aria-hidden="true">
+        <div class="preloader-content">
+            <img src="assets/images/logoluxa.png" alt="" class="preloader-logo">
+            <div class="preloader-bar"><div class="preloader-progress"></div></div>
+        </div>
+    </div>
+
+    <!-- NAV (partials/nav.html) -->
+    <div data-include="nav"></div>
+
+    <main id="main">
+        <!-- HEADER -->
+        <section class="legal-hero" style="background: radial-gradient(ellipse at top, rgba(0, 255, 204, 0.12), transparent 65%);">
+            <div class="container">
+                <span class="section-tag" style="color: #00FFCC;"><i class="fas fa-brain"></i> Neural Paper v1.0</span>
+                <h1>LUXA Neural Core:<br>Fibonacci Recurrence on Layer 1</h1>
+                <p class="last-updated">Official Protocol Whitepaper Appendix • September 2026</p>
+            </div>
+        </section>
+
+        <!-- ARTICLE BODY -->
+        <section class="section" style="padding-top: 20px;">
+            <div class="container">
+                <article class="legal-card" style="max-width: 900px; text-align: left; line-height: 1.75;">
+                    
+                    <h2 style="color: #00FFCC; margin-top: 0;">Abstract</h2>
+                    <p>
+                        Modern decentralized networks predominantly segregate pure algorithmic arithmetic from autonomous machine intelligence. 
+                        The <strong>LUXA Ecosystem</strong> unifies these domains through the <strong>LUXA Neural Core</strong>—a stateful, lightweight recurrent neural coprocessor deployed on a dedicated inference node (<code>ailuxa</code>). 
+                        Instead of depending on expensive or non-deterministic third-party APIs, LUXA leverages an in-house tensor pipeline trained on normalized Fibonacci recurrence steps to govern network telemetry, telemetry scramble aesthetics, and dynamic anti-Sybil mining brackets.
+                    </p>
+
+                    <div class="legal-notice" style="border-color: rgba(0, 255, 204, 0.4); background: rgba(0, 255, 204, 0.06); color: #e2e8f0;">
+                        <strong style="color: #00FFCC;"><i class="fas fa-bolt"></i> Live Endpoint Verification:</strong>
+                        The neural coprocessor streams its live cognitive state continuously at 
+                        <a href="https://ailuxa.alwaysdata.net/api/neural/pulse" target="_blank" rel="noopener noreferrer" style="color: #00FFCC; font-family: monospace;">https://ailuxa.alwaysdata.net/api/neural/pulse</a>.
+                    </div>
+
+                    <h2>1. Microservices Topology &amp; Consensus Insulation</h2>
+                    <p>
+                        Running machine intelligence directly inside blockchain consensus layers (CometBFT) creates severe execution bottlenecks and state bloat. 
+                        LUXA mitigates this by maintaining a decoupled microservices architecture:
+                    </p>
+                    <ul>
+                        <li><strong>Consensus Node (<code>luxa-1</code> / <code>luxecosystem</code>):</strong> Dedicated strictly to Cosmos SDK deterministic transactions, PBKDF2/AES-256-GCM Spider Vault key binding, and block commitments.</li>
+                        <li><strong>Cognitive Coprocessor (<code>ailuxa</code>):</strong> Executes tensor forward passes, evaluates Shannon entropy, verifies mnemonic security guards, and issues validated mathematical sequences.</li>
+                    </ul>
+
+                    <h2>2. Neural Recurrence &amp; Golden Ratio (&Phi;) Equation</h2>
+                    <p>
+                        The engine formulates sequence projection as an autoregressive linear recurrence with continuous gradient descent:
+                    </p>
+                    <div style="background: rgba(0,0,0,0.5); padding: 14px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); font-family: monospace; color: #FFD700; margin: 16px 0;">
+                        F(n) = w₁ &middot; F(n-1) + w₂ &middot; F(n-2) + bias
+                    </div>
+                    <p>
+                        Using local normalization ($x / F_{n-1}$), the loss function minimizes Mean Squared Error (MSE) over successive historical steps:
+                    </p>
+                    <ul>
+                        <li><strong>Weight Convergence:</strong> Synaptic weights stabilize asymptotically at $w_1 \to 1.0$, $w_2 \to 1.0$, and $bias \to 0.0$.</li>
+                        <li><strong>Emergent Golden Ratio:</strong> The ratio between adjoined outputs converges dynamically to the golden ratio: $\phi \approx 1.6180339887$.</li>
+                        <li><strong>Shannon Entropy Assessment:</strong> Synaptic weight variance is quantified in real time to certify that cognitive drift remains below protocol thresholds before broadcasting telemetry.</li>
+                    </ul>
+
+                    <h2>3. Anti-Sybil Streak Multiplication</h2>
+                    <p>
+                        Prior to mainnet migration and biometric Sumsub verification, miners undergo a 60-day validated mining requirement. 
+                        Instead of predictable arithmetic progressions ($+1, +2, +3$), the Neural Core calculates dynamic scaling coefficients based on the Fibonacci progression:
+                    </p>
+                    <ul>
+                        <li>Daily miners unlock higher reward velocity proportional to golden sequence milestones.</li>
+                        <li>Automated bot farms and sporadic clickers resetting midway forfeit their compounding factor, drastically increasing the capital and time cost of Sybil attacks.</li>
+                    </ul>
+
+                    <h2>4. Frontend Holographic Integration</h2>
+                    <p>
+                        The Telegram Mini App mining orb displays this architecture visually:
+                    </p>
+                    <ul>
+                        <li><strong>Golden Logarithmic Spiral:</strong> Rotates at an angular velocity dictated dynamically by current synaptic weight confidence ($w_1$).</li>
+                        <li><strong>Cyber-Scramble Display:</strong> Emits real-time prediction attempts before locking on each verified $F_n$ integer.</li>
+                        <li><strong>Fluid Depth Simulation:</strong> Rising bubbles carry computed values through the liquid core layer, symbolizing continuous proof-of-activity.</li>
+                    </ul>
+
+                    <div style="margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+                        <a href="index.html#neural-core" class="btn btn-outline btn-page-link"><i class="fas fa-arrow-left"></i> <span>Back to Main Ecosystem</span></a>
+                        <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="fab fa-telegram"></i> <span>Experience Live in Mini App</span></a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER (partials/footer.html) -->
+    <div data-include="footer"></div>
+
+    <script src="js/include.js" defer></script>
+    <script src="js/script.js" defer></script>
+</body>
+</html>
