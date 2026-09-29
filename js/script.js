@@ -316,11 +316,11 @@ window.triggerSearch = async function (overrideQuery) {
 /* ==========================================================================
    Utilità condivise (fuori dall'IIFE perché usate anche da triggerSearch)
    ========================================================================== */
-async function fetchJson(url, timeout = 3500) {
+async function fetchJson(url, timeout = 3500, options = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
   try {
-    const res = await fetch(url, { signal: controller.signal });
+    const res = await fetch(url, { ...options, signal: controller.signal });
     return res.ok ? await res.json() : null;
   } catch (_) {
     return null;
@@ -348,29 +348,52 @@ function formatNumber(n, decimals = 2) {
   const onReady = fn => (document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', fn) : fn());
 
   /* ---------- Tokenomics live ---------- */
-  // Valori consolidati usati SOLO se il backend non risponde.
-  const SUPPLY_FALLBACK = { total: 1002500000.00, treasury: 999903910.11 };
+  const MICRO_FACTOR = 1000000;
+  const TREASURY_ADDRESS = 'luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue';
+  const FOUNDER_ADDRESS = 'luxa1z4jpt568npsvpass9f93m0v3edn9f6h8nksfaz';
+  const SUPPLY_FALLBACK = { total: 1002500000.00, treasury: 999903910.11, founder: 1000000.00 };
+
+  async function fetchTotalSupply() {
+    const data = await fetchJson(`${BACKEND_API}/node/supply`, 5000, { cache: 'no-cache' });
+    const coins = Array.isArray(data?.supply) ? data.supply : (data?.supply?.supply || []);
+    const uluxa = coins.find(coin => coin.denom === 'uluxa');
+    const amount = Number(uluxa?.amount);
+    return Number.isFinite(amount) && amount > 0 ? amount / MICRO_FACTOR : SUPPLY_FALLBACK.total;
+  }
+
+  async function fetchAddressBalance(address) {
+    const data = await fetchJson(`${BACKEND_API}/node/balances/${encodeURIComponent(address)}`, 5000, { cache: 'no-cache' });
+    if (!data || !Array.isArray(data.balances)) return null;
+    const uluxa = data.balances.find(balance => balance.denom === 'uluxa');
+    const amount = Number(uluxa?.amount ?? 0);
+    return Number.isFinite(amount) ? amount / MICRO_FACTOR : null;
+  }
 
   async function syncTokenomicsMetrics() {
     const elTotal = byId('liveTotalSupply');
     const elTreasury = byId('liveTreasuryVault');
     const elCirculating = byId('liveCirculatingSupply');
-    if (!elTotal && !elTreasury && !elCirculating) return;
+    const elFounder = byId('liveFounderAllocation');
+    if (!elTotal && !elTreasury && !elCirculating && !elFounder) return;
 
-    let total = SUPPLY_FALLBACK.total;
-    let treasury = SUPPLY_FALLBACK.treasury;
-
-    const stats = await fetchJson(`${BACKEND_API}/admin/stats`, 3000);
-    if (stats && Number(stats.circulatingSupply) > 0) {
-      treasury = Number(stats.treasuryBalance || treasury);
-      total = Number(stats.circulatingSupply) + treasury;
-    }
+    const [totalResult, treasuryResult, founderResult] = await Promise.all([
+      fetchTotalSupply(),
+      fetchAddressBalance(TREASURY_ADDRESS),
+      fetchAddressBalance(FOUNDER_ADDRESS)
+    ]);
+    const total = totalResult || SUPPLY_FALLBACK.total;
+    const treasury = treasuryResult ?? SUPPLY_FALLBACK.treasury;
+    const founder = founderResult ?? SUPPLY_FALLBACK.founder;
 
     const circulating = Math.max(0, total - treasury);
-    const fmt = n => `${formatNumber(n)} <small>LUXA</small>`;
+    const fmt = (amount, includePercent = false) => {
+      const percent = includePercent ? ` (${((amount / total) * 100).toFixed(2)}%)` : '';
+      return `${formatNumber(amount)} <small>LUXA${percent}</small>`;
+    };
     if (elTotal) elTotal.innerHTML = fmt(total);
-    if (elTreasury) elTreasury.innerHTML = fmt(treasury);
-    if (elCirculating) elCirculating.innerHTML = fmt(circulating);
+    if (elTreasury) elTreasury.innerHTML = fmt(treasury, true);
+    if (elCirculating) elCirculating.innerHTML = fmt(circulating, true);
+    if (elFounder) elFounder.innerHTML = fmt(founder, true);
   }
 
   /* ---------- Altezza blocchi live (hero) ---------- */
@@ -383,18 +406,18 @@ function formatNumber(n, decimals = 2) {
       let current = Math.max(0, target - 50);
       const timer = setInterval(() => {
         current += 1;
-        el.textContent = Math.min(current, target).toLocaleString('en-US');
+        el.textContent = `#${Math.min(current, target).toLocaleString('en-US')}`;
         if (current >= target) clearInterval(timer);
       }, 15);
     }
 
     async function tick() {
       if (document.hidden) return;
-      const data = await fetchJson(`${RPC_ENDPOINT}/status`, 2500);
-      const height = parseInt(data?.result?.sync_info?.latest_block_height || 0, 10);
+      const data = await fetchJson(`${BACKEND_API}/ecosystem/chain/status`, 5000, { cache: 'no-cache' });
+      const height = parseInt(data?.latestBlock || 0, 10);
       if (height > 0) {
-        if (animated) el.textContent = height.toLocaleString('en-US');
-        else if (prefersReducedMotion()) { el.textContent = height.toLocaleString('en-US'); animated = true; }
+        if (animated) el.textContent = `#${height.toLocaleString('en-US')}`;
+        else if (prefersReducedMotion()) { el.textContent = `#${height.toLocaleString('en-US')}`; animated = true; }
         else { animateCounter(height); animated = true; }
       } else if (!animated) {
         el.textContent = '—'; // nodo non raggiungibile: niente numeri inventati
