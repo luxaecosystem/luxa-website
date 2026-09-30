@@ -1,37 +1,43 @@
 <!-- ============================================================
-     COMPONENTE: nav.html (UPDATED WITH GLOBAL ON-CHAIN SEARCH BAR)
+     COMPONENTE: nav.html (RESPONSIVE, COMPACT & BALANCED)
      ============================================================ -->
 <nav id="navbar" aria-label="Main navigation">
     <div class="nav-container">
+        
+        <!-- ROUND LOGO WITH TEXT -->
         <a href="index.html" class="nav-logo" aria-label="LUXA Ecosystem — home">
-            <img src="assets/images/LUXA_ECOSYSTEM.png" alt="LUXA Ecosystem" class="nav-brand-logo">
+            <img src="assets/images/logoluxa.png" alt="LUXA" width="36" height="36">
+            <span>LUXA</span>
         </a>
 
-        <!-- SEARCH BAR IN NAV-CONTAINER -->
-        <div class="nav-search-wrapper" style="position: relative; flex: 1; max-width: 340px; margin: 0 16px;">
-            <form action="explorer.html" method="GET" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 255, 204, 0.25); border-radius: 99px; padding: 4px 12px; transition: border-color 0.2s;" onsubmit="if(!this.q.value.trim()) return false;">
-                <i class="fas fa-search" style="color: #00FFCC; font-size: 12px; margin-right: 8px;"></i>
+        <!-- GLOBAL ON-CHAIN SEARCH BAR -->
+        <div class="nav-search-wrapper">
+            <form action="explorer.html" method="GET" onsubmit="if(!this.q.value.trim()) return false;">
+                <i class="fas fa-search" style="color: #00FFCC; font-size: 11px; margin-right: 6px;"></i>
                 <input 
                     type="text" 
                     name="q" 
-                    placeholder="Search L1 Ledger..." 
-                    style="width: 100%; background: transparent; border: none; outline: none; color: #fff; font-size: 12px; font-family: 'Space Grotesk', sans-serif;"
+                    placeholder="Search Hash, Block, Address..." 
+                    autocomplete="off"
+                    spellcheck="false"
                 >
-                <button type="submit" aria-label="Search" style="background: transparent; border: none; color: #64748b; cursor: pointer; padding: 2px 4px;">
-                    <i class="fas fa-arrow-right" style="font-size: 11px;"></i>
+                <button type="submit" aria-label="Search" style="background: transparent; border: none; color: #64748b; cursor: pointer; padding: 0 4px;">
+                    <i class="fas fa-arrow-right" style="font-size: 10px;"></i>
                 </button>
             </form>
         </div>
 
+        <!-- NAVIGATION LINKS -->
         <ul class="nav-links">
             <li><a href="about.html">About</a></li>
-            <li><a href="index.html#spider-wallet">Spider Wallet</a></li>
+            <li><a href="index.html#spider-wallet">Vault</a></li>
             <li><a href="index.html#features">Pillars</a></li>
             <li><a href="index.html#tokenomics">Tokenomics</a></li>
             <li><a href="insights.html">Insights</a></li>
             <li><a href="index.html#roadmap">Roadmap</a></li>
         </ul>
 
+        <!-- NAV ACTIONS (EXPLORER & START MINING) -->
         <div class="nav-actions">
             <a href="explorer.html" class="btn btn-outline">
                 <i class="fas fa-network-wired"></i> <span>Explorer</span>
@@ -43,15 +49,16 @@
                 <span></span><span></span><span></span>
             </button>
         </div>
+
     </div>
 </nav>
 
+<!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
-    <!-- MOBILE SEARCH BAR -->
-    <div style="padding: 12px 20px;">
+    <div style="padding: 12px 18px;">
         <form action="explorer.html" method="GET" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 255, 204, 0.3); border-radius: 8px; padding: 8px 12px;">
-            <i class="fas fa-search" style="color: #00FFCC; margin-right: 10px;"></i>
-            <input type="text" name="q" placeholder="Search on-chain ledger..." style="width: 100%; background: transparent; border: none; outline: none; color: #fff; font-size: 14px;">
+            <i class="fas fa-search" style="color: #00FFCC; margin-right: 8px;"></i>
+            <input type="text" name="q" placeholder="Search on-chain ledger..." style="width: 100%; background: transparent; border: none; outline: none; color: #fff; font-size: 13px;">
         </form>
     </div>
     <ul>

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LUXA Block Explorer</title>
+  
   <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
   <meta name="description" content="Explore verified LUXA-1 blockchain blocks, transactions and on-chain activity in the LUXA Ecosystem.">
   <link rel="canonical" href="https://luxaecosystem.xyz/explorer.html">
@@ -13,8 +14,8 @@
   <meta property="og:title" content="LUXA Block Explorer">
   <meta property="og:description" content="Explore verified LUXA-1 blockchain blocks, transactions and on-chain activity.">
   <meta property="og:url" content="https://luxaecosystem.xyz/explorer.html">
-  <meta property="og:image" content="https://luxaecosystem.xyz/assets/images/LUXA_ECOSYSTEM.png">
-  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:image" content="https://luxaecosystem.xyz/assets/images/logoluxa.png">
+  <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@luxatoken">
 
   <!-- CSS del sito -->
@@ -50,16 +51,9 @@
       padding-bottom: 60px;
     }
 
-    /* Nasconde la barra di ricerca della navbar solo nella pagina explorer per evitare doppioni */
-    #navbar .nav-search-wrapper,
-    .mobile-menu form,
-    .mobile-menu div:has(input[name="q"]) {
-      display: none !important;
-    }
-
     .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
 
-    /* ---- Hero ---- */
+    /* Hero */
     .explorer-hero {
       text-align: center;
       padding: 70px 20px 46px;
@@ -85,47 +79,7 @@
     }
     .chain-pill::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
 
-    /* Pulsante Connect Vault nella Navbar */
-    .btn-connect-vault {
-      background: rgba(0, 255, 204, 0.08);
-      border: 1.5px solid var(--cyan);
-      color: var(--cyan);
-      padding: 8px 18px;
-      border-radius: 999px;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.25s ease;
-      white-space: nowrap;
-    }
-    .btn-connect-vault:hover {
-      background: rgba(0, 255, 204, 0.2);
-      box-shadow: 0 0 16px var(--cyan-glow);
-      color: #fff;
-      transform: translateY(-1px);
-    }
-    .btn-connect-vault.is-connected {
-      background: rgba(13, 16, 32, 0.95);
-      border-color: var(--cyan);
-      color: #fff;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 0.5px;
-    }
-    .btn-connect-vault.is-connected::before {
-      content: '';
-      width: 7px;
-      height: 7px;
-      background: var(--green);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--green);
-    }
-
-    /* Barra di ricerca */
+    /* Hero Search Bar */
     .hero-search-bar {
       display: flex; gap: 12px; max-width: 660px; margin: 0 auto;
     }
@@ -176,24 +130,11 @@
     }
     .back-btn:hover { background: rgba(0, 255, 204, 0.15); color: #fff; }
 
-    .highway-box {
-      width: 100%; max-width: 320px; margin: 14px auto 18px; border-radius: 16px; overflow: hidden;
-      background: #020617; border: 1.5px solid rgba(0, 255, 204, 0.35);
-    }
-    .highway-box img { width: 100%; height: 270px; object-fit: cover; display: block; }
-    .sovereign-highway-ticker { overflow: hidden; white-space: nowrap; background: #020617; padding: 7px 0; border-top: 1px solid rgba(0, 255, 204, 0.25); }
-    .highway-track {
-      display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
-      color: var(--cyan); letter-spacing: 1px; animation: tickerRun 16s linear infinite;
-    }
-    @keyframes tickerRun { 0% { transform: translateX(0%); } 100% { transform: translateX(-50%); } }
-
     .details-grid { display: grid; gap: 10px; font-size: 12px; line-height: 1.6; }
     .details-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
     .details-label { color: var(--text-muted); min-width: 130px; font-weight: 500; }
     .details-val { color: #fff; word-break: break-all; }
     .mono { font-family: 'JetBrains Mono', monospace; }
-    .muted-note { color: var(--text-muted); font-size: 11px; }
 
     .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     @media (max-width: 900px) { .overview-grid { grid-template-columns: 1fr; } }
@@ -212,10 +153,6 @@
     .click-hash { cursor: pointer; font-family: 'JetBrains Mono', monospace; color: var(--cyan); }
     .click-hash:hover { text-decoration: underline; }
 
-    @media (max-width: 650px) {
-      .details-row { flex-direction: column; gap: 2px; }
-    }
-
     /* Modal Web3 */
     .web3-modal-backdrop { position:fixed; inset:0; background:rgba(4,5,13,.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:100000; }
     .web3-modal-window { background:#090c1a; border:1.5px solid var(--cyan); box-shadow:0 0 35px rgba(0,255,204,.25); border-radius:18px; width:90%; max-width:440px; padding:24px; color:#fff; font-family:'Inter',sans-serif; animation:modalScale .2s cubic-bezier(.16,1,.3,1); }
@@ -232,7 +169,7 @@
     .btn-modal-inspect { background:rgba(0,255,204,.12); border-color:var(--cyan); color:var(--cyan); }
     .btn-modal-disconnect { background:rgba(239,68,68,.12); border-color:#ef4444; color:#ef4444; }
     .btn-modal-install { background:linear-gradient(135deg,#00FFCC,#0066FF); color:#040612; border:none; width:100%; padding:12px; margin-top:12px; }
-    .btn-vault-icon { width:20px; height:20px; border-radius:50%; object-fit:contain; vertical-align:middle; filter:drop-shadow(0 0 4px var(--cyan)); }
+    .btn-vault-icon { width:16px; height:16px; border-radius:50%; object-fit:contain; vertical-align:middle; }
   </style>
 </head>
 <body>
@@ -310,8 +247,8 @@
   <script src="js/agent-chat.js"></script>
   <script src="js/explorer-pro.js?v=20260917-relics"></script>
 
+  <!-- Sincronizzazione parametri URL dalla Navbar -->
   <script>
-    // Legge il parametro ?q= dall'URL (se l'utente arriva dalla ricerca in Navbar di un'altra pagina)
     document.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const query = urlParams.get('q') || urlParams.get('tx');
@@ -332,14 +269,14 @@
     document.addEventListener('luxa:components-ready', () => {
       const navActions = document.querySelector('#navbar .nav-actions');
       if (navActions && !document.getElementById('btnConnectVault')) {
-        const launchBtn = navActions.querySelector('a.btn-primary');
         const connectBtnHtml = `
         <button type="button" class="btn-connect-vault" id="btnConnectVault">
           <img src="assets/images/logoluxa.png" alt="LUXA Vault" class="btn-vault-icon">
-          <span id="connectVaultLabel">Connect Vault</span>
+          <span id="connectVaultLabel">Connect</span>
         </button>`;
-        if (launchBtn) launchBtn.insertAdjacentHTML('beforebegin', connectBtnHtml);
-        else navActions.insertAdjacentHTML('afterbegin', connectBtnHtml);
+        
+        // Inserito all'inizio dei bottoni senza sovrascrivere Explorer
+        navActions.insertAdjacentHTML('afterbegin', connectBtnHtml);
       }
       initVaultWeb3Client();
     });
@@ -393,7 +330,7 @@
 
         label.textContent = username;
         if (photoUrl) {
-          connectBtn.innerHTML = `<img src="${escapeHtml(photoUrl)}" alt="" style="width:18px;height:18px;border-radius:50%;border:1px solid #00FFCC;object-fit:cover;"> <span id="connectVaultLabel">${escapeHtml(username)}</span>`;
+          connectBtn.innerHTML = `<img src="${escapeHtml(photoUrl)}" alt="" style="width:16px;height:16px;border-radius:50%;border:1px solid #00FFCC;object-fit:cover;"> <span id="connectVaultLabel">${escapeHtml(username)}</span>`;
         } else {
           connectBtn.innerHTML = `
           <img src="assets/images/logoluxa.png" alt="LUXA Vault" class="btn-vault-icon">
@@ -407,17 +344,13 @@
         sessionStorage.removeItem('luxa_connected_address');
         connectBtn.innerHTML = `
         <img src="assets/images/logoluxa.png" alt="LUXA Vault" class="btn-vault-icon">
-        <span id="connectVaultLabel">Connect Vault</span>`;
+        <span id="connectVaultLabel">Connect</span>`;
         connectBtn.classList.remove('is-connected');
       }
 
-      // ============================================================
-      // ASCOLTO REATTIVO: SBLOCCO, CREAZIONE, CAMBIO O REVOCA VAULT
-      // ============================================================
       window.addEventListener('message', async (event) => {
         if (event.source !== window || event.data?.target !== 'luxa-inpage') return;
 
-        // Quando il Vault viene creato o sbloccato, la modale del lucchetto si chiude da sola
         if (event.data.action === 'LUXA_ACCOUNT_READY' || event.data.action === 'ACCOUNTS_CHANGED') {
           const newAddress = event.data.address;
           if (newAddress) {
@@ -437,7 +370,6 @@
         }
       });
 
-      // Eventi standard CustomEvent emessi da inpage.js
       window.addEventListener('luxa#accountsChanged', (e) => {
         if (e.detail?.address) {
           closeModal();
@@ -450,7 +382,6 @@
         setDisconnectedUI();
       });
 
-      // Click sul pulsante della navbar
       connectBtn.onclick = async () => {
         if (activeAddress) {
           let profile = { username: 'LUXA Miner', telegramId: 'N/A', avatar: null };
@@ -497,7 +428,6 @@
           return;
         }
 
-        // Estensione non trovata
         if (!window.luxa) {
           openModal('LUXA Vault Required', `
           <div style="text-align:center; padding:10px 0;">
@@ -515,7 +445,6 @@
           return;
         }
 
-        // Connessione all'estensione
         try {
           const connection = await window.luxa.connect();
           const key = await window.luxa.getKey();
@@ -538,7 +467,7 @@
             `
             <div style="text-align:center; padding:10px 0;">
               <div style="display:flex; justify-content:center; margin-bottom:14px;">
-                <img src="assets/images/lock.png" alt="Vault Locked" style="width:68px; height:68px; object-fit:contain; filter:drop-shadow(0 0 16px rgba(0,255,204,0.3));" onerror="this.onerror=null; this.src='assets/images/LUXA_ECOSYSTEM.png';">
+                <img src="assets/images/lock.png" alt="Vault Locked" style="width:68px; height:68px; object-fit:contain; filter:drop-shadow(0 0 16px rgba(0,255,204,0.3));" onerror="this.onerror=null; this.src='assets/images/logoluxa.png';">
               </div>
               <p style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:8px;">
                 ${friendlyNotice}
@@ -550,7 +479,6 @@
         }
       };
 
-      // Ripristino sessione su reload
       async function restoreSession() {
         if (window.luxa && activeAddress) {
           try {
