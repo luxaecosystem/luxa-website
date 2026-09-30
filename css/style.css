@@ -109,6 +109,23 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
 .nav-links a:hover, .nav-links a.active { color: var(--text); }
 .nav-actions { display: flex; align-items: center; gap: 14px; }
 
+/* 1. Nasconde la barra di ricerca della navbar solo su explorer.html */
+#navbar .nav-search-wrapper,
+.mobile-menu form,
+.mobile-menu div:has(input[name="q"]) {
+    display: none !important;
+}
+
+/* 2. Nasconde il link "Explorer" dalla navbar (sei già dentro l'Explorer) */
+#navbar .nav-actions a[href="explorer.html"] {
+    display: none !important;
+}
+
+#navbar .nav-actions {
+    flex-shrink: 0;
+    gap: 10px;
+}
+
 /* Buttons & Spacing per icone */
 .btn { 
     display: inline-flex; 
@@ -137,16 +154,17 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 9px 18px;
+    padding: 8px 14px;
     border-radius: 30px;
     border: 1.5px solid var(--secondary);
     background: rgba(34, 211, 238, 0.08);
     color: var(--secondary);
-    font: 700 .82rem var(--font-display);
+    font: 700 12.5px var(--font-display);
     letter-spacing: 0.02em;
     cursor: pointer;
     transition: var(--transition);
     white-space: nowrap;
+    flex-shrink: 0;
 }
 .btn-connect-vault i { font-size: 0.95rem; }
 .btn-connect-vault:hover {
