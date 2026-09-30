@@ -57,9 +57,12 @@
         }
 
         .error-logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 32px;
+            width: auto;
+            max-width: min(320px, 85vw);
+            height: 60px;
+            object-fit: contain;
+            margin: 0 auto 28px;
+            display: block;
             animation: float 3s ease-in-out infinite;
         }
 

@@ -64,8 +64,33 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
 #navbar { position: fixed; top: 0; width: 100%; padding: 18px 0; z-index: 1000; transition: var(--transition); }
 #navbar.scrolled { padding: 12px 0; background: rgba(8,7,17,.92); border-bottom: 1px solid var(--border); backdrop-filter: blur(16px); }
 .nav-container { width: min(1240px, calc(100% - 48px)); margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-.nav-logo, .footer-logo { display: flex; align-items: center; gap: 10px; font: 700 1.25rem var(--font-display); letter-spacing: .1em; }
-.nav-logo img, .footer-logo img { width: 32px; height: 32px; object-fit: contain; }
+/* Logo brand orizzontale (813x150 px) adattivo */
+.nav-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.nav-brand-logo {
+    height: 40px;
+    width: auto;
+    max-width: 240px;
+    object-fit: contain;
+    display: block;
+    transition: transform var(--transition);
+}
+
+.nav-logo:hover .nav-brand-logo {
+    transform: scale(1.03);
+}
+
+@media (max-width: 640px) {
+    .nav-brand-logo {
+        height: 32px;
+        max-width: 175px;
+    }
+}
+
 .nav-links { display: flex; gap: 24px; margin-left: auto; }
 .nav-links a { color: var(--text-muted); font-size: .85rem; transition: var(--transition); }
 .nav-links a:hover, .nav-links a.active { color: var(--text); }
