@@ -52,12 +52,25 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
 .section-header h2 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -.03em; }
 .section-header p { margin: 18px auto 0; max-width: 600px; color: var(--text-muted); font-size: 0.95rem; }
 
-/* Preloader */
+/* Preloader aggiornato per banner orizzontale */
 #preloader { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg); z-index: 10000; transition: opacity .5s, visibility .5s; }
 #preloader.hidden { opacity: 0; visibility: hidden; }
 .preloader-content { text-align: center; }
-.preloader-logo { width: 76px; margin: 0 auto 22px; animation: float 2s ease-in-out infinite; }
-.preloader-bar { width: 150px; height: 3px; border-radius: 5px; background: var(--bg-card); overflow: hidden; }
+.preloader-logo { 
+    width: 240px; 
+    max-width: 80vw; 
+    height: auto; 
+    margin: 0 auto 22px; 
+    animation: float 2s ease-in-out infinite; 
+}
+.preloader-bar { 
+    width: 220px; 
+    height: 3px; 
+    border-radius: 5px; 
+    background: var(--bg-card); 
+    overflow: hidden; 
+    margin: 0 auto;
+}
 .preloader-progress { width: 45%; height: 100%; background: var(--gradient-1); animation: loading 1.3s ease-in-out infinite; }
 
 /* Navbar */

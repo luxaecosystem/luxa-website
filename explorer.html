@@ -311,7 +311,7 @@
         const launchBtn = navActions.querySelector('a.btn-primary');
         const connectBtnHtml = `
         <button type="button" class="btn-connect-vault" id="btnConnectVault">
-          <img src="assets/images/LUXA_ECOSYSTEM.png" alt="LUXA Vault" class="btn-vault-icon">
+          <img src="assets/images/logoluxa.png" alt="LUXA Vault" class="btn-vault-icon">
           <span id="connectVaultLabel">Connect Vault</span>
         </button>`;
         if (launchBtn) launchBtn.insertAdjacentHTML('beforebegin', connectBtnHtml);
@@ -372,7 +372,7 @@
           connectBtn.innerHTML = `<img src="${escapeHtml(photoUrl)}" alt="" style="width:18px;height:18px;border-radius:50%;border:1px solid #00FFCC;object-fit:cover;"> <span id="connectVaultLabel">${escapeHtml(username)}</span>`;
         } else {
           connectBtn.innerHTML = `
-          <img src="assets/images/LUXA_ECOSYSTEM.png" alt="LUXA Vault" class="btn-vault-icon">
+          <img src="assets/images/logoluxa.png" alt="LUXA Vault" class="btn-vault-icon">
           <span id="connectVaultLabel">${escapeHtml(username)}</span>`;
         }
         connectBtn.classList.add('is-connected');
@@ -382,7 +382,7 @@
         activeAddress = null;
         sessionStorage.removeItem('luxa_connected_address');
         connectBtn.innerHTML = `
-        <img src="assets/images/LUXA_ECOSYSTEM.png" alt="LUXA Vault" class="btn-vault-icon">
+        <img src="assets/images/logoluxa.png" alt="LUXA Vault" class="btn-vault-icon">
         <span id="connectVaultLabel">Connect Vault</span>`;
         connectBtn.classList.remove('is-connected');
       }
