@@ -537,6 +537,107 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
 @media (max-width: 760px) { .explorer-stats { grid-template-columns: repeat(2, 1fr); } .ex-table th:nth-child(3), .ex-table td:nth-child(3) { display: none; } }
 
 /* ==========================================================================
+   OTTIMIZZAZIONE MOBILE RESPONSIVE GLOBALE (SUB-PAGES & SMARTPHONE)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* 1. Navbar: su smartphone nasconde la barra superiore per non schiacciare il logo
+          (la ricerca è già presente e comodamente accessibile dentro il menu mobile) */
+    #navbar .nav-search-wrapper {
+        display: none !important;
+    }
+
+    .nav-container {
+        padding: 0 4px;
+        gap: 8px !important;
+    }
+
+    .nav-brand-logo {
+        height: 26px !important;
+        max-width: 145px !important;
+    }
+
+    /* 2. Forza tutte le griglie a 1 colonna impilata (sovrascrive anche gli stili inline di about.html) */
+    .about-grid,
+    .tokenomics-grid,
+    div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    /* 3. Hero delle pagine interne (About, KYC, Insights, Explorer) */
+    .legal-hero,
+    .explorer-hero {
+        padding: 95px 16px 25px !important;
+    }
+
+    .legal-hero h1,
+    .explorer-hero h1 {
+        font-size: clamp(1.6rem, 6.5vw, 2.1rem) !important;
+        line-height: 1.2 !important;
+    }
+
+    /* 4. Schede di testo e container di lettura (KYC, Insights, Terms) */
+    .legal-card {
+        padding: 20px 16px !important;
+        border-radius: 12px !important;
+    }
+
+    .legal-card h2 {
+        font-size: 1.15rem !important;
+        margin: 22px 0 8px !important;
+    }
+
+    /* 5. Timeline di About.html: sposta i margini evitando tagli e scroll orizzontali */
+    div[style*="border-left:2px solid"] {
+        padding-left: 20px !important;
+        margin-left: 10px !important;
+    }
+
+    div[style*="border-left:2px solid"] > div > div[style*="left:-37px"] {
+        left: -27px !important;
+    }
+
+    /* 6. Tabelle e Box Explorer su smartphone */
+    .hero-search-bar {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    .hero-search-bar input {
+        width: 100% !important;
+        padding: 12px 18px !important;
+        font-size: 13px !important;
+    }
+
+    .hero-search-bar .btn-primary {
+        width: 100% !important;
+        padding: 12px !important;
+        justify-content: center !important;
+    }
+
+    .overview-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .table-card {
+        padding: 16px 12px !important;
+        border-radius: 14px !important;
+    }
+
+    .table-scroll {
+        margin-top: 16px !important;
+        border-radius: 10px !important;
+    }
+
+    /* 7. Banner illustrativi responsive */
+    .kyc-hero-banner-wrap,
+    .neural-concept-frame {
+        border-radius: 12px !important;
+        margin: 14px 0 24px !important;
+    }
+}
+
+/* ==========================================================================
    MODAL POP-UP WEB3 CONNECT & ACCOUNT OVERVIEW (LUXA VAULT INTEGRATION)
    ========================================================================== */
 .luxa-modal-backdrop {
