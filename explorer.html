@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LUXA Block Explorer</title>
   
+  <!-- ROUND COIN ICON FOR FAVICON -->
   <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
   <meta name="description" content="Explore verified LUXA-1 blockchain blocks, transactions and on-chain activity in the LUXA Ecosystem.">
   <link rel="canonical" href="https://luxaecosystem.xyz/explorer.html">
@@ -49,6 +50,12 @@
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
       padding-bottom: 60px;
+    }
+
+    /* NASCONDE IL PULSANTE "EXPLORER" SOLO IN QUESTA PAGINA */
+    #navbar .nav-actions a[href="explorer.html"],
+    .mobile-menu a[href="explorer.html"] {
+      display: none !important;
     }
 
     .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
@@ -275,7 +282,7 @@
           <span id="connectVaultLabel">Connect</span>
         </button>`;
         
-        // Inserito all'inizio dei bottoni senza sovrascrivere Explorer
+        // Inserito all'inizio dei bottoni
         navActions.insertAdjacentHTML('afterbegin', connectBtnHtml);
       }
       initVaultWeb3Client();
