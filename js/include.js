@@ -38,7 +38,7 @@
         nav:
             '<nav id="navbar" class="scrolled" aria-label="Main navigation">' +
             '<div class="nav-container"><a href="index.html" class="nav-logo">' +
-            '<img src="assets/images/logoluxa.png" alt=""><span>LUXA</span></a></div></nav>',
+            '<img src="assets/images/LUXA_ECOSYSTEM.png" alt=""><span>LUXA</span></a></div></nav>',
         footer:
             '<footer id="footer"><div class="footer-bottom"><div class="container">' +
             '<p>&copy; <span data-year></span> LUXA Ecosystem SARL. All rights reserved.</p>' +
