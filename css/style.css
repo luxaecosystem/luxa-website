@@ -619,6 +619,41 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
         grid-template-columns: 1fr !important;
     }
 
+    .roadmap-item {
+        grid-template-columns: 28px minmax(0, 1fr);
+        gap: 12px;
+        padding-bottom: 32px;
+    }
+
+    .roadmap-content {
+        min-width: 0;
+    }
+
+    .roadmap-content h3 {
+        font-size: 1.15rem;
+        line-height: 1.3;
+        overflow-wrap: anywhere;
+    }
+
+    .roadmap-content ul {
+        font-size: .8rem;
+        padding-left: 0;
+    }
+
+    .roadmap-content li {
+        overflow-wrap: anywhere;
+    }
+
+    .about-milestone-phase3 h3 {
+        line-height: 1.3;
+        overflow-wrap: anywhere;
+    }
+
+    .about-milestone-phase3 p {
+        line-height: 1.55;
+        overflow-wrap: anywhere;
+    }
+
     .table-card {
         padding: 16px 12px !important;
         border-radius: 14px !important;
