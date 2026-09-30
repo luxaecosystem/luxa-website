@@ -50,6 +50,13 @@
       padding-bottom: 60px;
     }
 
+    /* Nasconde la barra di ricerca della navbar solo nella pagina explorer per evitare doppioni */
+    #navbar .nav-search-wrapper,
+    .mobile-menu form,
+    .mobile-menu div:has(input[name="q"]) {
+      display: none !important;
+    }
+
     .container { max-width: 1200px; margin: 0 auto; padding: 24px 16px; }
 
     /* ---- Hero ---- */
@@ -302,6 +309,23 @@
   <script src="js/script.js"></script>
   <script src="js/agent-chat.js"></script>
   <script src="js/explorer-pro.js?v=20260917-relics"></script>
+
+  <script>
+    // Legge il parametro ?q= dall'URL (se l'utente arriva dalla ricerca in Navbar di un'altra pagina)
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const query = urlParams.get('q') || urlParams.get('tx');
+      const explorerInput = document.getElementById('searchInput');
+      const searchBtn = document.getElementById('searchBtn');
+
+      if (query && explorerInput) {
+        explorerInput.value = query;
+        setTimeout(() => {
+          if (searchBtn) searchBtn.click();
+        }, 300);
+      }
+    });
+  </script>
 
   <!-- Controller Connessione Web3 Sincronizzato con il Vault -->
   <script>
