@@ -1,9 +1,6 @@
 <!-- ============================================================
-     COMPONENTE: nav.html
-     Navbar principale + menu mobile
-     Iniettato da js/include.js tramite <div data-include="nav"></div>
+     COMPONENTE: nav.html (UPDATED WITH GLOBAL ON-CHAIN SEARCH BAR)
      ============================================================ -->
-
 <nav id="navbar" aria-label="Main navigation">
     <div class="nav-container">
         <a href="index.html" class="nav-logo" aria-label="LUXA Ecosystem — home">
@@ -11,10 +8,21 @@
             <span>LUXA Ecosystem<sup aria-hidden="true">&trade;</sup></span>
         </a>
 
+        <!-- GLOBAL ON-CHAIN SEARCH BAR -->
+        <div class="nav-search-wrapper" style="position: relative; flex: 1; max-width: 380px; margin: 0 16px;">
+            <form action="explorer.html" method="GET" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 255, 204, 0.25); border-radius: 99px; padding: 4px 12px; transition: border-color 0.2s;" onsubmit="if(!this.q.value.trim()) return false;">
+                <i class="fas fa-search" style="color: #00FFCC; font-size: 13px; margin-right: 8px;"></i>
+                <input type="text" name="q" placeholder="Search Hash, Block or Address..." style="width: 100%; background: transparent; border: none; outline: none; color: #fff; font-size: 12.5px; font-family: 'Space Grotesk', sans-serif;">
+                <button type="submit" aria-label="Submit search" style="background: transparent; border: none; color: #64748b; cursor: pointer; padding: 2px 6px;">
+                    <i class="fas fa-arrow-right" style="font-size: 11px;"></i>
+                </button>
+            </form>
+        </div>
+
         <ul class="nav-links">
             <li><a href="about.html">About</a></li>
             <li><a href="index.html#spider-wallet">Spider Wallet</a></li>
-            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#features">Pillars</a></li>
             <li><a href="index.html#tokenomics">Tokenomics</a></li>
             <li><a href="insights.html">Insights</a></li>
             <li><a href="index.html#roadmap">Roadmap</a></li>
@@ -35,11 +43,18 @@
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
+    <!-- MOBILE SEARCH BAR -->
+    <div style="padding: 12px 20px;">
+        <form action="explorer.html" method="GET" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 255, 204, 0.3); border-radius: 8px; padding: 8px 12px;">
+            <i class="fas fa-search" style="color: #00FFCC; margin-right: 10px;"></i>
+            <input type="text" name="q" placeholder="Search on-chain ledger..." style="width: 100%; background: transparent; border: none; outline: none; color: #fff; font-size: 14px;">
+        </form>
+    </div>
     <ul>
         <li><a href="about.html">About</a></li>
         <li><a href="index.html#spider-wallet">Spider Wallet</a></li>
         <li><a href="index.html#shared-wealth">Shared Wealth</a></li>
-        <li><a href="index.html#features">Features</a></li>
+        <li><a href="index.html#features">Core Pillars</a></li>
         <li><a href="index.html#testnet">Testnet</a></li>
         <li><a href="index.html#tokenomics">Tokenomics &amp; Fees</a></li>
         <li><a href="insights.html">Insights</a></li>
