@@ -16,6 +16,14 @@ const TREASURY_WALLET = 'luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue';
 const LCD_ENDPOINT = '';
 
 const HERO_IMAGES_WEB = {
+  // Sigilli Ufficiali Ministeriali (#0 - #4)
+  '0': 'https://luxaecosystem.alwaysdata.net/assets/nfts/citizen_zero.jpeg',
+  '1': 'https://luxaecosystem.alwaysdata.net/assets/nfts/chrono_key_master.jpeg',
+  '2': 'https://luxaecosystem.alwaysdata.net/assets/nfts/cyber_shadow_node.jpeg',
+  '3': 'https://luxaecosystem.alwaysdata.net/assets/nfts/grandmaster_of_servers.jpeg',
+  '4': 'https://luxaecosystem.alwaysdata.net/assets/nfts/neon_data_valkyrie.jpeg',
+
+  // Retrocompatibilità per vecchi codici d'archivio
   '4001': 'https://app.luxaecosystem.xyz/Nft_Images/Grandmaster_of_Servers.jpeg',
   '4002': 'https://app.luxaecosystem.xyz/Nft_Images/Neon_Data_Valkyrie.jpeg',
   '4003': 'https://app.luxaecosystem.xyz/Nft_Images/Chrono-Key_Master.jpeg',
@@ -23,6 +31,14 @@ const HERO_IMAGES_WEB = {
 };
 
 const NFT_NAMES = {
+  // Nomi Ufficiali dei 5 Ministri del Consiglio
+  '0': 'Citizen Zero (Sovereign Architect)',
+  '1': 'Chrono-Key Master (Minister of Settlement)',
+  '2': 'Cyber-Shadow Node (Minister of Security)',
+  '3': 'Grandmaster of Servers (Minister of Infrastructure)',
+  '4': 'Neon Data Valkyrie (Minister of Liquidity)',
+
+  // Nomi per retrocompatibilità
   '4001': 'Grandmaster of Servers',
   '4002': 'Neon Data Valkyrie',
   '4003': 'Chrono-Key Master',
