@@ -1,14 +1,15 @@
 /* ==========================================================================
    LUXA SCAN PRO ENGINE — js/explorer-pro.js
-   Dynamic Genesis NFTs & Multi-Asset Engine (Self-Healing Parser)
+   Dynamic Genesis NFTs, Ministerial Seals & Multi-Asset L1 Engine
    ========================================================================== */
 
 (function () {
   'use strict';
 
   const RPC_URL = 'https://rpc.luxaecosystem.xyz';
+  const BACKEND_API = 'https://luxaecosystem.alwaysdata.net/api';
 
-  // REGISTRO DI GENESI INTEGRATO (Fallback garantito a zero latenza)
+  // I 5 SIGILLI MINISTERIALI DEL CONSEIL DE LA GENÈSE (Fallback nativo L1)
   const GENESIS_FALLBACK = {
     '0': {
       id: '0',
@@ -16,11 +17,9 @@
       rarity: 'Mythic (Origin 1 of 1)',
       image: 'https://luxaecosystem.alwaysdata.net/assets/nfts/citizen_zero.jpeg',
       attributes: [
-        { trait_type: 'Archetype', value: 'Genesis Progenitor' },
-        { trait_type: 'Citizen Number', value: '#0' },
-        { trait_type: 'Authority', value: 'Root Validator & Architect' },
-        { trait_type: 'Network Access', value: 'Sovereign / Unrestricted' },
-        { trait_type: 'Discipline', value: 'Protocol Creation' },
+        { trait_type: 'Role', value: 'Sovereign Architect & Root Validator' },
+        { trait_type: 'Council Authority', value: 'Conseil de la Genèse (Permanent Chair)' },
+        { trait_type: 'Settlement Status', value: 'Immediate Green Card Bypass' },
         { trait_type: 'Perk', value: 'Zero Fees & Instant Cooldown' }
       ]
     },
@@ -30,9 +29,10 @@
       rarity: 'Legendary',
       image: 'https://luxaecosystem.alwaysdata.net/assets/nfts/chrono_key_master.jpeg',
       attributes: [
-        { trait_type: 'Archetype', value: 'Chrono Keeper' },
-        { trait_type: 'Discipline', value: 'Temporal Mechanics' },
-        { trait_type: 'Forge Cooldown', value: '-50%' }
+        { trait_type: 'Role', value: 'Minister of Settlement & Regulations' },
+        { trait_type: 'Council Authority', value: 'Conseil de la Genèse (Signer 1)' },
+        { trait_type: 'Discipline', value: 'Temporal Settlement Oversight' },
+        { trait_type: 'Utility', value: '-50% Forge Cooldown' }
       ]
     },
     '2': {
@@ -41,9 +41,10 @@
       rarity: 'Epic',
       image: 'https://luxaecosystem.alwaysdata.net/assets/nfts/cyber_shadow_node.jpeg',
       attributes: [
-        { trait_type: 'Archetype', value: 'Stealth Sentinel' },
-        { trait_type: 'Discipline', value: 'Cryptographic Stealth' },
-        { trait_type: 'Forge Discount', value: '20% ushard' }
+        { trait_type: 'Role', value: 'Minister of Cryptographic Security' },
+        { trait_type: 'Council Authority', value: 'Conseil de la Genèse (Signer 2)' },
+        { trait_type: 'Discipline', value: 'Zero-Knowledge Multi-Vault Mesh' },
+        { trait_type: 'Utility', value: '20% ushard Discount' }
       ]
     },
     '3': {
@@ -52,9 +53,10 @@
       rarity: 'Legendary',
       image: 'https://luxaecosystem.alwaysdata.net/assets/nfts/grandmaster_of_servers.jpeg',
       attributes: [
-        { trait_type: 'Archetype', value: 'Consensus Architect' },
-        { trait_type: 'Discipline', value: 'Node Architecture' },
-        { trait_type: 'Staking Yield', value: '+25% APY' }
+        { trait_type: 'Role', value: 'Minister of Infrastructure & Validators' },
+        { trait_type: 'Council Authority', value: 'Conseil de la Genèse (Signer 3)' },
+        { trait_type: 'Discipline', value: 'CometBFT Node Consensus Architecture' },
+        { trait_type: 'Yield Booster', value: '+25% APY Staking Yield' }
       ]
     },
     '4': {
@@ -63,9 +65,10 @@
       rarity: 'Rare',
       image: 'https://luxaecosystem.alwaysdata.net/assets/nfts/neon_data_valkyrie.jpeg',
       attributes: [
-        { trait_type: 'Archetype', value: 'Data Vanguard' },
-        { trait_type: 'Discipline', value: 'High-Throughput Stream' },
-        { trait_type: 'Shard Multiplier', value: '1.5x' }
+        { trait_type: 'Role', value: 'Minister of Liquidity & AMM Stability' },
+        { trait_type: 'Council Authority', value: 'Conseil de la Genèse (Signer 4)' },
+        { trait_type: 'Discipline', value: 'High-Throughput Liquidity Stream' },
+        { trait_type: 'Utility Multiplier', value: '1.5x Shard Multiplier' }
       ]
     }
   };
@@ -75,7 +78,7 @@
     ushard: 'https://luxaecosystem.alwaysdata.net/assets/shard128.png'
   };
 
-  // Pulizia radicale degli ID: rimuove virgolette, cancelletti e spazi
+  // Pulizia radicale degli identificativi token
   function sanitizeTokenId(raw) {
     if (raw === null || raw === undefined) return null;
     const clean = String(raw).replace(/[^0-9]/g, '').trim();
@@ -90,7 +93,6 @@
     if (!_externalRegistry) {
       try {
         const res = await fetch('https://luxaecosystem.alwaysdata.net/nftlist.json', { cache: 'no-cache' });
-
         if (res.ok) {
           const doc = await res.json();
           if (Array.isArray(doc.nfts)) {
@@ -102,7 +104,7 @@
           }
         }
       } catch (err) {
-        console.warn('[Explorer] nftlist.json fetch failed, using internal fallback:', err);
+        console.warn('[Explorer] nftlist.json fetch skipped, using fallback:', err);
       }
     }
 
@@ -161,6 +163,14 @@
     }
   }
 
+  // Decora un indirizzo utilizzando il registro centrale di wallet-labels.js
+  function renderDecoratedAddress(addr) {
+    if (window.luxaRenderAddress && typeof window.luxaRenderAddress === 'function') {
+      return window.luxaRenderAddress(addr, true);
+    }
+    return `<span class="mono">${escapeHtml(shorten(addr, 10, 6))}</span>`;
+  }
+
   function parseCosmosEvents(events, rawTxB64) {
     events = events || [];
     const coins = [];
@@ -205,7 +215,6 @@
       }
     }
 
-    // Fallback: cerca l'ID direttamente dentro il payload base64 della tx
     if (nftId === null && rawTxB64) {
       try {
         const decoded = atob(rawTxB64);
@@ -273,9 +282,8 @@
     let amountDisplay = '<span style="color:#94a3b8;">0.0000 LUXA</span>';
 
     if (isNft) {
-      const targetHolder = isCleanAddress(data.recipient) ? data.recipient : data.sender;
-      amountDisplay = `<strong style="color:${accent};">1x NFT (${escapeHtml(meta.name)})</strong>`;
-      const marquee = (` ⚡ CITIZEN: #${data.nftId} • ASSET: ${meta.name.toUpperCase()} • ON-CHAIN: LUXA-1 ⚡ `).repeat(3);
+      amountDisplay = `<strong style="color:${accent};">1x Ministerial Seal (${escapeHtml(meta.name)})</strong>`;
+      const marquee = (` ⚡ CONSEIL SEAL: #${data.nftId} • ${meta.name.toUpperCase()} • LUXA-1 ON-CHAIN ⚡ `).repeat(3);
 
       visual = `
         <div class="highway-box" style="border:1.5px solid ${accent}; max-width:320px; margin:14px auto 18px; border-radius:16px; overflow:hidden; background:#020617; box-shadow:0 8px 25px ${accent}25;">
@@ -293,7 +301,7 @@
       if (Array.isArray(meta.attributes) && meta.attributes.length > 0) {
         attributesHtml = `
           <div style="margin-top:14px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px;">
-            <div style="color:${accent}; font-family:'Orbitron',sans-serif; font-size:11px; font-weight:bold; margin-bottom:10px;">⚡ PROTOCOL ATTRIBUTES &amp; POWERS</div>
+            <div style="color:${accent}; font-family:'Orbitron',sans-serif; font-size:11px; font-weight:bold; margin-bottom:10px;">⚡ CONSEIL MINISTERIAL DUTIES &amp; POWERS</div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
               ${meta.attributes.map(attr => `
                 <div style="background:rgba(0,0,0,0.5); padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);">
@@ -315,7 +323,7 @@
     }
 
     const titleBadge = isNft
-      ? (isOrigin ? `👑 GENESIS PROGENITOR (CITIZEN ZERO #${data.nftId})` : `🏛️ GENESIS ARTIFACT (#${data.nftId})`)
+      ? (isOrigin ? `👑 GENESIS PROGENITOR (CITIZEN ZERO #${data.nftId})` : `🏛️ CONSEIL DE LA GENÈSE SEAL (#${data.nftId})`)
       : '🪙 NATIVE LEDGER SETTLEMENT';
 
     const rarityBadge = isNft
@@ -334,8 +342,8 @@
           <div class="details-row"><span class="details-label">Block Height:</span><span class="details-val mono" style="color:var(--gold);">#${escapeHtml(data.height)}</span></div>
           <div class="details-row"><span class="details-label">Transfer Asset:</span><span class="details-val">${amountDisplay}</span></div>
           <div class="details-row"><span class="details-label">Network Fee:</span><span class="details-val mono">${escapeHtml(data.fee)}</span></div>
-          <div class="details-row"><span class="details-label">Sender (From):</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect('${data.sender}')">${escapeHtml(data.sender)}</span></div>
-          <div class="details-row"><span class="details-label">Recipient (To):</span><span class="details-val mono click-hash" onclick="window.LuxaExplorer.inspect('${data.recipient}')">${escapeHtml(data.recipient)}</span></div>
+          <div class="details-row"><span class="details-label">Sender (From):</span><span class="details-val click-hash" onclick="window.LuxaExplorer.inspect('${data.sender}')">${renderDecoratedAddress(data.sender)}</span></div>
+          <div class="details-row"><span class="details-label">Recipient (To):</span><span class="details-val click-hash" onclick="window.LuxaExplorer.inspect('${data.recipient}')">${renderDecoratedAddress(data.recipient)}</span></div>
           <div class="details-row"><span class="details-label">Gas Consumed:</span><span class="details-val mono">${escapeHtml(data.gasUsed)} / ${escapeHtml(data.gasWanted)}</span></div>
         </div>
         ${attributesHtml}
@@ -346,54 +354,80 @@
     `;
   }
 
-  // --- 2. Ricerca Indirizzo Wallet (Transazioni + Genesis NFT posseduti) ---
+  // --- Ricerca Indirizzo: Saldi On-Chain + Sigilli Posseduti + Transazioni ---
   async function searchAddress(address) {
     const stage = document.getElementById('searchStage');
     const querySender = encodeURIComponent("transfer.sender='" + address + "'");
     const queryRecv = encodeURIComponent("transfer.recipient='" + address + "'");
 
-    // Interroga sia i trasferimenti monetari sia il modulo x/nft tramite il proxy AlwaysData.
     const results = await Promise.all([
       fetchJson(RPC_URL + '/tx_search?query="' + querySender + '"&page=1&per_page=10&order_by="desc"'),
       fetchJson(RPC_URL + '/tx_search?query="' + queryRecv + '"&page=1&per_page=10&order_by="desc"'),
-      fetchJson('https://luxaecosystem.alwaysdata.net/api/node/nfts/' + address, 4000)
+      fetchJson(`${BACKEND_API}/node/nfts/${address}`, 4000),
+      fetchJson(`${BACKEND_API}/node/balances/${address}`, 4000)
     ]);
 
     const sentTxs = results[0].data?.result?.txs || [];
     const recvTxs = results[1].data?.result?.txs || [];
     const onChainNfts = results[2].data?.nfts || [];
+    const balancesData = results[3].data?.balances || [];
     const allTxs = sentTxs.concat(recvTxs).sort((a, b) => parseInt(b.height, 10) - parseInt(a.height, 10));
 
-    // Costruzione vetrina Genesis NFT con proporzioni verticali uniformi e testa preservata.
+    // Estrazione saldi nativi
+    let luxaBalance = '0.0000 LUXA';
+    let shardsBalance = '0 SHARDS';
+    if (Array.isArray(balancesData)) {
+      const uLuxa = balancesData.find(c => c.denom === 'uluxa');
+      const uShard = balancesData.find(c => c.denom === 'ushard');
+      if (uLuxa?.amount) luxaBalance = `${(Number(uLuxa.amount) / 1000000).toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} LUXA`;
+      if (uShard?.amount) shardsBalance = `${Math.floor(Number(uShard.amount) / 1000000).toLocaleString('en-US')} SHARDS`;
+    }
+
+    // Ispezione wallet etichettato da wallet-labels.js
+    const walletMeta = window.luxaGetWalletInfo ? window.luxaGetWalletInfo(address) : null;
+    let institutionalBanner = '';
+    if (walletMeta) {
+      institutionalBanner = `
+        <div style="background:${walletMeta.badgeBg}; border:1.5px solid ${walletMeta.color}; border-radius:14px; padding:12px 16px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong style="color:${walletMeta.color}; font-family:'Space Grotesk',sans-serif; font-size:14px;">🏛️ ${escapeHtml(walletMeta.label)}</strong>
+            <div style="font-size:11px; color:#cbd5e1; margin-top:2px;">Role: ${escapeHtml(walletMeta.role)}</div>
+          </div>
+          <span style="font-family:'Orbitron',sans-serif; font-size:10px; color:${walletMeta.color}; border:1px solid ${walletMeta.color}; padding:2px 8px; border-radius:6px; font-weight:bold;">OFFICIAL ENTITY</span>
+        </div>
+      `;
+    }
+
+    // Vetrina dei Sigilli Ministeriali posseduti
     let nftsBannerHtml = '';
     if (onChainNfts.length > 0) {
       const nftCards = await Promise.all(onChainNfts.map(async item => {
         const meta = await resolveMetadata(item.id);
-        const name = meta ? meta.name : `Genesis Relic #${item.id}`;
+        const name = meta ? meta.name : `Genesis Seal #${item.id}`;
         const img = meta ? meta.image : 'https://luxaecosystem.alwaysdata.net/assets/128.png';
         const isCitizenZero = String(item.id) === '0';
         const accent = isCitizenZero ? '#FFD700' : '#00FFCC';
 
         return `
-          <div style="background:#030712; border:1.5px solid ${accent}; border-radius:14px; padding:10px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 6px 20px ${accent}22; transition:transform 0.2s ease;">
+          <div style="background:#030712; border:1.5px solid ${accent}; border-radius:14px; padding:10px; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 6px 20px ${accent}22;">
             <div style="width:100%; aspect-ratio:4/5; border-radius:10px; overflow:hidden; background:#000; border:1px solid rgba(255,255,255,0.08); margin-bottom:10px;">
               <img src="${escapeHtml(img)}" alt="${escapeHtml(name)}" style="width:100%; height:100%; object-fit:cover; object-position:top center; display:block;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
             </div>
             <div style="text-align:center;">
-              <div style="font-family:'Orbitron',sans-serif; font-size:11.5px; font-weight:bold; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
-              <div style="font-family:'JetBrains Mono',monospace; font-size:10px; color:${accent}; font-weight:700; margin-top:4px;">ID #${escapeHtml(item.id)}</div>
+              <div style="font-family:'Orbitron',sans-serif; font-size:11px; font-weight:bold; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+              <div style="font-family:'JetBrains Mono',monospace; font-size:9.5px; color:${accent}; font-weight:700; margin-top:4px;">ID #${escapeHtml(item.id)}</div>
             </div>
           </div>
         `;
       }));
 
       nftsBannerHtml = `
-        <div style="margin-bottom:24px; background:rgba(0,255,204,0.03); border:1px solid rgba(0,255,204,0.25); border-radius:16px; padding:18px;">
+        <div style="margin-bottom:20px; background:rgba(0,255,204,0.03); border:1px solid rgba(0,255,204,0.25); border-radius:16px; padding:16px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <span style="font-family:'Orbitron',sans-serif; font-size:12px; color:#00FFCC; font-weight:bold; letter-spacing:0.5px;">🏛️ GENESIS RELICS OWNED (ON-CHAIN)</span>
-            <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#22c55e; background:rgba(34,197,94,0.15); border:1px solid #22c55e; padding:3px 9px; border-radius:6px; font-weight:bold;">${onChainNfts.length} Relics</span>
+            <span style="font-family:'Orbitron',sans-serif; font-size:12px; color:#00FFCC; font-weight:bold; letter-spacing:0.5px;">🏛️ CONSEIL DE LA GENÈSE SEALS (ON-CHAIN)</span>
+            <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#22c55e; background:rgba(34,197,94,0.15); border:1px solid #22c55e; padding:3px 9px; border-radius:6px; font-weight:bold;">${onChainNfts.length} Anchored</span>
           </div>
-          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:14px;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:12px;">
             ${nftCards.join('')}
           </div>
         </div>
@@ -402,7 +436,7 @@
 
     let rowsHtml = '';
     if (allTxs.length === 0) {
-      rowsHtml = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted);">No banking transactions found for this address.</td></tr>';
+      rowsHtml = '<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text-muted);">No banking transactions recorded for this vault address.</td></tr>';
     } else {
       rowsHtml = allTxs.slice(0, 10).map(t => {
         const isOut = sentTxs.some(s => s.hash === t.hash);
@@ -422,17 +456,21 @@
       <div class="result-card" style="--border-color: var(--cyan);">
         <div class="card-top">
           <button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>
-          <span class="badge badge-cyan">ACCOUNT OVERVIEW</span>
+          <span class="badge badge-cyan">VAULT ACCOUNT OVERVIEW</span>
         </div>
+
+        ${institutionalBanner}
         
-        <div class="details-grid" style="margin-bottom:20px;">
-          <div class="details-row"><span class="details-label">Address:</span><span class="details-val mono" style="color:var(--cyan); font-weight:bold;">${escapeHtml(address)}</span></div>
-          <div class="details-row"><span class="details-label">Total Bank Tx:</span><span class="details-val mono">${allTxs.length} activity entries</span></div>
+        <div class="details-grid" style="margin-bottom:18px;">
+          <div class="details-row"><span class="details-label">Vault Address:</span><span class="details-val mono" style="color:var(--cyan); font-weight:bold;">${escapeHtml(address)}</span></div>
+          <div class="details-row"><span class="details-label">LUXA Balance:</span><span class="details-val mono" style="color:#00FFCC; font-weight:bold; font-size:14px;">${escapeHtml(luxaBalance)}</span></div>
+          <div class="details-row"><span class="details-label">SHARDS Balance:</span><span class="details-val mono" style="color:#c084fc; font-weight:bold;">${escapeHtml(shardsBalance)}</span></div>
+          <div class="details-row"><span class="details-label">Total Transactions:</span><span class="details-val mono">${allTxs.length} activity entries</span></div>
         </div>
 
         ${nftsBannerHtml}
 
-        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:13px; margin-bottom:12px; color:#fff;">Bank Account Activity</h3>
+        <h3 style="font-family:'Space Grotesk',sans-serif; font-size:13px; margin-bottom:12px; color:#fff;">On-Chain Banking Ledger</h3>
         <div style="overflow-x:auto;">
           <table class="data-table">
             <thead><tr><th>Tx Hash</th><th>Block</th><th>Flow</th><th>Gas Units</th></tr></thead>
@@ -461,7 +499,7 @@
         </div>
         <div class="details-grid">
           <div class="details-row"><span class="details-label">Timestamp:</span><span class="details-val">${escapeHtml(timestamp)}</span></div>
-          <div class="details-row"><span class="details-label">Proposer:</span><span class="details-val mono" style="color:#88BBFF;">${escapeHtml(proposer)}</span></div>
+          <div class="details-row"><span class="details-label">Proposer:</span><span class="details-val click-hash" onclick="window.LuxaExplorer.inspect('${proposer}')">${renderDecoratedAddress(proposer)}</span></div>
           <div class="details-row"><span class="details-label">Transactions:</span><span class="details-val mono" style="color:var(--gold); font-weight:bold;">${txCount}</span></div>
         </div>
       </div>
@@ -474,39 +512,40 @@
 
     stage.innerHTML = `
       <div class="status-msg status-loading" style="color:#00FFCC;">
-        <i class="fas fa-spinner fa-spin"></i> Querying the on-chain registry for class ${escapeHtml(classId)}...
+        <i class="fas fa-spinner fa-spin"></i> Querying on-chain registry for ${escapeHtml(classId)}...
       </div>
     `;
 
     try {
       const res = await fetchJson('https://luxaecosystem.alwaysdata.net/nftlist.json');
-      const relics = Array.isArray(res.data?.nfts) ? res.data.nfts : [];
-      if (!res.ok) throw new Error('Registry request failed (' + res.status + ').');
+      const relics = Array.isArray(res.data?.nfts) ? res.data.nfts : Object.values(GENESIS_FALLBACK);
 
       stage.innerHTML = `
         <div class="result-card" style="--border-color:#00FFCC;">
           <div class="card-top">
             <button type="button" class="back-btn" onclick="window.LuxaExplorer.resetView()">← BACK</button>
-            <span class="badge" style="color:#FFD700; border-color:#FFD700; background:#FFD70018;">🏛️ GENESIS NFT CLASS</span>
+            <span class="badge" style="color:#FFD700; border-color:#FFD700; background:#FFD70018;">🏛️ CONSEIL DE LA GENÈSE SEALS</span>
           </div>
-          <h2 style="margin:4px 0 20px; color:#fff;">LUXA Genesis Relics (${escapeHtml(classId)})</h2>
+          <h2 style="margin:4px 0 20px; color:#fff;">5 Sovereign Ministerial Seals (${escapeHtml(classId)})</h2>
           <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
             ${relics.map(item => {
               const isOrigin = String(item.id) === '0';
               const accent = isOrigin ? '#FFD700' : '#00FFCC';
-              const archetype = Array.isArray(item.attributes)
-                ? item.attributes.find(attr => attr.trait_type === 'Archetype')?.value
+              const roleAttr = Array.isArray(item.attributes)
+                ? item.attributes.find(attr => attr.trait_type === 'Role' || attr.trait_type === 'Authority')?.value
                 : null;
               return `
-                <div style="background:rgba(7,9,20,0.85); border:1.5px solid ${accent}; border-radius:14px; overflow:hidden; padding:12px;">
-                  <div style="width:100%; aspect-ratio:4/5; border-radius:10px; overflow:hidden; margin-bottom:10px; background:#000;">
-                    <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" style="width:100%; height:100%; object-fit:cover; object-position:top center; display:block;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
+                <div style="background:rgba(7,9,20,0.85); border:1.5px solid ${accent}; border-radius:14px; overflow:hidden; padding:12px; display:flex; flex-direction:column; justify-content:space-between;">
+                  <div>
+                    <div style="width:100%; aspect-ratio:4/5; border-radius:10px; overflow:hidden; margin-bottom:10px; background:#000;">
+                      <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" style="width:100%; height:100%; object-fit:cover; object-position:top center; display:block;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
+                    </div>
+                    <div style="font-size:10px; color:${accent}; font-family:var(--font-mono); font-weight:bold;">SEAL #${escapeHtml(item.id)} •${escapeHtml(item.rarity || 'SOVEREIGN')}</div>
+                    <h4 style="margin:4px 0 8px; color:#fff; font-size:13px;">${escapeHtml(item.name)}</h4>
+                    <p style="font-size:11px; color:#94a3b8; line-height:1.4; margin:0 0 10px;">${escapeHtml(item.description || 'Soulbound governance credential.')}</p>
                   </div>
-                  <div style="font-size:10px; color:${accent}; font-family:var(--font-mono); font-weight:bold;">TOKEN #${escapeHtml(item.id)} • ${escapeHtml(item.rarity)}</div>
-                  <h4 style="margin:4px 0 8px; color:#fff; font-size:13px;">${escapeHtml(item.name)}</h4>
-                  <p style="font-size:11px; color:#94a3b8; line-height:1.4; margin:0 0 10px;">${escapeHtml(item.description || '')}</p>
                   <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:8px; font-size:10px; font-family:var(--font-mono);">
-                    <span style="color:#64748b;">Archetype:</span> <span style="color:#fff;">${escapeHtml(archetype || 'Guardian')}</span>
+                    <span style="color:#64748b;">Authority:</span> <span style="color:${accent}; font-weight:bold;">${escapeHtml(roleAttr || 'Council Minister')}</span>
                   </div>
                 </div>
               `;
@@ -515,7 +554,7 @@
         </div>
       `;
     } catch (err) {
-      stage.innerHTML = '<div class="status-msg status-error">❌ Unable to retrieve collection details: ' + escapeHtml(err.message) + '</div>';
+      stage.innerHTML = '<div class="status-msg status-error">❌ Unable to retrieve collection: ' + escapeHtml(err.message) + '</div>';
     }
   }
 
@@ -525,11 +564,11 @@
     const q = (query || (input ? input.value : '')).trim();
 
     if (!q || !stage) return;
-    stage.innerHTML = '<div class="status-msg status-loading">🔍 Searching luxa-1 ledger...</div>';
+    stage.innerHTML = '<div class="status-msg status-loading">🔍 Querying luxa-1 ledger...</div>';
 
     try {
       const normalizedQuery = q.toLowerCase();
-      if (['luxa-relics', 'relics', 'genesis'].includes(normalizedQuery)) await inspectNftCollection('luxa-relics');
+      if (['luxa-relics', 'relics', 'genesis', 'seals'].includes(normalizedQuery)) await inspectNftCollection('luxa-relics');
       else if (normalizedQuery.startsWith('luxa1')) await searchAddress(normalizedQuery);
       else if (/^\d+$/.test(q)) await searchBlock(q);
       else if (/^(0x)?[0-9a-fA-F]{16,}$/.test(q)) await searchTx(q);
@@ -555,7 +594,7 @@
     const res = await fetchJson(RPC_URL + '/status');
     if (res.ok && res.data?.result?.sync_info?.latest_block_height) {
       currentLatestBlock = parseInt(res.data.result.sync_info.latest_block_height, 10);
-      if (badge) badge.textContent = 'luxa-1 • #' + currentLatestBlock;
+      if (badge) badge.textContent = 'luxa-1 • #' + currentLatestBlock.toLocaleString('en-US');
       loadRecentBlocks(currentLatestBlock);
     }
   }
@@ -571,13 +610,13 @@
       tbody.innerHTML = res.data.result.block_metas.map(b => {
         const h = b.header?.height || 'N/A';
         const time = b.header?.time || '';
-        const proposer = b.header?.proposer_address ? shorten(b.header.proposer_address, 6, 4) : 'validator';
+        const proposer = b.header?.proposer_address || 'validator';
         const numTx = b.num_txs || b.header?.num_txs || 0;
 
         return '<tr>' +
           '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + h + '\')">#' + escapeHtml(h) + '</td>' +
           '<td class="mono muted-note">' + escapeHtml(timeAgo(time)) + '</td>' +
-          '<td class="mono" style="color:#88BBFF;">' + escapeHtml(proposer) + '</td>' +
+          '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + proposer + '\')">' + renderDecoratedAddress(proposer) + '</td>' +
           '<td class="mono">' + escapeHtml(numTx) + '</td>' +
           '</tr>';
       }).join('');
@@ -601,12 +640,12 @@
         const parsed = parseCosmosEvents(t.tx_result?.events || [], t.tx);
         const isNft = parsed.isNft;
         const meta = isNft ? GENESIS_FALLBACK[parsed.nftId] : null;
-        const amount = isNft ? (meta ? `1x NFT (${meta.name})` : '1x Genesis NFT') : (parsed.coins.length > 0 ? parsed.coins.map(c => `${c.amount} ${c.denom}`).join(' + ') : '0 LUXA');
+        const amount = isNft ? (meta ? `1x Seal (${meta.name})` : '1x Ministerial Seal') : (parsed.coins.length > 0 ? parsed.coins.map(c => `${c.amount} ${c.denom}`).join(' + ') : '0 LUXA');
         const status = (t.tx_result && (t.tx_result.code === 0 || !t.tx_result.code)) ? 'CONFIRMED' : 'FAILED';
 
         return '<tr>' +
           '<td class="click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.hash + '\')">' + escapeHtml(shorten(t.hash, 6, 4)) + '</td>' +
-          '<td><span class="badge ' + (isNft ? 'badge-gold' : 'badge-cyan') + '" style="font-size:9px;">' + (isNft ? 'NFT' : 'TX') + '</span></td>' +
+          '<td><span class="badge ' + (isNft ? 'badge-gold' : 'badge-cyan') + '" style="font-size:9px;">' + (isNft ? 'SEAL' : 'TX') + '</span></td>' +
           '<td class="mono click-hash" onclick="window.LuxaExplorer.inspect(\'' + t.height + '\')">#' + escapeHtml(t.height) + '</td>' +
           '<td class="mono muted-note">Latest</td>' +
           '<td style="font-weight:bold; color:var(--cyan);">' + escapeHtml(amount) + '</td>' +

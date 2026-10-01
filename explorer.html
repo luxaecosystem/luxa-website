@@ -3,17 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LUXA Block Explorer</title>
+  <title>LUXA Block Explorer — Sovereign L1 Ledger Telemetry</title>
   
-  <!-- ROUND COIN ICON FOR FAVICON -->
   <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
-  <meta name="description" content="Explore verified LUXA-1 blockchain blocks, transactions and on-chain activity in the LUXA Ecosystem.">
+  <meta name="description" content="Explore verified LUXA-1 blockchain blocks, transactions, ministerial seals and dual-vault reserve activity in the LUXA Ecosystem.">
   <link rel="canonical" href="https://luxaecosystem.xyz/explorer.html">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="LUXA Ecosystem">
-  <meta property="og:title" content="LUXA Block Explorer">
-  <meta property="og:description" content="Explore verified LUXA-1 blockchain blocks, transactions and on-chain activity.">
+  <meta property="og:title" content="LUXA Block Explorer — Sovereign L1 Ledger Telemetry">
+  <meta property="og:description" content="Explore verified LUXA-1 blockchain blocks, transactions, ministerial seals and dual-vault reserves.">
   <meta property="og:url" content="https://luxaecosystem.xyz/explorer.html">
   <meta property="og:image" content="https://luxaecosystem.xyz/assets/images/logoluxa.png">
   <meta name="twitter:card" content="summary">
@@ -52,7 +51,7 @@
       padding-bottom: 60px;
     }
 
-    /* NASCONDE IL PULSANTE "EXPLORER" SOLO IN QUESTA PAGINA */
+    /* Nasconde il pulsante Explorer ridondante nella barra di navigazione */
     #navbar .nav-actions a[href="explorer.html"],
     .mobile-menu a[href="explorer.html"] {
       display: none !important;
@@ -63,7 +62,7 @@
     /* Hero */
     .explorer-hero {
       text-align: center;
-      padding: 70px 20px 46px;
+      padding: 70px 20px 36px;
       background: radial-gradient(ellipse at top, rgba(0,255,204,0.06), transparent 60%);
     }
     .explorer-hero .eyebrow {
@@ -82,13 +81,13 @@
       display: inline-flex; align-items: center; gap: 8px;
       background: rgba(0, 255, 204, 0.08); border: 1px solid var(--cyan); color: var(--cyan);
       padding: 6px 14px; border-radius: 20px; font-size: 11px; font-family: 'JetBrains Mono', monospace;
-      font-weight: 700; margin-bottom: 30px;
+      font-weight: 700; margin-bottom: 24px;
     }
     .chain-pill::before { content: ''; width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
 
     /* Hero Search Bar */
     .hero-search-bar {
-      display: flex; gap: 12px; max-width: 660px; margin: 0 auto;
+      display: flex; gap: 12px; max-width: 680px; margin: 0 auto;
     }
     .hero-search-bar input {
       flex: 1; background: #0d1020; border: 1.5px solid rgba(255, 255, 255, 0.12);
@@ -102,9 +101,36 @@
       font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700;
     }
 
+    /* Tag di ricerca rapida */
+    .quick-search-tags {
+      display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 14px; font-size: 11.5px;
+    }
+    .quick-tag {
+      background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #94a3b8; padding: 4px 10px; border-radius: 99px; cursor: pointer; transition: all 0.2s ease;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .quick-tag:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(0, 255, 204, 0.08); }
+
+    /* Barra Statistiche Protocollo (5 Pilastri) */
+    .protocol-metrics-bar {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px;
+    }
+    .metric-pill-box {
+      background: var(--card-bg); border: 1px solid var(--border-subtle); border-radius: 14px;
+      padding: 14px 16px; text-align: left;
+    }
+    .metric-pill-label { font-size: 10px; text-transform: uppercase; color: var(--text-muted); font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.5px; }
+    .metric-pill-val { font-size: 16px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: #fff; margin-top: 4px; display: block; }
+    .metric-pill-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; display: block; }
+
+    @media (max-width: 900px) {
+      .protocol-metrics-bar { grid-template-columns: 1fr 1fr; }
+    }
     @media (max-width: 650px) {
       .hero-search-bar { flex-direction: column; }
       .explorer-hero h1 { font-size: 28px; }
+      .protocol-metrics-bar { grid-template-columns: 1fr; }
     }
 
     #searchStage { margin-bottom: 30px; }
@@ -117,7 +143,7 @@
       border: 1.5px solid var(--border-color, var(--cyan)); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
     .card-top {
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: gap; gap: 10px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
       padding-bottom: 12px; border-bottom: 1px solid var(--border-subtle); margin-bottom: 16px;
     }
     .badge {
@@ -127,7 +153,6 @@
     .badge-ok { color: var(--green); border-color: var(--green); background: rgba(34, 197, 94, 0.12); }
     .badge-gold { color: var(--gold); border-color: var(--gold); background: rgba(255, 215, 0, 0.12); }
     .badge-cyan { color: var(--cyan); border-color: var(--cyan); background: rgba(0, 255, 204, 0.12); }
-    .badge-muted { color: var(--muted-badge); border-color: var(--muted-badge); background: rgba(100, 116, 139, 0.12); }
 
     .back-btn {
       background: rgba(7, 9, 20, 0.8); border: 1px solid rgba(0, 255, 204, 0.4); color: var(--cyan);
@@ -160,7 +185,7 @@
     .click-hash { cursor: pointer; font-family: 'JetBrains Mono', monospace; color: var(--cyan); }
     .click-hash:hover { text-decoration: underline; }
 
-    /* Modal Web3 */
+    /* Modale Web3 */
     .web3-modal-backdrop { position:fixed; inset:0; background:rgba(4,5,13,.85); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; z-index:100000; }
     .web3-modal-window { background:#090c1a; border:1.5px solid var(--cyan); box-shadow:0 0 35px rgba(0,255,204,.25); border-radius:18px; width:90%; max-width:440px; padding:24px; color:#fff; font-family:'Inter',sans-serif; animation:modalScale .2s cubic-bezier(.16,1,.3,1); }
     @keyframes modalScale { from { transform:scale(.92); opacity:0; } to { transform:scale(1); opacity:1; } }
@@ -188,16 +213,50 @@
   <section class="explorer-hero">
     <div class="eyebrow">Luxa Ledger</div>
     <h1><i class="fas fa-cube"></i> LUXA Block Explorer</h1>
-    <p class="subtitle">Explore verified LUXA-1 blockchain blocks, transactions and on-chain activity.</p>
+    <p class="subtitle">Explore verified LUXA-1 blockchain blocks, transactions, ministerial seals and dual-vault reserves.</p>
     <div class="chain-pill" id="chainBlockBadge">luxa-1 • syncing...</div>
 
     <div class="hero-search-bar">
-      <input type="text" id="searchInput" placeholder="Search by block height, transaction hash or address..." autocomplete="off" spellcheck="false">
+      <input type="text" id="searchInput" placeholder="Search by block height, transaction hash, address or 'luxa-relics'..." autocomplete="off" spellcheck="false">
       <button type="button" class="btn btn-primary" id="searchBtn"><i class="fas fa-search"></i> Search</button>
+    </div>
+
+    <!-- Tag di ricerca rapida per i wallet istituzionali -->
+    <div class="quick-search-tags">
+      <span style="color:#64748b; font-size:11px; align-self:center;">Quick Inspect:</span>
+      <button type="button" class="quick-tag" onclick="window.LuxaExplorer.inspect('luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue')">🏦 Operational Vault</button>
+      <button type="button" class="quick-tag" onclick="window.LuxaExplorer.inspect('luxa1z4jpt568npsvpass9f93m0v3edn9f6h8nksfaz')">👑 Citizen Zero (#0)</button>
+      <button type="button" class="quick-tag" onclick="window.LuxaExplorer.inspect('luxa-relics')">🏛️ 5 Ministerial Seals</button>
     </div>
   </section>
 
   <div class="container">
+    
+    <!-- Barra Statistiche Protocollo: Dual-Vault & Regole di Sistema -->
+    <section class="protocol-metrics-bar">
+      <div class="metric-pill-box">
+        <span class="metric-pill-label">Total L1 Supply</span>
+        <span class="metric-pill-val" id="metricTotalSupply">1.002B LUXA</span>
+        <span class="metric-pill-sub">Fixed Protocol Ceiling</span>
+      </div>
+      <div class="metric-pill-box">
+        <span class="metric-pill-label">Operational Mining Vault</span>
+        <span class="metric-pill-val" style="color:#00FFCC;" id="metricOperationalVault">500.00M LUXA</span>
+        <span class="metric-pill-sub">50% Hot Settlement Pool</span>
+      </div>
+      <div class="metric-pill-box">
+        <span class="metric-pill-label">Conseil de la Genèse</span>
+        <span class="metric-pill-val" style="color:#FFD700;" id="metricConseilReserve">502.50M LUXA</span>
+        <span class="metric-pill-sub">50% Multisig 3/5 Reserve</span>
+      </div>
+      <div class="metric-pill-box">
+        <span class="metric-pill-label">Settlement Fee / Gas</span>
+        <span class="metric-pill-val" style="color:#22c55e;">8% / 0 Gas</span>
+        <span class="metric-pill-sub">Circulating Pool Feed</span>
+      </div>
+    </section>
+
+    <!-- Risultato della Ricerca Dinamico -->
     <div id="searchStage"></div>
 
     <div class="table-header" style="margin-bottom:14px;">
@@ -253,7 +312,7 @@
   <script src="js/wallet-labels.js"></script>
   <script src="js/script.js"></script>
   <script src="js/agent-chat.js"></script>
-  <script src="js/explorer-pro.js?v=20260917-relics"></script>
+  <script src="js/explorer-pro.js?v=20261001-v2"></script>
 
   <!-- Sincronizzazione parametri URL dalla Navbar -->
   <script>
@@ -283,7 +342,6 @@
           <span id="connectVaultLabel">Connect</span>
         </button>`;
         
-        // Inserito all'inizio dei bottoni
         navActions.insertAdjacentHTML('afterbegin', connectBtnHtml);
       }
       initVaultWeb3Client();
