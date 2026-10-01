@@ -5,19 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#080711">
 
-    <title>LUXA Neural Core — Autonomous Fibonacci &amp; Golden Ratio Coprocessor</title>
-    <meta name="description" content="Technical specification of the LUXA Neural Core: self-calibrating recurrence equations, online Adam optimization, and anti-Sybil telemetry.">
+    <title>LUXA Neural Core — Autonomous Fibonacci &amp; Harmonic Telemetry Engine</title>
+    <meta name="description" content="Technical specification of the LUXA Neural Core: deterministic 24-hour timekeeping, 10-year halving curve, dynamic difficulty across 7M+ pioneers, and Fibonacci streak multipliers.">
 
     <link rel="canonical" href="https://luxaecosystem.xyz/neural-core.html">
     <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/home.css">
+
+    <style>
+        .fibo-matrix-guide-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin: 18px 0;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .fibo-matrix-guide-table th, .fibo-matrix-guide-table td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .fibo-matrix-guide-table th {
+            background: rgba(0, 255, 204, 0.08);
+            color: var(--cyan);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .status-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        .status-badge.base { background: rgba(255, 255, 255, 0.08); color: #cbd5e1; }
+        .status-badge.boost { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid #38bdf8; }
+        .status-badge.golden { background: rgba(255, 215, 0, 0.15); color: #FFD700; border: 1px solid #FFD700; }
+        .status-badge.double { background: rgba(0, 255, 204, 0.15); color: #00FFCC; border: 1px solid #00FFCC; }
+        .status-badge.peak { background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid #22c55e; }
+
+        .time-box-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 20px 0;
+        }
+        @media (max-width: 700px) {
+            .time-box-grid { grid-template-columns: 1fr; }
+        }
+        .time-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 204, 0.25);
+            border-radius: 14px;
+            padding: 16px;
+        }
+        .time-box-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            color: var(--cyan);
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
 </head>
 <body>
 
@@ -35,20 +98,20 @@
     <div data-include="nav"></div>
 
     <main id="main">
-        <!-- HEADER -->
+        <!-- HEADER HERO -->
         <section class="legal-hero" style="background: radial-gradient(ellipse at top, rgba(0, 255, 204, 0.12), transparent 65%);">
             <div class="container">
-                <span class="section-tag" style="color: #00FFCC;"><i class="fas fa-brain"></i> Neural Paper v1.0</span>
-                <h1>LUXA Neural Core:<br>Fibonacci Recurrence on Layer 1</h1>
-                <p class="last-updated">Official Protocol Whitepaper Appendix • September 2026</p>
+                <span class="section-tag" style="color: #00FFCC;"><i class="fas fa-brain"></i> Neural Core Specification v3.0</span>
+                <h1>LUXA Neural Core:<br>Deterministic Timekeeping &amp; Fibonacci Telemetry</h1>
+                <p class="last-updated">Official Protocol Whitepaper Appendix &bull; October 2026 &bull; luxa-1 Sovereign Chain</p>
             </div>
         </section>
 
         <div class="container neural-concept-hero">
             <div class="neural-concept-frame">
-                <img src="assets/images/Quantum_computing_processor.jpg" alt="LUXA Neural Core quantum computing processor concept">
+                <img src="assets/images/Quantum_computing_processor.jpg" alt="LUXA Neural Core Quantum Computing Processor Architecture">
             </div>
-            <p class="neural-concept-caption">FIG 1.0: LUXA NEURAL COPROCESSOR - HOLOGRAPHIC QUANTUM CONCEPT</p>
+            <p class="neural-concept-caption">FIG 1.0: LUXA NEURAL HARMONIC TELEMETRY ENGINE &bull; TIME-LOCKED INFERENCE PROTOCOL</p>
         </div>
 
         <!-- ARTICLE BODY -->
@@ -58,113 +121,162 @@
                     
                     <h2 style="color: #00FFCC; margin-top: 0;">Abstract</h2>
                     <p>
-                        Modern decentralized networks predominantly segregate pure algorithmic arithmetic from autonomous machine intelligence. 
-                        The <strong>LUXA Ecosystem</strong> unifies these domains through the <strong>LUXA Neural Core</strong>—a stateful, lightweight recurrent neural coprocessor deployed on a dedicated inference node (<code>ailuxa</code>). 
-                        Instead of depending on expensive or non-deterministic third-party APIs, LUXA leverages an in-house tensor pipeline trained on normalized Fibonacci recurrence steps to govern network telemetry, telemetry scramble aesthetics, and dynamic anti-Sybil mining brackets.
+                        A recurring vulnerability in mobile mining applications is non-deterministic timekeeping: client-side clock manipulation, local timezone drift, and arbitrary session incrementation often produce random streak displays or conflicting metrics within the same day. 
+                        The <strong>LUXA Neural Core</strong> eliminates this ambiguity by decoupling consensus execution from cognitive telemetry through an atomic 24-hour timekeeping engine. 
+                        By binding user mining velocity to the <strong>Fibonacci Harmonic Matrix (1.00x to 3.62x)</strong>, the protocol calculates emission weight deterministically on-chain while upholding the strict 10-year geometric halving ceiling across <strong>7,000,000+ Pioneers</strong>.
                     </p>
 
                     <div class="legal-notice" style="border-color: rgba(0, 255, 204, 0.4); background: rgba(0, 255, 204, 0.06); color: #e2e8f0;">
-                        <strong style="color: #00FFCC;"><i class="fas fa-bolt"></i> Live Endpoint Verification:</strong>
-                        The neural coprocessor streams its live cognitive state continuously at 
+                        <strong style="color: #00FFCC;"><i class="fas fa-bolt"></i> Atomic Telemetry Verification:</strong>
+                        The Neural Coprocessor validates active mining cycles, harmonic multipliers, and anti-Sybil telemetry at 
                         <a href="https://ailuxa.alwaysdata.net/api/neural/pulse" target="_blank" rel="noopener noreferrer" style="color: #00FFCC; font-family: monospace;">https://ailuxa.alwaysdata.net/api/neural/pulse</a>.
                     </div>
 
-                    <h2>1. Microservices Topology &amp; Consensus Insulation</h2>
+                    <h2>1. Eliminating Day Fluctuations: The Dual-Clock Paradigm</h2>
                     <p>
-                        Running machine intelligence directly inside blockchain consensus layers (CometBFT) creates severe execution bottlenecks and state bloat. 
-                        LUXA mitigates this by maintaining a decoupled microservices architecture:
+                        To guarantee mathematical integrity, the LUXA architecture makes a strict distinction between <strong>Cumulative Commitment Days</strong> and <strong>Consecutive Streak Days</strong>:
                     </p>
-                    <ul>
-                        <li><strong>Consensus Node (<code>luxa-1</code> / <code>luxecosystem</code>):</strong> Dedicated strictly to Cosmos SDK deterministic transactions, PBKDF2/AES-256-GCM Spider Vault key binding, and block commitments.</li>
-                        <li><strong>Cognitive Coprocessor (<code>ailuxa</code>):</strong> Executes tensor forward passes, evaluates Shannon entropy, verifies mnemonic security guards, and issues validated mathematical sequences.</li>
-                    </ul>
 
-                    <h2>2. Neural Recurrence &amp; Golden Ratio (&Phi;) Equation</h2>
-                    <p>
-                        The engine formulates sequence projection as an autoregressive linear recurrence with continuous gradient descent:
-                    </p>
-                    <div style="background: rgba(0,0,0,0.5); padding: 14px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); font-family: monospace; color: #FFD700; margin: 16px 0;">
-                        F(n) = w₁ &middot; F(n-1) + w₂ &middot; F(n-2) + bias
-                    </div>
-                    <p>
-                        Using local normalization ($x / F_{n-1}$), the loss function minimizes Mean Squared Error (MSE) over successive historical steps:
-                    </p>
-                    <ul>
-                        <li><strong>Weight Convergence:</strong> Synaptic weights stabilize asymptotically at $w_1 \to 1.0$, $w_2 \to 1.0$, and $bias \to 0.0$.</li>
-                        <li><strong>Emergent Golden Ratio:</strong> The ratio between adjoined outputs converges dynamically to the golden ratio: $\phi \approx 1.6180339887$.</li>
-                        <li><strong>Shannon Entropy Assessment:</strong> Synaptic weight variance is quantified in real time to certify that cognitive drift remains below protocol thresholds before broadcasting telemetry.</li>
-                    </ul>
-
-                    <h2>3. Anti-Sybil Streak Multiplication</h2>
-                    <p>
-                        Prior to mainnet migration and biometric Sumsub verification, miners undergo a 60-day validated mining requirement. 
-                        Instead of predictable arithmetic progressions ($+1, +2, +3$), the Neural Core calculates dynamic scaling coefficients based on the Fibonacci progression:
-                    </p>
-                    <ul>
-                        <li>Daily miners unlock higher reward velocity proportional to golden sequence milestones.</li>
-                        <li>Automated bot farms and sporadic clickers resetting midway forfeit their compounding factor, drastically increasing the capital and time cost of Sybil attacks.</li>
-                    </ul>
-
-                    <!-- Official Fibonacci mining multiplier guide -->
-                    <div class="fibo-guide-container">
-                        <div class="fibo-guide-header">
-                            <span class="fibo-guide-badge"><i class="fas fa-ruler-combined"></i> Official Mining Algorithm</span>
-                            <h2>How the Fibonacci Multiplier Works and Why It Matters</h2>
-                            <p>Mathematical transparency, anti-bot protection, and compounding growth for miners who remain active every day.</p>
+                    <div class="time-box-grid">
+                        <div class="time-box">
+                            <div class="time-box-title"><i class="fas fa-id-card"></i> 1. Cumulative KYC Days (60 Days)</div>
+                            <p style="font-size: 12.5px; color: #cbd5e1; margin: 0; line-height: 1.6;">
+                                Measures total validated 24-hour mining cycles completed on the network. <strong>This counter NEVER decreases or resets</strong>. Each completed 24-hour cycle adds exactly +1 day towards unlocking the KYC Mainnet Migration gateway.
+                            </p>
                         </div>
-                        <div class="fibo-guide-card highlight-card">
-                            <div class="card-icon"><i class="fas fa-bolt"></i></div>
-                            <div class="card-content">
-                                <h3>Why does the multiplier not increase every single day?</h3>
-                                <p>The mining engine <strong>does not use a flat linear progression</strong>. It rewards consistency through <strong>Fibonacci milestones</strong> (1, 2, 3, 5, 8, 13, 21, 34, and 55 days).</p>
-                                <div class="example-box">
-                                    <div class="example-line"><span class="ex-label">Practical example:</span><strong>Day 19 (continuous) &rarr; 2.00x boost</strong></div>
-                                    <ul class="example-list">
-                                        <li>From <strong>Day 13 to Day 20</strong>, the multiplier remains at <strong>2.00x</strong>.</li>
-                                        <li>Production doubles, from <code>0.00000001</code> to <code>0.00000002 LUXA/hr</code>.</li>
-                                        <li>On <strong>Day 21</strong>, the progress bar reaches the next Fibonacci peak and the boost automatically increases to <strong>2.50x</strong>.</li>
-                                    </ul>
-                                </div>
-                            </div>
+                        <div class="time-box">
+                            <div class="time-box-title"><i class="fas fa-fire"></i> 2. Fibonacci Streak Days (1 to 55+)</div>
+                            <p style="font-size: 12.5px; color: #cbd5e1; margin: 0; line-height: 1.6;">
+                                Measures <strong>unbroken consecutive cycles</strong>. Unlocks harmonic multipliers from 1.00x up to 3.62x. If a participant fails to renew within the 24-hour grace window, <strong>this streak resets to Day 1</strong> (with <code>▼ LOSS</code>), while KYC days remain preserved.
+                            </p>
                         </div>
-                        <div class="fibo-table-wrapper">
-                            <h3 class="table-title"><i class="fas fa-chart-column"></i> Mining Milestone Matrix</h3>
-                            <table class="fibo-matrix-guide-table">
-                                <thead><tr><th>Continuous days</th><th>Fibonacci level</th><th>Effective multiplier</th><th>Production status</th></tr></thead>
-                                <tbody>
-                                    <tr><td><strong>Day 1</strong></td><td>F<sub>1</sub></td><td>1.00x</td><td><span class="status-badge base">Base rate</span></td></tr>
-                                    <tr><td><strong>Day 2</strong></td><td>F<sub>2</sub></td><td>1.20x</td><td><span class="status-badge boost">+20% boost</span></td></tr>
-                                    <tr><td><strong>Days 3 - 4</strong></td><td>F<sub>3</sub></td><td>1.30x</td><td><span class="status-badge boost">+30% boost</span></td></tr>
-                                    <tr><td><strong>Days 5 - 7</strong></td><td>F<sub>5</sub></td><td>1.50x</td><td><span class="status-badge boost">+50% boost</span></td></tr>
-                                    <tr><td><strong>Days 8 - 12</strong></td><td>F<sub>8</sub></td><td>1.62x (&Phi;)</td><td><span class="status-badge golden">Golden ratio</span></td></tr>
-                                    <tr class="active-example-row"><td><strong>Days 13 - 20</strong></td><td>F<sub>13</sub></td><td>2.00x</td><td><span class="status-badge double">2x multiplier</span></td></tr>
-                                    <tr><td><strong>Days 21 - 33</strong></td><td>F<sub>21</sub></td><td>2.50x</td><td><span class="status-badge high">+150% boost</span></td></tr>
-                                    <tr><td><strong>Days 34 - 54</strong></td><td>F<sub>34</sub></td><td>3.00x</td><td><span class="status-badge high">3x multiplier</span></td></tr>
-                                    <tr class="peak-row"><td><strong>Day 55+ (&infin;)</strong></td><td>F<sub>55</sub></td><td>3.62x</td><td><span class="status-badge peak">Sustainable maximum</span></td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="fibo-pillars-grid">
-                            <div class="pillar-card"><div class="pillar-icon pillar-green"><i class="fas fa-shield-halved"></i></div><h4>1. A Strong Anti-Bot Barrier</h4><p>Automated scripts and bot farms operate intermittently. Missing even one day resets the streak to Day 1: bots remain at 1.00x while real community members unlock higher multipliers.</p></div>
-                            <div class="pillar-card"><div class="pillar-icon pillar-cyan"><i class="fas fa-gem"></i></div><h4>2. No Token Hyperinflation</h4><p>Projects promising extreme 50x or 100x multipliers can damage a token's market value. A sustainable 3.62x ceiling protects treasury emissions and supports long-term LUXA economics.</p></div>
-                            <div class="pillar-card"><div class="pillar-icon pillar-gold"><i class="fas fa-handshake"></i></div><h4>3. Fairness for Real Participants</h4><p>People who activate mining every day build a larger allocation than occasional participants. No financial investment is required: consistency is what counts.</p></div>
-                        </div>
-                        <div class="fibo-warning-box"><span class="warning-icon"><i class="fas fa-triangle-exclamation"></i></span><div class="warning-text"><strong>Continuity rule:</strong> Letting a 24-hour mining session expire resets the streak to Day 1 and displays the red loss indicator (<code>&#9660; LOSS</code>). Keep your mining level active.</div></div>
                     </div>
 
-                    <h2>4. Frontend Holographic Integration</h2>
+                    <h2>2. The Deterministic 24-Hour State Machine</h2>
                     <p>
-                        The Telegram Mini App mining orb displays this architecture visually:
+                        Random day jumping is eliminated by anchoring session progression to an immutable Unix timestamp difference ($\Delta t = t_{\text{now}} - t_{\text{start}}$) evaluated exclusively by the server runtime:
                     </p>
                     <ul>
-                        <li><strong>Golden Logarithmic Spiral:</strong> Rotates at an angular velocity dictated dynamically by current synaptic weight confidence ($w_1$).</li>
-                        <li><strong>Cyber-Scramble Display:</strong> Emits real-time prediction attempts before locking on each verified $F_n$ integer.</li>
-                        <li><strong>Fluid Depth Simulation:</strong> Rising bubbles carry computed values through the liquid core layer, symbolizing continuous proof-of-activity.</li>
+                        <li><strong>Phase A (Active Session &bull; $0 \le \Delta t < 24\text{h}$):</strong> The mining orb is locked in active state. The streak counter remains constant throughout the entire 24-hour window, preventing any display changes on the same day.</li>
+                        <li><strong>Phase B (Renewal Window &bull; $24\text{h} \le \Delta t \le 48\text{h}$):</strong> The session finishes successfully. Clicking "START MINING" increments the Fibonacci Streak by exactly +1, increments the Cumulative KYC Counter by +1, and updates the multiplier with indicator <code>▲ UP</code>.</li>
+                        <li><strong>Phase C (Expired Window &bull; $\Delta t > 48\text{h}$):</strong> The grace period has lapsed. The Fibonacci streak resets to Day 1 (1.00x), and the system flags <code>▼ LOSS</code>. However, all previously earned KYC days remain intact.</li>
                     </ul>
+
+                    <h2>3. Fibonacci Harmonic Matrix &amp; Emission Multipliers</h2>
+                    <p>
+                        Unlike linear schemes ($+1\%, +2\%, +3\%$), the Neural Core applies discrete step-functions anchored to the Golden Ratio ($\Phi \approx 1.618033$):
+                    </p>
+
+                    <div class="fibo-table-wrapper">
+                        <table class="fibo-matrix-guide-table">
+                            <thead>
+                                <tr>
+                                    <th>Continuous Days</th>
+                                    <th>Harmonic Level</th>
+                                    <th>Multiplier</th>
+                                    <th>Production Velocity</th>
+                                    <th>Algorithmic Rule</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Day 1</strong></td>
+                                    <td>F<sub>1</sub></td>
+                                    <td><strong>1.00x</strong></td>
+                                    <td><span class="status-badge base">Base Emission</span></td>
+                                    <td>Initial bootstrap baseline rate.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Day 2</strong></td>
+                                    <td>F<sub>2</sub></td>
+                                    <td><strong>1.20x</strong></td>
+                                    <td><span class="status-badge boost">+20% Boost</span></td>
+                                    <td>First continuity milestone.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Days 3 &ndash; 4</strong></td>
+                                    <td>F<sub>3</sub></td>
+                                    <td><strong>1.30x</strong></td>
+                                    <td><span class="status-badge boost">+30% Boost</span></td>
+                                    <td>Sustained node activity.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Days 5 &ndash; 7</strong></td>
+                                    <td>F<sub>5</sub></td>
+                                    <td><strong>1.50x</strong></td>
+                                    <td><span class="status-badge boost">+50% Boost</span></td>
+                                    <td>Intermediate hash acceleration.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Days 8 &ndash; 12</strong></td>
+                                    <td>F<sub>8</sub></td>
+                                    <td><strong>1.62x (&Phi;)</strong></td>
+                                    <td><span class="status-badge golden">Golden Ratio</span></td>
+                                    <td>Harmonic convergence stage ($\Phi$).</td>
+                                </tr>
+                                <tr style="background: rgba(0, 255, 204, 0.05); border-left: 3px solid var(--cyan);">
+                                    <td><strong>Days 13 &ndash; 20</strong></td>
+                                    <td>F<sub>13</sub></td>
+                                    <td><strong>2.00x</strong></td>
+                                    <td><span class="status-badge double">2.00x Doubling</span></td>
+                                    <td>Full doubling of base hourly yield.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Days 21 &ndash; 33</strong></td>
+                                    <td>F<sub>21</sub></td>
+                                    <td><strong>2.50x</strong></td>
+                                    <td><span class="status-badge boost">+150% Boost</span></td>
+                                    <td>Advanced pioneer allocation tier.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Days 34 &ndash; 54</strong></td>
+                                    <td>F<sub>34</sub></td>
+                                    <td><strong>3.00x</strong></td>
+                                    <td><span class="status-badge boost">3.00x Tripling</span></td>
+                                    <td>High-loyalty threshold.</td>
+                                </tr>
+                                <tr style="background: rgba(34, 197, 94, 0.08); border-left: 3px solid #22c55e;">
+                                    <td><strong>Day 55+ (&infin;)</strong></td>
+                                    <td>F<sub>55</sub></td>
+                                    <td><strong>3.62x</strong></td>
+                                    <td><span class="status-badge peak">Sustainable Peak</span></td>
+                                    <td>Permanent maximum ceiling ($1 + \Phi + 1$).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2>4. Absorption Proof: 7,000,000+ Pioneers on 500M LUXA</h2>
+                    <p>
+                        The Neural Core prevents treasury depletion by dynamically recalibrating the daily point-value according to the total active network weight:
+                    </p>
+                    <div style="background: rgba(0,0,0,0.6); padding: 14px 18px; border-radius: 10px; border: 1px solid rgba(0, 255, 204, 0.3); font-family: 'JetBrains Mono', monospace; color: #00FFCC; margin: 16px 0; font-size: 13px;">
+                        Daily_Reward<sub>i</sub> = [ Daily_Epoch_Budget / &Sigma; M<sub>fibo, active</sub> ] &times; M<sub>fibo, i</sub>
+                    </div>
+                    <ul>
+                        <li><strong>Inviolable 500M Cap:</strong> The 10-year halving curve fixes the exact budget for each epoch (Year 1: 250M, Year 2: 125M, halving down to Year 10).</li>
+                        <li><strong>Dynamic Scarcity:</strong> As network participation approaches and surpasses 7,000,000 pioneers, the per-session reward automatically scales into fractional micro-units (<code>uluxa</code>), preserving the 10-year emission schedule without runaway inflation.</li>
+                    </ul>
+
+                    <h2>5. Anti-Bot Defensive Barrier</h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0;">
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px;">
+                            <strong style="color: #22c55e; font-size: 13px;"><i class="fas fa-shield-alt"></i> Bot Farm Neutralization</strong>
+                            <p style="font-size: 12px; color: #94a3b8; margin-top: 6px; line-height: 1.5;">
+                                Automated scripts cannot maintain 60 consecutive days of timely renewals. Intermittent nodes are trapped at 1.00x base rate, while genuine human miners unlock the higher multipliers.
+                            </p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 14px;">
+                            <strong style="color: #00FFCC; font-size: 13px;"><i class="fas fa-coins"></i> Mathematical Anti-Inflation</strong>
+                            <p style="font-size: 12px; color: #94a3b8; margin-top: 6px; line-height: 1.5;">
+                                Capping the maximum sustainable multiplier at 3.62x ($1 + \Phi + 1$) guarantees that token distribution remains economically sound, avoiding the hyperinflation typical of gamified tap-to-earn apps.
+                            </p>
+                        </div>
+                    </div>
 
                     <div style="margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
-                        <a href="index.html#neural-core" class="btn btn-outline btn-page-link"><i class="fas fa-arrow-left"></i> <span>Back to Main Ecosystem</span></a>
-                        <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="fab fa-telegram"></i> <span>Experience Live in Mini App</span></a>
+                        <a href="insights.html" class="btn btn-outline btn-page-link"><i class="fas fa-arrow-left"></i> <span>Explore Tokenomics Insights</span></a>
+                        <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="fab fa-telegram"></i> <span>Launch Neural Core in Mini App</span></a>
                     </div>
                 </article>
             </div>
