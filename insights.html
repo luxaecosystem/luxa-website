@@ -4,19 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
-    <meta name="description" content="Understand token economics beyond price per token: supply, treasury, emissions and liquidity through the LUXA Ecosystem perspective.">
+    <meta name="description" content="Deep-dive into the macroeconomic architecture of LUXA: 10-year halving schedule, 7M pioneer dynamic difficulty, Dual-Vault Cosmos Multisig, and the 8% regenerative fee loop.">
     <link rel="canonical" href="https://luxaecosystem.xyz/insights.html">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta property="og:type" content="article"><meta property="og:site_name" content="LUXA Ecosystem"><meta property="og:title" content="What Price Per Token Doesn't Tell You"><meta property="og:description" content="How to evaluate token economics beyond unit price and market cap."><meta property="og:url" content="https://luxaecosystem.xyz/insights.html"><meta property="og:image" content="https://luxaecosystem.xyz/assets/images/LUXA_ECOSYSTEM.png">
-    <meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@luxatoken">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="LUXA Ecosystem">
+    <meta property="og:title" content="LUXA Macroeconomic Proofs — 10-Year Halving, Dual-Vault Architecture &amp; Pioneer Dynamics">
+    <meta property="og:description" content="Explore mathematical proofs behind LUXA: dual-vault split, dynamic difficulty scaling across 7M+ pioneers, Fibonacci harmonic matrix, and the 8% liquidity loop.">
+    <meta property="og:url" content="https://luxaecosystem.xyz/insights.html">
+    <meta property="og:image" content="https://luxaecosystem.xyz/assets/images/LUXA_ECOSYSTEM.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@luxatoken">
+    
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"LUXA Ecosystem SARL","url":"https://luxaecosystem.xyz/","logo":"https://luxaecosystem.xyz/assets/images/LUXA_ECOSYSTEM.png","email":"contact@luxaecosystem.xyz","founder":{"@type":"Person","name":"Yassine Ouaadil"},"sameAs":["https://t.me/luxatokenofficial","https://x.com/luxatoken","https://github.com/luxatokenofficial"]}</script>
-    <title>What "Price Per Token" Doesn't Tell You | LUXA Ecosystem</title>
-    <meta name="description" content="Comparing tokens on price or market cap alone hides what actually matters: real supply, treasury, emission rules and liquidity. Here's how to read a token like LUXA.">
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Beyond Unit Price — The Mathematical Architecture, Dual-Vault Macroeconomics & 10-Year Halving of LUXA",
+      "author": {
+        "@type": "Person",
+        "name": "Yassine Ouaadil"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "LUXA Ecosystem SARL",
+        "logo": "https://luxaecosystem.xyz/assets/images/LUXA_ECOSYSTEM.png"
+      },
+      "datePublished": "2026-09-16",
+      "dateModified": "2026-10-01"
+    }
+    </script>
+    <title>Macroeconomic Proofs &amp; 10-Year Halving Architecture | LUXA Ecosystem</title>
 </head>
 <body>
 
@@ -25,70 +49,294 @@
 
     <!-- Header Section -->
     <section class="legal-hero">
-        <span class="section-tag">Insights · Tokenomics</span>
-        <h1>What "Price Per Token" Doesn't Tell You</h1>
-        <p class="last-updated">And how you should actually evaluate a sovereign asset like LUXA · 7 min read</p>
+        <span class="section-tag">Macroeconomic Research &bull; Protocol Architecture</span>
+        <h1>Beyond "Price Per Token": The Mathematical Engine of LUXA</h1>
+        <p class="last-updated">A deep architectural audit of the 10-Year Halving Curve, Dual-Vault Governance, and Dynamic Difficulty scaling across 7,000,000 Pioneers &bull; 10 min read</p>
     </section>
 
     <!-- Article Content -->
     <section class="section" style="padding-top: 20px;">
         <div class="container">
-            <div class="legal-card">
+            <div class="legal-card" style="font-size: 14px; line-height: 1.75; color: #cbd5e1;">
 
-                <p>If you're evaluating a token — whether to mine it, trade it, or understand its fundamentals — you probably look at two superficial numbers: unit price and market cap. That feels like enough. It isn't.</p>
+                <p style="font-size: 16px; color: #fff; font-weight: 500;">
+                    In contemporary digital asset markets, retail participants are conditioned to evaluate protocols through visual vanity metrics: nominal unit price and speculative market capitalization. This superficial perspective hides the only factor that dictates long-term purchasing power: <strong>the underlying sovereign monetary algorithm</strong>.
+                </p>
 
-                <p>Two tokens can share the exact same unit price and tell completely opposite economic stories. Price per token is an arbitrary visual metric; it is rarely sufficient to understand what you're actually holding or whether the underlying economy is built to last.</p>
+                <p>
+                    A token with 1,000,000,000 units trading at $0.001 and an asset with 1,000 units trading at $1,000 possess the identical theoretical valuation ($1,000,000). Yet their economic outcomes diverge completely based on emission ceilings, custodial distribution, anti-sybil barriers, and settlement recirculation.
+                </p>
 
-                <h2>What goes wrong</h2>
-                <p>The pattern repeats itself across crypto markets. One project shows a fraction-of-a-cent price with an astronomical supply and looks "cheap". Another shows a higher price with a tiny supply and looks "expensive". Judging solely by nominal price ignores basic mathematics: a token with 1,000,000,000 units at $0.001 and one with 1,000 units at $1,000 share the exact same market cap.</p>
-                <p>The problem isn't the price itself. It's treating it as the primary signal while ignoring treasury mechanics, real market availability, and protocol distribution.</p>
-
-                <h2>Five things that matter more than price</h2>
-
-                <p><strong>1. Total Supply vs. Circulating Supply.</strong> Total supply represents the aggregate tokens minted on the protocol. Circulating supply is what is actually moving on the market and available to users. The gap between the two — typically held in a Treasury reserve or locked in contracts — can dilute holders if dumped without governance rules. On LUXA, this gap is verifiable on-chain in real time:</p>
-                
-                <div class="legal-notice" style="margin: 14px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;">
-                    Circulating Supply = Total Supply − Treasury Reserve
+                <div class="legal-notice" style="border-left: 4px solid var(--cyan); background: rgba(0, 255, 204, 0.05); margin: 24px 0;">
+                    <strong style="color: var(--cyan); font-family: 'Space Grotesk', sans-serif;">The Core Sovereign Axiom:</strong><br>
+                    Real economic sovereignty does not originate from arbitrary market makers or speculative hype. It is established through <strong>mathematically enforced emission limits</strong>, <strong>dual-vault segregation</strong>, and a <strong>self-sustaining circular settlement fee model</strong>.
                 </div>
 
-                <p>This is read directly from the <code>bank</code> module of the <code>luxa-1</code> chain, not self-reported on a centralized spreadsheet.</p>
+                <h2>1. Supply Ceiling &amp; The Dual-Vault Architecture</h2>
+                <p>
+                    The LUXA Layer 1 blockchain (Chain ID: <code>luxa-1</code>) is cryptographically hard-capped at an unalterable total ceiling of <strong>1,002,500,000 LUXA</strong> (denominated in <code>uluxa</code> at $10^{-6}$ precision) alongside <strong>16,000,000,000 Utility Shards</strong> (<code>ushard</code>).
+                </p>
+                <p>
+                    To eliminate the single-point-of-failure vulnerability endemic to centralized foundations, LUXA discards the single "all-purpose" treasury wallet model. The supply is segregated on-chain into two autonomous institutional vaults:
+                </p>
 
-                <p><strong>2. Where the reserve sits.</strong> An on-chain Treasury, inspectable by anyone via a public CometBFT block explorer, provides mathematical proof. A project that keeps funds in private, undisclosed accounts relies purely on "trust us, the team won't dump". The first is cryptographic verification; the second is an unverified promise.</p>
+                <!-- DUAL-VAULT BREAKDOWN TABLE -->
+                <div style="overflow-x: auto; margin: 20px 0;">
+                    <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 12.5px;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid rgba(0, 255, 204, 0.3); text-align: left; color: var(--cyan);">
+                                <th style="padding: 12px 10px;">Vault Compartment</th>
+                                <th style="padding: 12px 10px;">Allocated LUXA</th>
+                                <th style="padding: 12px 10px;">Share (%)</th>
+                                <th style="padding: 12px 10px;">Custody &amp; Security Layer</th>
+                                <th style="padding: 12px 10px;">Functional Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <td style="padding: 12px 10px; font-weight: bold; color: #fff;">Operational Mining Vault</td>
+                                <td style="padding: 12px 10px; font-family: 'JetBrains Mono', monospace; color: #00FFCC;">500,000,000</td>
+                                <td style="padding: 12px 10px; font-weight: 700;">50.00%</td>
+                                <td style="padding: 12px 10px; font-family: 'JetBrains Mono', monospace;">Hot Vault (luxa1eg6d...)</td>
+                                <td style="padding: 12px 10px;">Direct 10-year mining payout pool &amp; in-app settlement bridge.</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <td style="padding: 12px 10px; font-weight: bold; color: #FFD700;">Conseil de la Genèse Reserve</td>
+                                <td style="padding: 12px 10px; font-family: 'JetBrains Mono', monospace; color: #FFD700;">502,500,000</td>
+                                <td style="padding: 12px 10px; font-weight: 700;">50.00%</td>
+                                <td style="padding: 12px 10px; font-family: 'JetBrains Mono', monospace;">Cosmos 3-of-5 Multisig</td>
+                                <td style="padding: 12px 10px;">Governed collegially by the 5 Sovereign Ministerial Seals (#0–#4).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                <p><strong>3. Transparent emission rules.</strong> A token earned daily through a documented mining engine with calibrated halving rules behaves completely differently from one minted arbitrarily by administrators. If the minting algorithm isn't locked on-chain or published, today's price provides zero certainty about tomorrow's purchasing power.</p>
-
-                <p><strong>4. Settlement fees and revenue sharing.</strong> When moving balances from the in-app ledger to on-chain Mainnet vaults, LUXA retains a standard 8% protocol settlement fee. Rather than disappearing into private pockets, these fees are redirected into ecosystem reserves, backing liquidity, funding community airdrops, and powering staking rewards. It is an economic sustainability mechanism, not a hidden surcharge.</p>
-
-                <p><strong>5. Ledger transparency.</strong> A sovereign token ecosystem where every transaction is verifiable (transaction hash, block height, sender, recipient, and gas consumption) allows independent auditability. If you have to rely solely on an internal database counter without an underlying blockchain, you do not have cryptographic sovereignty.</p>
-
-                <h2>The questions worth asking</h2>
-                <p>Before checking a token's price chart, ask:</p>
+                <h3>Sub-Allocation of the Conseil de la Genèse (50%)</h3>
+                <p>
+                    The 502,500,000 LUXA controlled by the 3-of-5 Multisig Council is programmatically apportioned into four strategic sub-reserves:
+                </p>
                 <ul>
-                    <li>"What is the <em>circulating</em> supply right now, verified against the treasury balance?"</li>
-                    <li>"Where does the reserve sit, and can I audit the treasury address on a block explorer?"</li>
-                    <li>"Are the emission rates, halving schedules, and protocol fees transparent and immutable?"</li>
-                    <li>"Can I verify transactions directly via JSON-RPC, or must I trust an internal dashboard?"</li>
+                    <li><strong>20% (200,000,000 LUXA) &mdash; Minister of Liquidity (#4):</strong> Dedicated to bootstrap automated market maker (AMM) DEX pools, pairing with Shards and Cosmos IBC assets.</li>
+                    <li><strong>15% (150,000,000 LUXA) &mdash; Core Engineering &amp; Team:</strong> Subject to a 4-year linear milestone vesting schedule to finance ongoing core architecture development.</li>
+                    <li><strong>10% (100,000,000 LUXA) &mdash; Minister of Infrastructure (#3):</strong> Allocations reserved for Oracle Cloud Infrastructure (OCI) server clustering, high-throughput RPC clusters, and validator incentives.</li>
+                    <li><strong>~5% (52,500,000 LUXA) &mdash; Ethical &amp; Community Foundation:</strong> Autonomous treasury for international charity initiatives and educational community bounties.</li>
                 </ul>
-                <p>A project that answers with verifiable block explorer links instead of verbal assurances is built on sound architectural foundations.</p>
 
-                <h2>Why this matters now</h2>
-                <p>With thousands of "tap-to-earn" mini apps promising airdrops and phantom valuations, nominal prices mean less than ever. What distinguishes genuine protocols is structural integrity: how much supply is locked, how transparently the rules are executed, and whether profits are shared democratically with active participants.</p>
-                <p>Stop comparing unit price alone. Evaluate the protocol architecture behind it.</p>
+                <h2>2. The 10-Year Geometric Halving Schedule</h2>
+                <p>
+                    A fatal defect among modern mining applications is unconstrained linear inflation: as participant counts expand, supply minting explodes uncontrollably. LUXA solves this by implementing an algorithmic <strong>Geometric Halving Schedule</strong> across its 500,000,000 LUXA mining reserve:
+                </p>
 
-                <div class="legal-contact">
-                    <span class="lbl">Verify It On-Chain</span><br>
-                    Every supply figure, block height, and transaction on LUXA is publicly verifiable on our <a href="explorer.html">Block Explorer</a> and detailed in the <a href="index.html#tokenomics">Tokenomics &amp; Fees</a> section.
+                <div class="legal-notice" style="margin: 16px 0; font-family: 'JetBrains Mono', monospace; font-size: 13px; text-align: center; color: #00FFCC;">
+                    Epoch_Budget(n) = Base_Budget &times; (0.50)<sup>n</sup> &nbsp;&nbsp;|&nbsp;&nbsp; &Sigma; Emission &rarr; 500,000,000 LUXA
+                </div>
+
+                <!-- HALVING SCHEDULE TABLE -->
+                <div style="overflow-x: auto; margin: 20px 0;">
+                    <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid rgba(255, 215, 0, 0.4); text-align: left; color: #FFD700;">
+                                <th style="padding: 10px 8px;">Halving Epoch</th>
+                                <th style="padding: 10px 8px;">Timeframe</th>
+                                <th style="padding: 10px 8px;">% of Mining Pool</th>
+                                <th style="padding: 10px 8px;">Epoch Emission</th>
+                                <th style="padding: 10px 8px;">Cumulative Issued</th>
+                                <th style="padding: 10px 8px;">Daily Network Budget</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <td style="padding: 10px 8px; font-weight: bold; color: #fff;">Epoch 1</td>
+                                <td style="padding: 10px 8px;">Year 1</td>
+                                <td style="padding: 10px 8px;">50.00%</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#00FFCC;">250,000,000 LUXA</td>
+                                <td style="padding: 10px 8px; font-family: monospace;">250,000,000 LUXA</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#38bdf8;">~684,931 LUXA / day</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <td style="padding: 10px 8px; font-weight: bold; color: #fff;">Epoch 2</td>
+                                <td style="padding: 10px 8px;">Year 2</td>
+                                <td style="padding: 10px 8px;">25.00%</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#00FFCC;">125,000,000 LUXA</td>
+                                <td style="padding: 10px 8px; font-family: monospace;">375,000,000 LUXA</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#38bdf8;">~342,465 LUXA / day</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <td style="padding: 10px 8px; font-weight: bold; color: #fff;">Epoch 3</td>
+                                <td style="padding: 10px 8px;">Year 3</td>
+                                <td style="padding: 10px 8px;">12.50%</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#00FFCC;">62,500,000 LUXA</td>
+                                <td style="padding: 10px 8px; font-family: monospace;">437,500,000 LUXA</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#38bdf8;">~171,232 LUXA / day</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <td style="padding: 10px 8px; font-weight: bold; color: #fff;">Epoch 4</td>
+                                <td style="padding: 10px 8px;">Year 4</td>
+                                <td style="padding: 10px 8px;">6.25%</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#00FFCC;">31,250,000 LUXA</td>
+                                <td style="padding: 10px 8px; font-family: monospace;">468,750,000 LUXA</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#38bdf8;">~85,616 LUXA / day</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <td style="padding: 10px 8px; font-weight: bold; color: #fff;">Epoch 5</td>
+                                <td style="padding: 10px 8px;">Year 5</td>
+                                <td style="padding: 10px 8px;">3.125%</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#00FFCC;">15,625,000 LUXA</td>
+                                <td style="padding: 10px 8px; font-family: monospace;">484,375,000 LUXA</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#38bdf8;">~42,808 LUXA / day</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <td style="padding: 10px 8px; font-weight: bold; color: #94a3b8;">Epochs 6–10</td>
+                                <td style="padding: 10px 8px;">Years 6–10</td>
+                                <td style="padding: 10px 8px;">~3.125%</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#94a3b8;">15,625,000 LUXA (tail)</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#FFD700;">500,000,000 LUXA (Cap)</td>
+                                <td style="padding: 10px 8px; font-family: monospace; color:#94a3b8;">Decrescente &rarr; 0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p>
+                    Following the 10th epoch, newly minted mining emissions terminate permanently. Protocol validators and nodes transition fully to sustaining their operations via decentralized transaction settlement fees and DEX trade liquidity routing.
+                </p>
+
+                <h2>3. Dynamic Difficulty &amp; The 7,000,000 Pioneer Absorption Proof</h2>
+                <p>
+                    If the protocol distributed a fixed reward per mining session, an influx of 7,000,000 pioneers would deplete the entire 500,000,000 LUXA reserve in a matter of months. LUXA resolves this through an autonomous difficulty balancing algorithm inspired by Bitcoin’s hash difficulty adjustment, adapted for social mobile computing nodes:
+                </p>
+
+                <div class="legal-notice" style="margin: 16px 0; font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+                    Daily_Reward<sub>i</sub> = Daily_Network_Budget &times; [ M<sub>fibo, i</sub> / &Sigma; M<sub>fibo, active</sub> ]
+                </div>
+
+                <p>
+                    Where <code>M<sub>fibo, i</sub></code> represents the active participant's Fibonacci streak multiplier (1.00x to 3.62x), and the denominator represents the aggregate harmonic weight of all valid nodes mining that day.
+                </p>
+
+                <h3>Mathematical Outcome for 7 Million Pioneers</h3>
+                <ul>
+                    <li><strong>Lifetime Pioneer Allocation:</strong> 500,000,000 LUXA &divide; 7,000,000 Pioneers = <strong>~71.43 LUXA average lifetime yield per active node</strong> across the full 10-year curve.</li>
+                    <li><strong>Daily Scarcity at Scale:</strong> In Year 1 (~684,931 LUXA daily budget), if 7,000,000 active nodes compete simultaneously, the base unboosted participant receives approximately <strong>~0.07 LUXA per 24h session</strong>.</li>
+                    <li><strong>Infinite Network Scalability:</strong> If participation surges past 10 million or 20 million miners, the 500M reserve cannot be breached. The formula simply divides the daily budget among more participants, driving organic micro-scarcity down to individual <code>uluxa</code> units without causing protocol inflation.</li>
+                </ul>
+
+                <h2>4. The Fibonacci Harmonic Matrix &amp; Anti-Bot Penalty</h2>
+                <p>
+                    Mining rates are intentionally non-linear. To incentivize long-term network participation while rendering automated script-farms economically unprofitable, LUXA binds daily rates to the <strong>Fibonacci Harmonic Matrix</strong>:
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 18px 0; font-family: 'JetBrains Mono', monospace; font-size: 11.5px;">
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 8px;">Day 1: <strong>1.00x</strong> (Base)</div>
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 8px;">Day 2: <strong>1.20x</strong> Boost</div>
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 8px;">Days 3–4: <strong>1.30x</strong> Boost</div>
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 8px;">Days 5–7: <strong style="color: #38bdf8;">1.50x</strong> Boost</div>
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 8px;">Days 8–12: <strong style="color: #FFD700;">1.62x</strong> (&phi; Golden Ratio)</div>
+                    <div style="background: rgba(0,255,204,0.08); border: 1px solid #00FFCC; padding: 10px; border-radius: 8px;">Days 13–20: <strong style="color: #00FFCC;">2.00x</strong> (Doubling)</div>
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 8px;">Days 21–33: <strong style="color: #c084fc;">2.50x</strong> Boost</div>
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 8px;">Days 34–54: <strong style="color: #4ade80;">3.00x</strong> Boost</div>
+                    <div style="background: rgba(34,197,94,0.15); border: 1px solid #22c55e; padding: 10px; border-radius: 8px;">Day 55+: <strong style="color: #22c55e;">3.62x</strong> (Peak Sustainable)</div>
+                </div>
+
+                <div class="legal-notice" style="border-left: 4px solid var(--red); background: rgba(239, 68, 68, 0.05); margin: 16px 0;">
+                    <strong style="color: var(--red);">Strict Continuity Penalty:</strong><br>
+                    Mining sessions execute on 24-hour cycles. If a node fails to renew its session within the established window, <strong>the active streak instantly collapses to Day 1 (1.00x)</strong> with a telemetry status of <code>&blacktriangledown; LOSS</code>. This renders bot farms that rotate accounts mathematically ineffective.
+                </div>
+
+                <h2>5. Closed-Loop Settlement: The 8% Fee &amp; The 10,000:1 Shard Parity</h2>
+                <p>
+                    When migrating accumulated assets from the off-chain application ledger onto the Layer 1 Cosmos chain via the Bridge (<code>/api/ecosystem/chain/claim-mined-bridge</code>), the protocol applies a non-negotiable <strong>8% Protocol Settlement Fee</strong> on LUXA (and a 4% fee on Shards), accompanied by a 0.001 LUXA flat network gas fee.
+                </p>
+
+                <h3>Why the 8% Fee Creates Long-Term Value</h3>
+                <ul>
+                    <li><strong>No Private Rent-Seeking:</strong> The 8% deduction does not flow to foundation founders or private profit accounts. It is programmatically channeled back into the Operational Mining Vault and AMM liquidity reserves.</li>
+                    <li><strong>Preventing Arbitrage Dumping:</strong> In typical tap-to-earn schemes, 100% of unlocked tokens are liquidated immediately on day one, destroying market depth. The 8% fee enforces a structural reinvestment back into the liquidity that supports every holder.</li>
+                    <li><strong>Immutably Anchored Shard Forge:</strong> Utility Shards earned through community games, tasks, and telemetry check-ins possess an immutable protocol anchor: <strong>10,000 Shards = 1.0 LUXA</strong>. This conversion permanently burns utility supply while issuing verified Layer 1 coins.</li>
+                </ul>
+
+                <h2>6. The 3-Key Gateway to Mainnet Settlement</h2>
+                <p>
+                    To guarantee that on-chain liquidity reflects genuine decentralized human distribution, the "Claim to On-Chain Vault" bridge button is cryptographically unlocked only when three cumulative requirements are met simultaneously:
+                </p>
+
+                <div class="table-scroll">
+                    <table class="eligibility" style="width:100%; border-collapse:collapse; font-size:12px; margin: 16px 0;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid rgba(255,255,255,0.1); color: var(--text-muted); text-align:left;">
+                                <th style="padding:10px;">Verification Pillar</th>
+                                <th style="padding:10px;">Protocol Requirement</th>
+                                <th style="padding:10px;">Enforcement Mechanism</th>
+                                <th style="padding:10px;">Sybil Protection Objective</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding:10px; font-weight:bold; color:#fff;">1. Commitment Threshold</td>
+                                <td style="padding:10px; color:#f59e0b;">&ge; 60 Active Mining Days</td>
+                                <td style="padding:10px;">Ledger cycle verification</td>
+                                <td style="padding:10px;">Filters temporary clickers and short-lived script automation.</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding:10px; font-weight:bold; color:#fff;">2. Human Identity Check</td>
+                                <td style="padding:10px; color:var(--cyan);">Sumsub Biometric KYC</td>
+                                <td style="padding:10px;">3D Liveness &amp; ID Attestation</td>
+                                <td style="padding:10px;">One human, one master vault. Zero multi-account exploitation.</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <td style="padding:10px; font-weight:bold; color:#fff;">3. Network Milestone</td>
+                                <td style="padding:10px; color:#c084fc;">7,000,000 Active Pioneers</td>
+                                <td style="padding:10px;">Global node telemetry count</td>
+                                <td style="padding:10px;">Prevents premature market dumping before broad decentralized holding.</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(255,215,0,0.04);">
+                                <td style="padding:10px; font-weight:bold; color:#FFD700;">★ Sovereign Exemption</td>
+                                <td style="padding:10px; color:#FFD700;">Citizen Zero (#0) Seal Holder</td>
+                                <td style="padding:10px;">Genesis Progenitor Green Card</td>
+                                <td style="padding:10px;">Root Validator network anchor (Founder wallet <code>luxa1z4j...</code>).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="legal-notice" style="border-left: 4px solid var(--green); background: rgba(34, 197, 94, 0.05); margin: 20px 0;">
+                    <strong style="color: var(--green);">3-Tier Protected Appeal Protocol (Zero Confiscation):</strong><br>
+                    Unlike predatory centralized apps, <strong>LUXA never confiscates mined balances due to document scanning errors or temporary KYC rejections</strong>. Participants receive 3 full appeal windows with dedicated human review support, ensuring legitimate miners retain their rightful earned assets.
+                </div>
+
+                <h2>7. The Future Horizon: From Social Mining to Sovereign Cosmos L1</h2>
+                <p>
+                    The trajectory of LUXA is divided into four distinct phases designed to evolve from Telegram-native community onboarding into an independent Layer 1 economic power:
+                </p>
+                <ul>
+                    <li><strong>Phase 1 (Current):</strong> Passive mobile mining, cross-platform Spider Vault suite (Chrome Extension + Android APK), live CometBFT explorer, and Genesis Council sealing (#0 to #4).</li>
+                    <li><strong>Phase 2:</strong> CosmWasm AMM DEX launch, native Testnet sandbox with live faucet, and automated Zealy XP community integration.</li>
+                    <li><strong>Phase 3:</strong> Reaching 7M pioneers, Sumsub biometric mainnet bridge migration queue, and multi-chain liquidity bridge architecture (BNB Smart Chain &amp; IBC Cosmos Hub).</li>
+                    <li><strong>Phase 4:</strong> Activation of full on-chain Conseil de la Genèse 3-of-5 multisig governance, DEX/CEX spot market listings, and borderless commercial merchant settlement SDKs.</li>
+                </ul>
+
+                <div class="legal-contact" style="margin-top: 30px;">
+                    <span class="lbl">Verify the Live Ledger</span><br>
+                    Inspect real-time supply allocations, treasury reserves, block heights, and verified transactions on our <a href="explorer.html">Official Block Explorer</a> or test peer-to-peer transfers in the <a href="vault.html">LUXA Vault</a>.
                 </div>
 
             </div>
 
-            <p class="legal-footer">LUXA Ecosystem Insights · Protocol Research &amp; Economics Working Group</p>
+            <p class="legal-footer">LUXA Ecosystem Insights &bull; Protocol Research &amp; Quantitative Economics Working Group</p>
         </div>
     </section>
 
     <!-- FOOTER (componente condiviso: partials/footer.html) -->
-    <!-- Static internal links for crawlers (nav/footer are JS-injected) -->
-    <nav class="crawl-links" aria-label="Site links" style="max-width:1100px;margin:0 auto 40px;padding:0 20px;font-size:.8rem;color:var(--text-dim);display:flex;flex-wrap:wrap;gap:14px;justify-content:center;"><a href="/">Home</a><a href="/about.html">About</a><a href="/explorer.html">Block Explorer</a><a href="/vault.html">LUXA Vault</a><a href="/insights.html">Insights</a><a href="/terms.html">Terms of Service</a><a href="/privacy-policy.html">Privacy Policy</a></nav>
+    <nav class="crawl-links" aria-label="Site links" style="max-width:1100px;margin:0 auto 40px;padding:0 20px;font-size:.8rem;color:var(--text-dim);display:flex;flex-wrap:wrap;gap:14px;justify-content:center;">
+        <a href="/">Home</a>
+        <a href="/about.html">About</a>
+        <a href="/explorer.html">Block Explorer</a>
+        <a href="/vault.html">LUXA Vault</a>
+        <a href="/insights.html">Insights</a>
+        <a href="/kyc.html">KYC Guidelines</a>
+        <a href="/terms.html">Terms of Service</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+    </nav>
     <div data-include="footer"></div>
 
     <script src="js/include.js"></script>
