@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Download the LUXA Ecosystem sovereign protocol whitepaper in six languages.">
+	<link rel="icon" type="image/png" href="assets/images/logoluxa.png">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+	<title>LUXA Whitepaper — Six Languages</title>
+	<style>
+		.whitepaper-hero {
+			padding: 145px 20px 35px;
+			text-align: center;
+			background: radial-gradient(ellipse at top, rgba(34, 211, 238, .1), transparent 60%);
+		}
+
+		.whitepaper-hero h1 {
+			color: #fff;
+			font-size: clamp(1.9rem, 5vw, 3rem);
+		}
+
+		.whitepaper-hero p {
+			max-width: 620px;
+			margin: 14px auto 0;
+			color: var(--text-muted);
+		}
+
+		.languages-grid {
+			display: grid;
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+			gap: 16px;
+			align-items: stretch;
+		}
+
+		.lang-card {
+			display: flex;
+			min-width: 0;
+			flex-direction: column;
+			justify-content: space-between;
+			gap: 24px;
+			padding: 22px;
+			border: 1px solid var(--border);
+			border-radius: 10px;
+			background: linear-gradient(145deg, rgba(27, 24, 48, .8), rgba(14, 13, 28, .85));
+		}
+
+		.lang-card-header {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 18px;
+		}
+
+		/* Badge contenitore per la bandiera SVG */
+		.lang-flag-badge {
+			width: 46px;
+			height: 34px;
+			border-radius: 8px;
+			overflow: hidden;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			background: rgba(0, 0, 0, 0.4);
+			border: 1px solid rgba(255, 255, 255, 0.15);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+			flex-shrink: 0;
+		}
+
+		/* Immagine SVG della bandiera */
+		.lang-flag-img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+
+		.lang-code {
+			color: var(--secondary);
+			font: 700 .68rem var(--font-display);
+			letter-spacing: .04em;
+		}
+
+		.lang-title-native {
+			margin-bottom: 4px;
+			color: var(--text);
+			font: 700 1.25rem var(--font-display);
+		}
+
+		.lang-title-sub {
+			min-height: 2.8em;
+			color: var(--text-muted);
+			font-size: .82rem;
+		}
+
+		.lang-specs-box {
+			margin-top: 16px;
+			padding: 12px;
+			border: 1px solid rgba(255, 255, 255, .08);
+			border-radius: 6px;
+			background: rgba(0, 0, 0, .2);
+			color: var(--text-dim);
+			font-size: .72rem;
+			line-height: 1.8;
+			overflow-wrap: anywhere;
+		}
+
+		.btn-download-lang {
+			display: inline-flex;
+			width: 100%;
+			min-height: 44px;
+			align-items: center;
+			justify-content: center;
+			gap: 9px;
+			padding: 10px 14px;
+			border: 1px solid rgba(34, 211, 238, .35);
+			border-radius: 7px;
+			background: rgba(34, 211, 238, .08);
+			color: var(--text);
+			font-size: .8rem;
+			font-weight: 700;
+			text-align: center;
+			transition: var(--transition);
+		}
+
+		.btn-download-lang:hover {
+			border-color: var(--secondary);
+			background: rgba(34, 211, 238, .16);
+			transform: translateY(-2px);
+		}
+
+		.btn-download-lang i {
+			color: var(--secondary);
+			flex: 0 0 auto;
+		}
+
+		@media (max-width: 900px) {
+			.languages-grid {
+				grid-template-columns: repeat(2, minmax(0, 1fr));
+			}
+		}
+
+		@media (max-width: 600px) {
+			.whitepaper-hero {
+				padding: 105px 16px 20px;
+			}
+
+			.languages-grid {
+				grid-template-columns: 1fr;
+			}
+
+			.lang-card {
+				padding: 18px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div data-include="nav"></div>
+
+	<header class="whitepaper-hero">
+		<span class="section-tag">Protocol Documents</span>
+		<h1>LUXA Whitepaper</h1>
+		<p>The sovereign protocol charter, available in six languages.</p>
+	</header>
+
+	<main class="section" style="padding-top: 25px;">
+		<div class="container">
+			<!-- GRIGLIA DOWNLOAD 6 LINGUE CON BANDIERE SVG UFFICIALI -->
+			<div class="languages-grid">
+				<!-- 1. ENGLISH (Regno Unito) -->
+				<div class="lang-card">
+					<div>
+						<div class="lang-card-header">
+							<span class="lang-flag-badge">
+								<img src="assets/images/flags/4x3/gb.svg" alt="United Kingdom Flag" class="lang-flag-img">
+							</span>
+							<span class="lang-code">EN • MASTER</span>
+						</div>
+						<div class="lang-title-native">English</div>
+						<div class="lang-title-sub">Official Master Genesis Covenant</div>
+						<div class="lang-specs-box">
+							Format: PDF (Document Edition)<br>
+							Version: 3.0 (October 2026)<br>
+							Verification: Sealed by Citizen Zero #0
+						</div>
+					</div>
+					<a href="assets/docs/LUXA_Whitepaper_v3_EN.pdf" download="LUXA_Whitepaper_v3_EN.pdf" class="btn-download-lang">
+						<i class="fas fa-file-pdf"></i> <span>Download English (PDF)</span>
+					</a>
+				</div>
+
+				<!-- 2. FRANÇAIS (Francia) -->
+				<div class="lang-card">
+					<div>
+						<div class="lang-card-header">
+							<span class="lang-flag-badge">
+								<img src="assets/images/flags/4x3/fr.svg" alt="Drapeau Français" class="lang-flag-img">
+							</span>
+							<span class="lang-code">FR • OFFICIEL</span>
+						</div>
+						<div class="lang-title-native">Français</div>
+						<div class="lang-title-sub">Charte Officielle de Consensus Souverain</div>
+						<div class="lang-specs-box">
+							Format: PDF (Édition Officielle)<br>
+							Version: 3.0 (Octobre 2026)<br>
+							Statut: Ratifié par le Conseil de la Genèse
+						</div>
+					</div>
+					<a href="assets/docs/LUXA_Whitepaper_v3_FR.pdf" download="LUXA_Whitepaper_v3_FR.pdf" class="btn-download-lang">
+						<i class="fas fa-file-pdf"></i> <span>Télécharger en Français</span>
+					</a>
+				</div>
+
+				<!-- 3. ESPAÑOL (Spagna) -->
+				<div class="lang-card">
+					<div>
+						<div class="lang-card-header">
+							<span class="lang-flag-badge">
+								<img src="assets/images/flags/4x3/es.svg" alt="Bandera de España" class="lang-flag-img">
+							</span>
+							<span class="lang-code">ES • OFICIAL</span>
+						</div>
+						<div class="lang-title-native">Español</div>
+						<div class="lang-title-sub">Tratado Oficial de Consenso Soberano</div>
+						<div class="lang-specs-box">
+							Formato: PDF (Edición Documental)<br>
+							Versión: 3.0 (Octubre 2026)<br>
+							Verificación: Ratificado por Ciudadano Cero
+						</div>
+					</div>
+					<a href="assets/docs/LUXA_Whitepaper_v3_ES.pdf" download="LUXA_Whitepaper_v3_ES.pdf" class="btn-download-lang">
+						<i class="fas fa-file-pdf"></i> <span>Descargar en Español</span>
+					</a>
+				</div>
+
+				<!-- 4. ARABIC (Lega Araba o Marocco) -->
+				<div class="lang-card" style="text-align: right;">
+					<div>
+						<div class="lang-card-header" style="flex-direction: row-reverse;">
+							<span class="lang-flag-badge">
+								<img src="assets/images/flags/4x3/arab.svg" alt="علم الجامعة العربية" class="lang-flag-img">
+							</span>
+							<span class="lang-code">AR • الميثاق الرسمي</span>
+						</div>
+						<div class="lang-title-native" style="font-family: 'Space Grotesk', sans-serif;">العربية</div>
+						<div class="lang-title-sub">الميثاق الرسمي التأسيسي للبروتوكول السيادي</div>
+						<div class="lang-specs-box" style="direction: rtl; text-align: right;">
+							الصيغة: PDF (النسخة الرسمية الكاملة)<br>
+							الإصدار: 3.0 (أكتوبر 2026)<br>
+							التوثيق: معتمد وموقّع من المواطن صفر (#0)
+						</div>
+					</div>
+					<a href="assets/docs/LUXA_Whitepaper_v3_AR.pdf" download="LUXA_Whitepaper_v3_AR.pdf" class="btn-download-lang">
+						<i class="fas fa-file-pdf"></i> <span>تحميل الميثاق بالعربية</span>
+					</a>
+				</div>
+
+				<!-- 5. RUSSIAN (Russia) -->
+				<div class="lang-card">
+					<div>
+						<div class="lang-card-header">
+							<span class="lang-flag-badge">
+								<img src="assets/images/flags/4x3/ru.svg" alt="Флаг России" class="lang-flag-img">
+							</span>
+							<span class="lang-code">RU • МАНИФЕСТ</span>
+						</div>
+						<div class="lang-title-native">Русский</div>
+						<div class="lang-title-sub">Официальный Суверенный Манифест</div>
+						<div class="lang-specs-box">
+							Формат: PDF (Полное Руководство)<br>
+							Версия: 3.0 (Октябрь 2026)<br>
+							Статус: Утверждено Гражданином Ноль
+						</div>
+					</div>
+					<a href="assets/docs/LUXA_Whitepaper_v3_RU.pdf" download="LUXA_Whitepaper_v3_RU.pdf" class="btn-download-lang">
+						<i class="fas fa-file-pdf"></i> <span>Скачать на Русском</span>
+					</a>
+				</div>
+
+				<!-- 6. CHINESE (Cina) -->
+				<div class="lang-card">
+					<div>
+						<div class="lang-card-header">
+							<span class="lang-flag-badge">
+								<img src="assets/images/flags/4x3/cn.svg" alt="中国国旗" class="lang-flag-img">
+							</span>
+							<span class="lang-code">ZH • 官方宪章</span>
+						</div>
+						<div class="lang-title-native">中文</div>
+						<div class="lang-title-sub">中文官方主权共识宪章</div>
+						<div class="lang-specs-box">
+							格式: PDF (主权技术规范全本)<br>
+							版本: 3.0 (2026年10月)<br>
+							权威认证: 由公民零号（#0）签署生效
+						</div>
+					</div>
+					<a href="assets/docs/LUXA_Whitepaper_v3_ZH.pdf" download="LUXA_Whitepaper_v3_ZH.pdf" class="btn-download-lang">
+						<i class="fas fa-file-pdf"></i> <span>下载中文宪章 (PDF)</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<div data-include="footer"></div>
+
+	<script src="js/include.js"></script>
+	<script src="js/wallet-labels.js"></script>
+	<script src="js/script.js"></script>
+	<script src="js/agent-chat.js"></script>
+</body>
+</html>
