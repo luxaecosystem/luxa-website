@@ -1,316 +1,723 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="description" content="Download the LUXA Ecosystem sovereign protocol whitepaper in six languages.">
-	<link rel="icon" type="image/png" href="assets/images/logoluxa.png">
-	<link rel="stylesheet" href="css/style.css">
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-	<title>LUXA Whitepaper — Six Languages</title>
-	<style>
-		.whitepaper-hero {
-			padding: 145px 20px 35px;
-			text-align: center;
-			background: radial-gradient(ellipse at top, rgba(34, 211, 238, .1), transparent 60%);
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUXA White Paper v3.0 — Sovereign Cosmos L1 Protocol &amp; Shared Wealth</title>
+    <meta name="description" content="Official Institutional Technical White Paper v3.0 for LUXA Ecosystem. Explore the Dual-Vault architecture, decennial halving, CometBFT consensus, and multi-vault Spider mesh.">
+    <link rel="canonical" href="https://luxaecosystem.xyz/whitepaper.html">
+    <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
 
-		.whitepaper-hero h1 {
-			color: #fff;
-			font-size: clamp(1.9rem, 5vw, 3rem);
-		}
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="LUXA Ecosystem">
+    <meta property="og:title" content="LUXA White Paper v3.0 — Sovereign L1 Technical Constitution">
+    <meta property="og:description" content="Institutional specification and economic model of the luxa-1 Layer 1 blockchain, ratified by Citizen Zero (#0).">
+    <meta property="og:url" content="https://luxaecosystem.xyz/whitepaper.html">
+    <meta property="og:image" content="https://luxaecosystem.xyz/assets/images/LUXA_ECOSYSTEM.png">
 
-		.whitepaper-hero p {
-			max-width: 620px;
-			margin: 14px auto 0;
-			color: var(--text-muted);
-		}
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@luxaecosystem">
+    <meta name="twitter:creator" content="@luxaecosystem">
+    <meta name="twitter:title" content="LUXA White Paper v3.0 — Sovereign L1 Protocol">
+    <meta name="twitter:description" content="Download the official technical whitepaper in six languages. Ratified October 1, 2026.">
+    <meta name="twitter:image" content="https://luxaecosystem.xyz/assets/images/LUXA_ECOSYSTEM.png">
 
-		.languages-grid {
-			display: grid;
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-			gap: 16px;
-			align-items: stretch;
-		}
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-		.lang-card {
-			display: flex;
-			min-width: 0;
-			flex-direction: column;
-			justify-content: space-between;
-			gap: 24px;
-			padding: 22px;
-			border: 1px solid var(--border);
-			border-radius: 10px;
-			background: linear-gradient(145deg, rgba(27, 24, 48, .8), rgba(14, 13, 28, .85));
-		}
+    <!-- Schema.org TechArticle -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TechArticle",
+        "headline": "LUXA Ecosystem White Paper v3.0: Sovereign Layer 1 Blockchain, Conseil de la Genèse & Universal Shared Wealth",
+        "author": {
+            "@type": "Person",
+            "name": "Yassine Ouaadil",
+            "jobTitle": "Citizen Zero (#0) • Sovereign Architect & Root Validator"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "LUXA Ecosystem Group",
+            "logo": "https://luxaecosystem.xyz/assets/images/LUXA_ECOSYSTEM.png"
+        },
+        "datePublished": "2026-10-01",
+        "inLanguage": ["en", "it", "fr", "ar", "es", "zh"],
+        "url": "https://luxaecosystem.xyz/whitepaper.html"
+    }
+    </script>
 
-		.lang-card-header {
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			margin-bottom: 18px;
-		}
+    <style>
+        /* ============================================================
+           WHITEPAPER SUITE & CYBER-NEBULA AURA STYLES
+           ============================================================ */
+        .wp-hero-section {
+            position: relative;
+            padding: 140px 20px 45px;
+            text-align: center;
+            overflow: hidden;
+        }
 
-		/* Badge contenitore per la bandiera SVG */
-		.lang-flag-badge {
-			width: 46px;
-			height: 34px;
-			border-radius: 8px;
-			overflow: hidden;
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			background: rgba(0, 0, 0, 0.4);
-			border: 1px solid rgba(255, 255, 255, 0.15);
-			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-			flex-shrink: 0;
-		}
+        /* 100% Pure CSS Cyber-Nebula (Zero Image Assets) */
+        .wp-cyber-aura {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 860px;
+            max-width: 95vw;
+            height: 480px;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-		/* Immagine SVG della bandiera */
-		.lang-flag-img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-			display: block;
-		}
+        .wp-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(75px);
+            mix-blend-mode: screen;
+            will-change: transform;
+        }
 
-		.lang-code {
-			color: var(--secondary);
-			font: 700 .68rem var(--font-display);
-			letter-spacing: .04em;
-		}
+        .wp-orb-cyan {
+            top: 10%;
+            left: 18%;
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(0, 255, 204, 0.28) 0%, rgba(0, 255, 204, 0.05) 60%, transparent 75%);
+            animation: wpAuraDrift1 12s ease-in-out infinite alternate;
+        }
 
-		.lang-title-native {
-			margin-bottom: 4px;
-			color: var(--text);
-			font: 700 1.25rem var(--font-display);
-		}
+        .wp-orb-violet {
+            bottom: 8%;
+            right: 15%;
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(56, 189, 248, 0.08) 55%, transparent 75%);
+            animation: wpAuraDrift2 14s ease-in-out infinite alternate;
+        }
 
-		.lang-title-sub {
-			min-height: 2.8em;
-			color: var(--text-muted);
-			font-size: .82rem;
-		}
+        .wp-orb-gold {
+            top: 35%;
+            left: 45%;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 75%);
+            animation: wpAuraPulse 9s ease-in-out infinite alternate;
+        }
 
-		.lang-specs-box {
-			margin-top: 16px;
-			padding: 12px;
-			border: 1px solid rgba(255, 255, 255, .08);
-			border-radius: 6px;
-			background: rgba(0, 0, 0, .2);
-			color: var(--text-dim);
-			font-size: .72rem;
-			line-height: 1.8;
-			overflow-wrap: anywhere;
-		}
+        @keyframes wpAuraDrift1 {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            100% { transform: translate3d(40px, -25px, 0) scale(1.12); }
+        }
+        @keyframes wpAuraDrift2 {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            100% { transform: translate3d(-35px, 30px, 0) scale(1.15); }
+        }
+        @keyframes wpAuraPulse {
+            0% { opacity: 0.35; transform: scale(0.92); }
+            100% { opacity: 0.75; transform: scale(1.18); }
+        }
 
-		.btn-download-lang {
-			display: inline-flex;
-			width: 100%;
-			min-height: 44px;
-			align-items: center;
-			justify-content: center;
-			gap: 9px;
-			padding: 10px 14px;
-			border: 1px solid rgba(34, 211, 238, .35);
-			border-radius: 7px;
-			background: rgba(34, 211, 238, .08);
-			color: var(--text);
-			font-size: .8rem;
-			font-weight: 700;
-			text-align: center;
-			transition: var(--transition);
-		}
+        .wp-hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+        }
 
-		.btn-download-lang:hover {
-			border-color: var(--secondary);
-			background: rgba(34, 211, 238, .16);
-			transform: translateY(-2px);
-		}
+        .wp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 99px;
+            background: rgba(0, 255, 204, 0.08);
+            border: 1px solid rgba(0, 255, 204, 0.35);
+            color: #00FFCC;
+            font-family: var(--font-mono, monospace);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.15);
+        }
 
-		.btn-download-lang i {
-			color: var(--secondary);
-			flex: 0 0 auto;
-		}
+        .wp-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 800;
+            color: #FFFFFF;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+        }
 
-		@media (max-width: 900px) {
-			.languages-grid {
-				grid-template-columns: repeat(2, minmax(0, 1fr));
-			}
-		}
+        .wp-subtitle {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            font-weight: 600;
+            color: #FFD700;
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
 
-		@media (max-width: 600px) {
-			.whitepaper-hero {
-				padding: 105px 16px 20px;
-			}
+        .wp-meta-strip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-family: var(--font-mono, monospace);
+            font-size: 11px;
+            color: #94a3b8;
+        }
+        .wp-meta-strip span strong { color: #fff; }
 
-			.languages-grid {
-				grid-template-columns: 1fr;
-			}
+        /* Executive Abstract Box */
+        .wp-abstract-card {
+            background: linear-gradient(165deg, rgba(14, 18, 36, 0.88), rgba(6, 8, 18, 0.95));
+            border: 1.5px solid rgba(0, 255, 204, 0.35);
+            border-radius: 20px;
+            padding: 30px 32px;
+            margin: 35px auto 55px;
+            max-width: 980px;
+            text-align: left;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 255, 204, 0.12);
+            backdrop-filter: blur(16px);
+            position: relative;
+        }
 
-			.lang-card {
-				padding: 18px;
-			}
-		}
-	</style>
+        .wp-abstract-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .wp-abstract-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: #00FFCC;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wp-abstract-version {
+            font-family: var(--font-mono, monospace);
+            font-size: 10.5px;
+            font-weight: 700;
+            color: #FFD700;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 3px 10px;
+            border-radius: 6px;
+        }
+
+        .wp-abstract-body {
+            font-size: 13.5px;
+            line-height: 1.8;
+            color: #cbd5e1;
+            margin-bottom: 24px;
+        }
+        .wp-abstract-body strong { color: #fff; }
+
+        /* Key Metrics Grid */
+        .wp-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            padding-top: 18px;
+        }
+
+        .wp-metric-box {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 12px 14px;
+        }
+        .wp-metric-box .m-label {
+            display: block;
+            font-size: 10px;
+            color: #94a3b8;
+            font-family: var(--font-mono, monospace);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .wp-metric-box .m-val {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #00FFCC;
+        }
+        .wp-metric-box .m-val.gold { color: #FFD700; }
+
+        /* Languages Grid */
+        .wp-languages-container {
+            max-width: 1080px;
+            margin: 0 auto 70px;
+        }
+
+        .wp-section-heading {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+        .wp-section-heading h2 {
+            font-size: 22px;
+            color: #FFFFFF;
+            font-family: 'Space Grotesk', sans-serif;
+            margin-bottom: 6px;
+        }
+        .wp-section-heading p {
+            font-size: 12.5px;
+            color: #94a3b8;
+        }
+
+        .languages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            align-items: stretch;
+        }
+
+        .lang-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            background: linear-gradient(150deg, rgba(16, 20, 40, 0.85), rgba(7, 9, 20, 0.95));
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+        }
+        .lang-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 255, 204, 0.45);
+            box-shadow: 0 16px 40px rgba(0, 255, 204, 0.15);
+        }
+
+        .lang-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .lang-flag-badge {
+            width: 44px;
+            height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #020617;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+        }
+        .lang-flag-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .lang-code {
+            font-family: var(--font-mono, monospace);
+            font-size: 11px;
+            font-weight: 800;
+            color: #00FFCC;
+            letter-spacing: 0.8px;
+        }
+
+        .lang-title-native {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            color: #FFFFFF;
+            margin-bottom: 4px;
+        }
+
+        .lang-title-sub {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.45;
+            min-height: 36px;
+        }
+
+        .lang-specs-box {
+            margin: 16px 0 20px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-family: var(--font-mono, monospace);
+            font-size: 10px;
+            color: #8a93b8;
+            line-height: 1.7;
+        }
+        .lang-specs-box strong { color: #e2e8f0; }
+
+        .btn-download-lang {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #0066FF, #00FFCC);
+            color: #040612;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            font-weight: 800;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(0, 255, 204, 0.25);
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+        .btn-download-lang:hover {
+            filter: brightness(1.1);
+            transform: scale(0.98);
+        }
+
+        /* Attestation Box */
+        .wp-audit-card {
+            max-width: 1080px;
+            margin: 0 auto 60px;
+            padding: 24px 28px;
+            border-radius: 18px;
+            background: rgba(10, 13, 26, 0.7);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .wp-audit-info h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 800;
+            color: #FFD700;
+            margin-bottom: 4px;
+        }
+        .wp-audit-info p {
+            font-size: 11.5px;
+            color: #94a3b8;
+            margin: 0;
+            line-height: 1.5;
+        }
+        .wp-audit-info code {
+            font-family: var(--font-mono, monospace);
+            color: #00FFCC;
+            background: rgba(0, 255, 204, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .btn-verify-cert {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            background: rgba(255, 215, 0, 0.12);
+            border: 1px solid #FFD700;
+            color: #FFD700;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .btn-verify-cert:hover {
+            background: #FFD700;
+            color: #000;
+        }
+
+        @media (max-width: 960px) {
+            .languages-grid { grid-template-columns: repeat(2, 1fr); }
+            .wp-metrics-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .wp-hero-section { padding: 110px 16px 30px; }
+            .languages-grid { grid-template-columns: 1fr; }
+            .wp-metrics-grid { grid-template-columns: 1fr; }
+            .wp-abstract-card { padding: 20px 18px; }
+            .wp-audit-card { flex-direction: column; align-items: stretch; text-align: left; }
+        }
+    </style>
 </head>
 <body>
-	<div data-include="nav"></div>
 
-	<header class="whitepaper-hero">
-		<span class="section-tag">Protocol Documents</span>
-		<h1>LUXA Whitepaper</h1>
-		<p>The sovereign protocol charter, available in six languages.</p>
-	</header>
+    <!-- Shared Navigation -->
+    <div data-include="nav"></div>
 
-	<main class="section" style="padding-top: 25px;">
-		<div class="container">
-			<!-- GRIGLIA DOWNLOAD 6 LINGUE CON BANDIERE SVG UFFICIALI -->
-			<div class="languages-grid">
-				<!-- 1. ENGLISH (Regno Unito) -->
-				<div class="lang-card">
-					<div>
-						<div class="lang-card-header">
-							<span class="lang-flag-badge">
-								<img src="assets/images/flags/4x3/gb.svg" alt="United Kingdom Flag" class="lang-flag-img">
-							</span>
-							<span class="lang-code">EN • MASTER</span>
-						</div>
-						<div class="lang-title-native">English</div>
-						<div class="lang-title-sub">Official Master Genesis Covenant</div>
-						<div class="lang-specs-box">
-							Format: PDF (Document Edition)<br>
-							Version: 3.0 (October 2026)<br>
-							Verification: Sealed by Citizen Zero #0
-						</div>
-					</div>
-					<a href="assets/docs/LUXA_Whitepaper_v3_EN.pdf" download="LUXA_Whitepaper_v3_EN.pdf" class="btn-download-lang">
-						<i class="fas fa-file-pdf"></i> <span>Download English (PDF)</span>
-					</a>
-				</div>
+    <!-- ============================================================
+         HERO SECTION WITH 100% PURE CSS CYBER-NEBULA
+         ============================================================ -->
+    <header class="wp-hero-section">
+        <div class="wp-cyber-aura" aria-hidden="true">
+            <div class="wp-orb wp-orb-cyan"></div>
+            <div class="wp-orb wp-orb-violet"></div>
+            <div class="wp-orb wp-orb-gold"></div>
+        </div>
 
-				<!-- 2. FRANÇAIS (Francia) -->
-				<div class="lang-card">
-					<div>
-						<div class="lang-card-header">
-							<span class="lang-flag-badge">
-								<img src="assets/images/flags/4x3/fr.svg" alt="Drapeau Français" class="lang-flag-img">
-							</span>
-							<span class="lang-code">FR • OFFICIEL</span>
-						</div>
-						<div class="lang-title-native">Français</div>
-						<div class="lang-title-sub">Charte Officielle de Consensus Souverain</div>
-						<div class="lang-specs-box">
-							Format: PDF (Édition Officielle)<br>
-							Version: 3.0 (Octobre 2026)<br>
-							Statut: Ratifié par le Conseil de la Genèse
-						</div>
-					</div>
-					<a href="assets/docs/LUXA_Whitepaper_v3_FR.pdf" download="LUXA_Whitepaper_v3_FR.pdf" class="btn-download-lang">
-						<i class="fas fa-file-pdf"></i> <span>Télécharger en Français</span>
-					</a>
-				</div>
+        <div class="wp-hero-content">
+            <div class="wp-badge">
+                <i class="fas fa-certificate"></i>
+                <span>INSTITUTIONAL TECHNICAL CODEX v3.0</span>
+            </div>
 
-				<!-- 3. ESPAÑOL (Spagna) -->
-				<div class="lang-card">
-					<div>
-						<div class="lang-card-header">
-							<span class="lang-flag-badge">
-								<img src="assets/images/flags/4x3/es.svg" alt="Bandera de España" class="lang-flag-img">
-							</span>
-							<span class="lang-code">ES • OFICIAL</span>
-						</div>
-						<div class="lang-title-native">Español</div>
-						<div class="lang-title-sub">Tratado Oficial de Consenso Soberano</div>
-						<div class="lang-specs-box">
-							Formato: PDF (Edición Documental)<br>
-							Versión: 3.0 (Octubre 2026)<br>
-							Verificación: Ratificado por Ciudadano Cero
-						</div>
-					</div>
-					<a href="assets/docs/LUXA_Whitepaper_v3_ES.pdf" download="LUXA_Whitepaper_v3_ES.pdf" class="btn-download-lang">
-						<i class="fas fa-file-pdf"></i> <span>Descargar en Español</span>
-					</a>
-				</div>
+            <h1 class="wp-title">LUXA Protocol White Paper</h1>
+            <div class="wp-subtitle">Sovereign Layer 1 Blockchain, Conseil de la Genèse &amp; Universal Shared Wealth</div>
 
-				<!-- 4. ARABIC (Lega Araba o Marocco) -->
-				<div class="lang-card" style="text-align: right;">
-					<div>
-						<div class="lang-card-header" style="flex-direction: row-reverse;">
-							<span class="lang-flag-badge">
-								<img src="assets/images/flags/4x3/arab.svg" alt="علم الجامعة العربية" class="lang-flag-img">
-							</span>
-							<span class="lang-code">AR • الميثاق الرسمي</span>
-						</div>
-						<div class="lang-title-native" style="font-family: 'Space Grotesk', sans-serif;">العربية</div>
-						<div class="lang-title-sub">الميثاق الرسمي التأسيسي للبروتوكول السيادي</div>
-						<div class="lang-specs-box" style="direction: rtl; text-align: right;">
-							الصيغة: PDF (النسخة الرسمية الكاملة)<br>
-							الإصدار: 3.0 (أكتوبر 2026)<br>
-							التوثيق: معتمد وموقّع من المواطن صفر (#0)
-						</div>
-					</div>
-					<a href="assets/docs/LUXA_Whitepaper_v3_AR.pdf" download="LUXA_Whitepaper_v3_AR.pdf" class="btn-download-lang">
-						<i class="fas fa-file-pdf"></i> <span>تحميل الميثاق بالعربية</span>
-					</a>
-				</div>
+            <div class="wp-meta-strip">
+                <span>Protocol Core: <strong>luxa-1</strong></span>
+                <span>•</span>
+                <span>Consensus: <strong>CometBFT (Cosmos SDK)</strong></span>
+                <span>•</span>
+                <span>Ratification: <strong>October 1, 2026</strong></span>
+            </div>
+        </div>
+    </header>
 
-				<!-- 5. RUSSIAN (Russia) -->
-				<div class="lang-card">
-					<div>
-						<div class="lang-card-header">
-							<span class="lang-flag-badge">
-								<img src="assets/images/flags/4x3/ru.svg" alt="Флаг России" class="lang-flag-img">
-							</span>
-							<span class="lang-code">RU • МАНИФЕСТ</span>
-						</div>
-						<div class="lang-title-native">Русский</div>
-						<div class="lang-title-sub">Официальный Суверенный Манифест</div>
-						<div class="lang-specs-box">
-							Формат: PDF (Полное Руководство)<br>
-							Версия: 3.0 (Октябрь 2026)<br>
-							Статус: Утверждено Гражданином Ноль
-						</div>
-					</div>
-					<a href="assets/docs/LUXA_Whitepaper_v3_RU.pdf" download="LUXA_Whitepaper_v3_RU.pdf" class="btn-download-lang">
-						<i class="fas fa-file-pdf"></i> <span>Скачать на Русском</span>
-					</a>
-				</div>
+    <main class="section" style="padding-top: 0;">
+        <div class="container">
 
-				<!-- 6. CHINESE (Cina) -->
-				<div class="lang-card">
-					<div>
-						<div class="lang-card-header">
-							<span class="lang-flag-badge">
-								<img src="assets/images/flags/4x3/cn.svg" alt="中国国旗" class="lang-flag-img">
-							</span>
-							<span class="lang-code">ZH • 官方宪章</span>
-						</div>
-						<div class="lang-title-native">中文</div>
-						<div class="lang-title-sub">中文官方主权共识宪章</div>
-						<div class="lang-specs-box">
-							格式: PDF (主权技术规范全本)<br>
-							版本: 3.0 (2026年10月)<br>
-							权威认证: 由公民零号（#0）签署生效
-						</div>
-					</div>
-					<a href="assets/docs/LUXA_Whitepaper_v3_ZH.pdf" download="LUXA_Whitepaper_v3_ZH.pdf" class="btn-download-lang">
-						<i class="fas fa-file-pdf"></i> <span>下载中文宪章 (PDF)</span>
-					</a>
-				</div>
-			</div>
-		</div>
-	</main>
+            <!-- ============================================================
+                 EXECUTIVE ABSTRACT & PROTOCOL CONSTITUTION CARD
+                 ============================================================ -->
+            <section class="wp-abstract-card">
+                <div class="wp-abstract-header">
+                    <div class="wp-abstract-title">
+                        <i class="fas fa-scroll"></i>
+                        <span>EXECUTIVE ABSTRACT</span>
+                    </div>
+                    <div class="wp-abstract-version">
+                        RELEASE 3.0 • RATIFIED
+                    </div>
+                </div>
 
-	<div data-include="footer"></div>
+                <div class="wp-abstract-body">
+                    <strong>LUXA Ecosystem</strong> represents an architectural breakthrough in decentralized state machines, introducing a sovereign Layer 1 blockchain engineered on the Cosmos SDK framework and CometBFT consensus engine (<code>luxa-1</code>). Overcoming the extractive dynamics of high gas barriers, ASIC monopolies, and speculative pre-mines, LUXA deploys a universal zero-barrier consensus model engineered to sustainably absorb <strong>7,000,000+ pioneers</strong> without reserve exhaustion. 
+                    <br><br>
+                    The protocol operates under an immutable supply ceiling of <strong>1,002,500,000 LUXA</strong>, anchored by a Dual-Vault separation of powers: an <strong>Operational Mining Vault (500,000,000 LUXA)</strong> governed by a 10-year geometric halving emission curve and a Fibonacci harmonic streak matrix (Φ ≈ 1.618), and the <strong>Conseil de la Genèse Sovereign Reserve (502,500,000 LUXA)</strong> secured by a native 3-of-5 Cosmos SDK multisig bound to 5 soulbound Ministerial Seals (Relics #0 through #4). On-chain settlement to client-side non-custodial Spider Vaults is validated via a 3-Key Gateway (60 continuous mining days, biometric Sumsub KYC, and network milestone achievement), sustained by a circular 8% protocol replenishment mechanism and zero Layer 1 network gas costs.
+                </div>
 
-	<script src="js/include.js"></script>
-	<script src="js/wallet-labels.js"></script>
-	<script src="js/script.js"></script>
-	<script src="js/agent-chat.js"></script>
+                <!-- Live Structural Pillars Grid -->
+                <div class="wp-metrics-grid">
+                    <div class="wp-metric-box">
+                        <span class="m-label">Fixed Total Supply</span>
+                        <div class="m-val">1,002,500,000 <small>LUXA</small></div>
+                    </div>
+                    <div class="wp-metric-box">
+                        <span class="m-label">Dual-Vault Split</span>
+                        <div class="m-val gold">50% Mine / 50% Conseil</div>
+                    </div>
+                    <div class="wp-metric-box">
+                        <span class="m-label">Mining Program</span>
+                        <div class="m-val">10-Year Halving Curve</div>
+                    </div>
+                    <div class="wp-metric-box">
+                        <span class="m-label">L1 Settlement Gas</span>
+                        <div class="m-val">0 LUXA (Free)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 MULTI-LANGUAGE REPOSITORY (6 CORE EDITIONS INCL. ITALIANO)
+                 ============================================================ -->
+            <section class="wp-languages-container">
+                <div class="wp-section-heading">
+                    <h2>Official Multi-Language Documents</h2>
+                    <p>Select your language to download the official White Paper v3.0 PDF specification:</p>
+                </div>
+
+                <div class="languages-grid">
+                    <!-- 1. ENGLISH (Master Edition) -->
+                    <div class="lang-card">
+                        <div>
+                            <div class="lang-card-header">
+                                <span class="lang-flag-badge">
+                                    <img src="assets/images/flags/4x3/gb.svg" alt="United Kingdom Flag" class="lang-flag-img">
+                                </span>
+                                <span class="lang-code">EN • MASTER</span>
+                            </div>
+                            <div class="lang-title-native">English</div>
+                            <div class="lang-title-sub">Official Master Genesis Covenant</div>
+                            <div class="lang-specs-box">
+                                Format: <strong>PDF (Institutional Codex)</strong><br>
+                                Version: <strong>3.0 (October 1, 2026)</strong><br>
+                                Signatory: <strong>Citizen Zero (#0)</strong>
+                            </div>
+                        </div>
+                        <a href="assets/docs/LUXA_Whitepaper_v3_EN.pdf" download="LUXA_WhitePaper_v3.0_EN.pdf" class="btn-download-lang">
+                            <i class="fas fa-file-pdf"></i> <span>Download English (PDF)</span>
+                        </a>
+                    </div>
+
+                    <!-- 2. ITALIANO (Edizione Istituzionale) -->
+                    <div class="lang-card">
+                        <div>
+                            <div class="lang-card-header">
+                                <span class="lang-flag-badge">
+                                    <img src="assets/images/flags/4x3/it.svg" alt="Bandiera Italiana" class="lang-flag-img">
+                                </span>
+                                <span class="lang-code">IT • UFFICIALE</span>
+                            </div>
+                            <div class="lang-title-native">Italiano</div>
+                            <div class="lang-title-sub">Costituzione Crittografica &amp; Specifiche L1</div>
+                            <div class="lang-specs-box">
+                                Formato: <strong>PDF (Edizione Ufficiale)</strong><br>
+                                Versione: <strong>3.0 (1 Ottobre 2026)</strong><br>
+                                Firmatario: <strong>Citizen Zero (#0)</strong>
+                            </div>
+                        </div>
+                        <a href="assets/docs/LUXA_Whitepaper_v3_IT.pdf" download="LUXA_WhitePaper_v3.0_IT.pdf" class="btn-download-lang">
+                            <i class="fas fa-file-pdf"></i> <span>Scarica in Italiano (PDF)</span>
+                        </a>
+                    </div>
+
+                    <!-- 3. FRANÇAIS (Charte Officielle) -->
+                    <div class="lang-card">
+                        <div>
+                            <div class="lang-card-header">
+                                <span class="lang-flag-badge">
+                                    <img src="assets/images/flags/4x3/fr.svg" alt="Drapeau Français" class="lang-flag-img">
+                                </span>
+                                <span class="lang-code">FR • OFFICIEL</span>
+                            </div>
+                            <div class="lang-title-native">Français</div>
+                            <div class="lang-title-sub">Charte Officielle de Consensus Souverain</div>
+                            <div class="lang-specs-box">
+                                Format: <strong>PDF (Édition Officielle)</strong><br>
+                                Version: <strong>3.0 (1 Octobre 2026)</strong><br>
+                                Statut: <strong>Ratifié par le Conseil</strong>
+                            </div>
+                        </div>
+                        <a href="assets/docs/LUXA_Whitepaper_v3_FR.pdf" download="LUXA_WhitePaper_v3.0_FR.pdf" class="btn-download-lang">
+                            <i class="fas fa-file-pdf"></i> <span>Télécharger en Français</span>
+                        </a>
+                    </div>
+
+                    <!-- 4. ARABIC (الميثاق التأسيسي الرسمي) -->
+                    <div class="lang-card" style="text-align: right;">
+                        <div>
+                            <div class="lang-card-header" style="flex-direction: row-reverse;">
+                                <span class="lang-flag-badge">
+                                    <img src="assets/images/flags/4x3/arab.svg" alt="العلم العربي" class="lang-flag-img">
+                                </span>
+                                <span class="lang-code">AR • الميثاق الرسمي</span>
+                            </div>
+                            <div class="lang-title-native">العربية</div>
+                            <div class="lang-title-sub">الميثاق الرسمي التأسيسي للبروتوكول السيادي</div>
+                            <div class="lang-specs-box" style="direction: rtl; text-align: right;">
+                                الصيغة: <strong>PDF (النسخة الدستورية)</strong><br>
+                                الإصدار: <strong>3.0 (1 أكتوبر 2026)</strong><br>
+                                التوثيق: <strong>معتمد من المواطن صفر (#0)</strong>
+                            </div>
+                        </div>
+                        <a href="assets/docs/LUXA_Whitepaper_v3_AR.pdf" download="LUXA_WhitePaper_v3.0_AR.pdf" class="btn-download-lang">
+                            <i class="fas fa-file-pdf"></i> <span>تحميل الميثاق بالعربية</span>
+                        </a>
+                    </div>
+
+                    <!-- 5. ESPAÑOL (Tratado Oficial) -->
+                    <div class="lang-card">
+                        <div>
+                            <div class="lang-card-header">
+                                <span class="lang-flag-badge">
+                                    <img src="assets/images/flags/4x3/es.svg" alt="Bandera de España" class="lang-flag-img">
+                                </span>
+                                <span class="lang-code">ES • OFICIAL</span>
+                            </div>
+                            <div class="lang-title-native">Español</div>
+                            <div class="lang-title-sub">Tratado de Consenso y Gobernanza Soberana</div>
+                            <div class="lang-specs-box">
+                                Formato: <strong>PDF (Edición Documental)</strong><br>
+                                Versión: <strong>3.0 (1 Octubre 2026)</strong><br>
+                                Ratificación: <strong>Ciudadano Cero (#0)</strong>
+                            </div>
+                        </div>
+                        <a href="assets/docs/LUXA_Whitepaper_v3_ES.pdf" download="LUXA_WhitePaper_v3.0_ES.pdf" class="btn-download-lang">
+                            <i class="fas fa-file-pdf"></i> <span>Descargar en Español</span>
+                        </a>
+                    </div>
+
+                    <!-- 6. CHINESE (中文官方主权共识宪章) -->
+                    <div class="lang-card">
+                        <div>
+                            <div class="lang-card-header">
+                                <span class="lang-flag-badge">
+                                    <img src="assets/images/flags/4x3/cn.svg" alt="中国国旗" class="lang-flag-img">
+                                </span>
+                                <span class="lang-code">ZH • 官方技术宪章</span>
+                            </div>
+                            <div class="lang-title-native">中文</div>
+                            <div class="lang-title-sub">中文官方主权共识宪章与技术白皮书</div>
+                            <div class="lang-specs-box">
+                                格式: <strong>PDF (主权技术规范全本)</strong><br>
+                                版本: <strong>3.0 (2026年10月1日)</strong><br>
+                                权威认证: <strong>公民零号（#0）签署生效</strong>
+                            </div>
+                        </div>
+                        <a href="assets/docs/LUXA_Whitepaper_v3_ZH.pdf" download="LUXA_WhitePaper_v3.0_ZH.pdf" class="btn-download-lang">
+                            <i class="fas fa-file-pdf"></i> <span>下载中文宪章 (PDF)</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================================
+                 CRYPTOGRAPHIC GENESIS ATTESTATION & RATIFICATION BOX
+                 ============================================================ -->
+            <section class="wp-audit-card">
+                <div class="wp-audit-info">
+                    <h4>🏛️ CRYPTOGRAPHIC GENESIS ATTESTATION</h4>
+                    <p>
+                        Ratified on <strong>luxa-1</strong> by <strong>Citizen Zero (#0)</strong> under Genesis Seal <code>luxa1z4jpt568npsvpass...</code>.
+                        <br>Verify the signed state machine record and official sovereign attestation online.
+                    </p>
+                </div>
+                <div>
+                    <a href="certificate.html?id=0" target="_blank" rel="noopener noreferrer" class="btn-verify-cert">
+                        <i class="fas fa-stamp"></i> <span>View Sovereign Seal Certificate ↗</span>
+                    </a>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer Component Include -->
+    <div data-include="footer"></div>
+
+    <script src="js/include.js"></script>
+    <script src="js/wallet-labels.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/agent-chat.js"></script>
 </body>
 </html>
