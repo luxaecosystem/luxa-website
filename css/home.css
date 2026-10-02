@@ -100,26 +100,98 @@ html {
     overflow: visible !important;
 }
 
-/* Ambient Glow Texture from assets/images/Glow.png */
-.hero-ambient-glow {
+/* ============================================================
+   SOVEREIGN CYBER-NEBULA AURA (100% PURE CSS — ZERO IMAGES)
+   ============================================================ */
+.hero-cyber-aura {
     position: absolute;
-    top: 15%;
+    top: 40%;
     left: 50%;
-    transform: translate(-50%, -20%);
-    width: 850px;
+    transform: translate(-50%, -50%);
+    width: 900px;
     max-width: 95vw;
-    height: auto;
+    height: 520px;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.55;
+    overflow: visible;
+}
+
+.aura-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(75px);
+    will-change: transform, opacity;
     mix-blend-mode: screen;
 }
 
-.hero-glow-texture {
-    width: 100%;
-    height: auto;
-    display: block;
-    filter: blur(20px);
+/* 1. Sfera Ciano Elettrico (luxa-1 L1) */
+.aura-orb-cyan {
+    top: 10%;
+    left: 15%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(0, 255, 204, 0.32) 0%, rgba(0, 255, 204, 0.08) 55%, transparent 75%);
+    animation: cyberAuraDrift1 12s ease-in-out infinite alternate;
+}
+
+/* 2. Sfera Viola / Blu Etereo (Cosmos CometBFT) */
+.aura-orb-violet {
+    bottom: 5%;
+    right: 12%;
+    width: 430px;
+    height: 430px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.28) 0%, rgba(56, 189, 248, 0.12) 50%, transparent 75%);
+    animation: cyberAuraDrift2 14s ease-in-out infinite alternate;
+}
+
+/* 3. Nucleo Aureo (Genesis Relics & Halving) */
+.aura-orb-gold {
+    top: 30%;
+    left: 42%;
+    width: 260px;
+    height: 260px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.22) 0%, rgba(255, 122, 0, 0.06) 60%, transparent 80%);
+    animation: cyberAuraPulseGold 9s ease-in-out infinite alternate;
+}
+
+/* 4. Orizzonte di Luce Centrale dietro al Titolo */
+.aura-core-shimmer {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 650px;
+    max-width: 88vw;
+    height: 180px;
+    background: radial-gradient(ellipse 75% 55% at 50% 50%, rgba(0, 255, 204, 0.20), rgba(56, 189, 248, 0.09) 45%, transparent 70%);
+    filter: blur(45px);
+    animation: cyberCoreBreathe 7s ease-in-out infinite;
+}
+
+@keyframes cyberAuraDrift1 {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(45px, -30px, 0) scale(1.14); }
+    100% { transform: translate3d(-30px, 35px, 0) scale(0.92); }
+}
+
+@keyframes cyberAuraDrift2 {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(-50px, 25px, 0) scale(1.18); }
+    100% { transform: translate3d(35px, -40px, 0) scale(0.95); }
+}
+
+@keyframes cyberAuraPulseGold {
+    0%, 100% { opacity: 0.35; transform: scale(0.9); }
+    50%      { opacity: 0.80; transform: scale(1.22); }
+}
+
+@keyframes cyberCoreBreathe {
+    0%, 100% { opacity: 0.45; transform: translate3d(-50%, -50%, 0) scale(0.95); }
+    50%      { opacity: 0.85; transform: translate3d(-50%, -50%, 0) scale(1.10); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .aura-orb, .aura-core-shimmer { animation: none !important; }
 }
 
 /* Kinetic Glowing Headline */
