@@ -91,6 +91,248 @@ html {
 .tokenomics-note--spaced { margin-top: 25px; }
 .section-header--tight { margin-bottom: 32px; }
 
+/* ============================================================
+   HERO MASTERPIECE TYPOGRAPHY & ECOSYSTEM DROPDOWN GATEWAY
+   ============================================================ */
+
+.hero-art-section {
+    position: relative;
+    overflow: visible !important;
+}
+
+/* Ambient Glow Texture from assets/images/Glow.png */
+.hero-ambient-glow {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    width: 850px;
+    max-width: 95vw;
+    height: auto;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.55;
+    mix-blend-mode: screen;
+}
+
+.hero-glow-texture {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: blur(20px);
+}
+
+/* Kinetic Glowing Headline */
+.art-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.3rem, 5.5vw, 4.4rem) !important;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.12;
+    color: #FFFFFF;
+    text-shadow: 0 0 35px rgba(255, 255, 255, 0.15);
+    margin-bottom: 22px;
+}
+
+.gradient-text-glow {
+    background: linear-gradient(135deg, #00FFCC 0%, #38BDF8 50%, #C084FC 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 16px rgba(0, 255, 204, 0.45));
+}
+
+.art-desc {
+    max-width: 680px;
+    margin: 0 auto 34px;
+    font-size: clamp(0.95rem, 1.8vw, 1.08rem);
+    line-height: 1.7;
+    color: #cbd5e1;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.art-desc strong {
+    color: #00FFCC;
+    font-weight: 600;
+}
+
+/* Action Container */
+.hero-action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 20;
+    margin-bottom: 30px;
+}
+
+.btn-master {
+    padding: 14px 28px !important;
+    font-size: 0.92rem !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 30px rgba(168, 85, 247, 0.4), 0 0 20px rgba(34, 211, 238, 0.25) !important;
+}
+
+/* Gateway Dropdown Trigger */
+.ecosystem-dropdown-wrap {
+    position: relative;
+}
+
+.btn-gateway {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 22px;
+    border-radius: 10px;
+    background: rgba(14, 16, 32, 0.85);
+    border: 1.5px solid rgba(0, 255, 204, 0.4);
+    color: #00FFCC;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: all 0.25s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.btn-gateway:hover,
+.btn-gateway[aria-expanded="true"] {
+    background: rgba(0, 255, 204, 0.12);
+    border-color: #00FFCC;
+    box-shadow: 0 0 25px rgba(0, 255, 204, 0.35);
+    color: #FFFFFF;
+}
+
+.dropdown-arrow {
+    font-size: 0.75rem;
+    transition: transform 0.25s ease;
+}
+
+.btn-gateway[aria-expanded="true"] .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* Glassmorphic Dropdown Panel */
+.ecosystem-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    width: 360px;
+    max-width: 92vw;
+    background: linear-gradient(175deg, rgba(17, 20, 42, 0.97), rgba(8, 10, 22, 0.98));
+    border: 1.5px solid rgba(0, 255, 204, 0.35);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 255, 204, 0.18);
+    backdrop-filter: blur(20px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1000;
+    text-align: left;
+}
+
+.ecosystem-dropdown-menu.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+.dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.dropdown-header-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #94a3b8;
+}
+
+.dropdown-header-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #00FFCC;
+}
+
+.dropdown-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Individual Dropdown Item */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background: rgba(0, 255, 204, 0.08);
+    border-color: rgba(0, 255, 204, 0.4);
+    transform: translateX(4px);
+}
+
+.dropdown-item-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.dropdown-item-icon.cyan   { background: rgba(0, 255, 204, 0.12); color: #00FFCC; border: 1px solid rgba(0, 255, 204, 0.3); }
+.dropdown-item-icon.blue   { background: rgba(56, 189, 248, 0.12); color: #38BDF8; border: 1px solid rgba(56, 189, 248, 0.3); }
+.dropdown-item-icon.green  { background: rgba(34, 197, 94, 0.12); color: #22C55E; border: 1px solid rgba(34, 197, 94, 0.3); }
+.dropdown-item-icon.purple { background: rgba(192, 132, 252, 0.12); color: #C084FC; border: 1px solid rgba(192, 132, 252, 0.3); }
+.dropdown-item-icon.gold   { background: rgba(255, 215, 0, 0.12); color: #FFD700; border: 1px solid rgba(255, 215, 0, 0.3); }
+
+.dropdown-item-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.dropdown-item-info strong {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.88rem;
+    color: #FFFFFF;
+    margin-bottom: 2px;
+}
+
+.dropdown-item-info span {
+    font-size: 0.72rem;
+    color: #94a3b8;
+    line-height: 1.35;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .founder-compact .dossier-statusbar { margin-bottom: 12px; }
 .founder-compact .founder-name-v2 { justify-content: flex-start; margin-bottom: 4px; }
 .founder-compact .founder-role-v2 { margin-bottom: 12px; }

@@ -45,55 +45,124 @@
     <main id="main">
 
     <!-- ============================================================
-         HERO SECTION
+         HERO SECTION — SOVEREIGN GATEWAY & ARTWORK TYPOGRAPHY
          ============================================================ -->
-    <section id="hero">
+    <section id="hero" class="hero-art-section">
+        <!-- Ambient Glowing Aura -->
+        <div class="hero-ambient-glow" aria-hidden="true">
+            <img src="assets/images/Glow.png" alt="" class="hero-glow-texture">
+        </div>
+
         <div class="hero-bg">
             <div class="particles" id="particles"></div>
         </div>
+
         <div class="hero-content">
-            <div class="hero-badge">
-                <span class="pulse-dot"></span>
-                LUXA-1 Sovereign Chain Active &bull; CometBFT Consensus
-            </div>
-            <h1 class="hero-title">
-                LUXA Ecosystem — <span class="gradient-text">Shared Wealth &amp; True Ownership</span>
+            <!-- Main Masterpiece Typography -->
+            <h1 class="hero-title art-title">
+                Sovereign Architecture.<br>
+                <span class="gradient-text-glow">Shared Wealth &amp; True Ownership.</span>
             </h1>
-            <p class="hero-desc">
-                A sovereign Layer 1 blockchain engineered to redistribute economic value. Featuring the client-side non-custodial <strong>Spider Wallet</strong>, passive zero-barrier mining with dynamic difficulty, and verifiable on-chain transparency.
+
+            <p class="hero-desc art-desc">
+                An autonomous Layer 1 consensus protocol engineered for absolute economic redistribution. Powered by the client-side <strong>Spider Vault</strong> mesh, deterministic mathematical halving, and universal zero-barrier participation.
             </p>
-            <div class="hero-buttons">
-                <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large">
-                    <i class="fab fa-telegram"></i> <span>Start Mining Free</span>
+
+            <!-- Consolidated Dual Action Bar with Gateway Dropdown -->
+            <div class="hero-action-bar">
+                <!-- Master Primary CTA -->
+                <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-master">
+                    <i class="fab fa-telegram"></i> <span>Launch Telegram App</span>
                 </a>
-                <a href="https://studio.luxaecosystem.xyz/" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-large" style="border-color: #00FFCC; color: #00FFCC;">
-                    <i class="fas fa-terminal"></i> <span>LUXA Studio (IDE) ↗</span>
-                </a>
-                <a href="#vault-chrome-card" class="btn btn-outline btn-large">
-                    <i class="fab fa-chrome"></i> <span>Install Chrome Extension</span>
-                </a>
-                <a href="#vault-android-card" class="btn btn-outline btn-large">
-                    <i class="fab fa-android"></i> <span>Download Android App</span>
-                </a>
-                <a href="explorer.html" class="btn btn-outline btn-large btn-page-link">
-                    <i class="fas fa-cubes"></i> <span>Live Block Explorer</span>
-                </a>
-                <a href="https://zealy.io/cw/luxaecosystem/questboard/e996d1fe-8c4b-4f5e-ab28-ac3afd1a9c79" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-large">
-                    <i class="fas fa-trophy" style="color: #FFD700;"></i> <span>Zealy Quests (Earn XP)</span>
-                </a>
+
+                <!-- Ecosystem Gateway Dropdown Trigger -->
+                <div class="ecosystem-dropdown-wrap">
+                    <button type="button" class="btn btn-gateway" id="ecosystemDropdownBtn" aria-expanded="false" aria-haspopup="true">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Ecosystem &amp; Tools</span>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    </button>
+
+                    <!-- Futuristic Glassmorphic Dropdown Menu -->
+                    <div class="ecosystem-dropdown-menu" id="ecosystemDropdownMenu" role="menu">
+                        <div class="dropdown-header">
+                            <span class="dropdown-header-tag">LUXA PROTOCOL SUITE</span>
+                            <span class="dropdown-header-status">● MAINNET / TESTNET</span>
+                        </div>
+
+                        <div class="dropdown-grid">
+                            <!-- LUXA Studio IDE -->
+                            <a href="https://studio.luxaecosystem.xyz/" target="_blank" rel="noopener noreferrer" class="dropdown-item" role="menuitem">
+                                <div class="dropdown-item-icon cyan">
+                                    <i class="fas fa-terminal"></i>
+                                </div>
+                                <div class="dropdown-item-info">
+                                    <strong>LUXA Studio (IDE) ↗</strong>
+                                    <span>CosmWasm contract compiler &amp; deployer</span>
+                                </div>
+                            </a>
+
+                            <!-- Chrome Extension -->
+                            <a href="#vault-chrome-card" class="dropdown-item" role="menuitem">
+                                <div class="dropdown-item-icon blue">
+                                    <i class="fab fa-chrome"></i>
+                                </div>
+                                <div class="dropdown-item-info">
+                                    <strong>Chrome Extension</strong>
+                                    <span>Manifest V3 Spider Vault for desktop browsers</span>
+                                </div>
+                            </a>
+
+                            <!-- Android APK -->
+                            <a href="#vault-android-card" class="dropdown-item" role="menuitem">
+                                <div class="dropdown-item-icon green">
+                                    <i class="fab fa-android"></i>
+                                </div>
+                                <div class="dropdown-item-info">
+                                    <strong>Android Native App</strong>
+                                    <span>Zero-knowledge encrypted Google Drive backup</span>
+                                </div>
+                            </a>
+
+                            <!-- Block Explorer -->
+                            <a href="explorer.html" class="dropdown-item" role="menuitem">
+                                <div class="dropdown-item-icon purple">
+                                    <i class="fas fa-cubes"></i>
+                                </div>
+                                <div class="dropdown-item-info">
+                                    <strong>Live Block Explorer</strong>
+                                    <span>Inspect blocks, tx hashes, and Genesis Relics</span>
+                                </div>
+                            </a>
+
+                            <!-- Zealy Quests -->
+                            <a href="https://zealy.io/cw/luxaecosystem/questboard/e996d1fe-8c4b-4f5e-ab28-ac3afd1a9c79" target="_blank" rel="noopener noreferrer" class="dropdown-item" role="menuitem">
+                                <div class="dropdown-item-icon gold">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="dropdown-item-info">
+                                    <strong>Zealy Community Quests</strong>
+                                    <span>Complete official protocol missions &amp; earn XP</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
+            <!-- Social Links Row -->
             <div class="hero-social-bar">
                 <span>Connect with our official channels:</span>
                 <div class="social-row">
                     <a href="https://t.me/LuxaToken_Official" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram Channel" title="Official Channel"><i class="fab fa-telegram-plane"></i></a>
                     <a href="https://t.me/LuxaCommunity" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram Community" title="Community Group"><i class="fas fa-users"></i></a>
                     <a href="https://t.me/LuxaEcosystemBot" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Telegram Bot" title="Mining Bot"><i class="fas fa-robot"></i></a>
-                    <a href="https://github.com/luxatokenofficial" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub" title="GitHub"><i class="fab fa-github"></i></a>
-                    <a href="https://x.com/luxatoken" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="X / Twitter" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://github.com/luxaecosystem" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="GitHub" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="https://x.com/luxaecosystem" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="X / Twitter" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
                 </div>
             </div>
 
+            <!-- Real-Time Metrics -->
             <div class="hero-stats">
                 <div class="stat">
                     <span class="stat-number" id="statBlocks"><i class="fas fa-spinner fa-spin"></i></span>

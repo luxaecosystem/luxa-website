@@ -780,8 +780,38 @@ function formatNumber(n, decimals = 2) {
     });
   }
 
+  function initEcosystemDropdown() {
+    const triggerBtn = document.getElementById('ecosystemDropdownBtn');
+    const dropdownMenu = document.getElementById('ecosystemDropdownMenu');
+    if (!triggerBtn || !dropdownMenu) return;
+
+    function toggleDropdown(open) {
+      const shouldOpen = open !== undefined ? open : !dropdownMenu.classList.contains('is-open');
+      dropdownMenu.classList.toggle('is-open', shouldOpen);
+      triggerBtn.setAttribute('aria-expanded', String(shouldOpen));
+    }
+
+    triggerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleDropdown();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdownMenu.contains(e.target) && !triggerBtn.contains(e.target)) {
+        toggleDropdown(false);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        toggleDropdown(false);
+      }
+    });
+  }
+
   /* ---------- Avvio ---------- */
   initPreloader();
+  onReady(initEcosystemDropdown);
   onReady(() => {
     initParticles();
     initCardTilt();
