@@ -499,42 +499,53 @@ function formatNumber(n, decimals = 2) {
   }
 
   /* ---------- Cookie consent banner ---------- */
+  function safeStorageGet(key) {
+    try { return localStorage.getItem(key); }
+    catch (_) { return null; }
+  }
+
+  function safeStorageSet(key, value) {
+    try { localStorage.setItem(key, value); }
+    catch (_) { /* privacy mode: ignore */ }
+  }
+
   function initCookieConsent() {
     const CONSENT_KEY = 'luxa_cookie_consent';
     const existing = document.getElementById('luxaCookieBanner');
-    if (existing || localStorage.getItem(CONSENT_KEY)) return;
+    if (existing || safeStorageGet(CONSENT_KEY)) return;
 
     const banner = document.createElement('div');
     banner.id = 'luxaCookieBanner';
     banner.className = 'luxa-cookie-banner is-visible';
     banner.setAttribute('role', 'dialog');
     banner.setAttribute('aria-live', 'polite');
+    banner.setAttribute('aria-label', 'Cookie consent banner');
     banner.innerHTML = `
       <div class="cookie-header">
         <div class="cookie-title">
           <i class="fas fa-shield-halved"></i>
-          <span>Consenso Privacy &amp; Cookie</span>
+          <span>Privacy &amp; Cookie Consent</span>
         </div>
         <span class="cookie-badge">GDPR / ZERO-LOG</span>
       </div>
       <p class="cookie-body">
-        Utilizziamo cookie tecnici essenziali e memoria locale per garantire l'accesso sicuro a <strong>luxa-1</strong>, salvare le sessioni di mining e sincronizzare il wallet non-custodial. Nessun dato biometrico o chiave privata lascia mai il tuo dispositivo. Leggi l'<a href="cookie-policy.html" class="cookie-link">Informativa Estesa</a>.
+        We use essential cookies and local memory to ensure the correct operation of <strong>luxa-1</strong>, preserve your session, and keep the non-custodial wallet synchronized. No biometric data or private key ever leaves your device. Read the <a href="cookie-policy.html" class="cookie-link">full policy</a>.
       </p>
       <div class="cookie-actions">
-        <button type="button" class="btn-cookie-accept" id="btnAcceptAllCookies">Accetta Tutti</button>
-        <button type="button" class="btn-cookie-essential" id="btnAcceptEssentialCookies">Solo Essenziali</button>
+        <button type="button" class="btn-cookie-accept" id="btnAcceptAllCookies">Accept all</button>
+        <button type="button" class="btn-cookie-essential" id="btnAcceptEssentialCookies">Essential only</button>
       </div>
     `;
 
     document.body.appendChild(banner);
 
     document.getElementById('btnAcceptAllCookies')?.addEventListener('click', () => {
-      localStorage.setItem(CONSENT_KEY, JSON.stringify({ choice: 'all', timestamp: new Date().toISOString() }));
+      safeStorageSet(CONSENT_KEY, JSON.stringify({ choice: 'all', timestamp: new Date().toISOString() }));
       banner.remove();
     });
 
     document.getElementById('btnAcceptEssentialCookies')?.addEventListener('click', () => {
-      localStorage.setItem(CONSENT_KEY, JSON.stringify({ choice: 'essential', timestamp: new Date().toISOString() }));
+      safeStorageSet(CONSENT_KEY, JSON.stringify({ choice: 'essential', timestamp: new Date().toISOString() }));
       banner.remove();
     });
   }
