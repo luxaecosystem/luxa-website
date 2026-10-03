@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informativa Cookie &amp; Gestione Consenso — LUXA Ecosystem</title>
+    <meta name="description" content="Informativa ufficiale sui cookie, archiviazione locale zero-knowledge e gestione delle preferenze di consenso dell'Ecosistema LUXA.">
+    <link rel="canonical" href="https://luxaecosystem.xyz/cookie-policy.html">
+    <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <div data-include="nav"></div>
+
+    <header class="legal-hero" style="background: radial-gradient(ellipse at top, rgba(0, 255, 204, 0.12), transparent 60%); padding: 130px 20px 30px;">
+        <span class="section-tag">Trasparenza &amp; Crittografia</span>
+        <h1>Informativa sui Cookie &amp; Consenso</h1>
+        <p style="color: var(--text-muted); max-width: 650px; margin: 12px auto 0; font-size: 0.95rem;">
+            Come l'architettura Layer 1 di LUXA tutela la tua privacy mediante storage locale non-custodial e zero profilazione commerciale.
+        </p>
+    </header>
+
+    <main class="section" style="padding-top: 15px;">
+        <div class="container" style="max-width: 860px;">
+            <div style="background: linear-gradient(150deg, rgba(14, 18, 36, 0.85), rgba(7, 9, 20, 0.95)); border: 1.5px solid rgba(0, 255, 204, 0.35); border-radius: 16px; padding: 22px 24px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+                <div>
+                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #00FFCC; font-weight: 700; letter-spacing: 1px;">STATO ATTUALE CONSENSO</span>
+                    <div id="consentStatusDisplay" style="font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 800; color: #fff; margin-top: 4px;">Caricamento preferenze...</div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="button" id="btnResetConsent" class="btn btn-outline" style="border-color: rgba(255, 92, 122, 0.4); color: #ff5c7a; font-size: 11.5px;">
+                        <i class="fas fa-rotate-left"></i> <span>Reimposta Scelta</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="legal-card" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 32px 30px; text-align: left; line-height: 1.7; color: #cbd5e1; font-size: 13.5px;">
+                <h2 style="color: #00FFCC; font-size: 18px; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif;">1. Cosa sono i Cookie e l'Archiviazione Locale</h2>
+                <p style="margin-bottom: 20px;">
+                    I cookie sono piccoli file di testo che i siti web inviano al terminale dell'utente. Sull'Ecosistema LUXA (<code style="color: #00FFCC;">luxa-1</code>), l'architettura si basa prevalentemente sull'<strong>HTML5 LocalStorage</strong> del dispositivo per garantire la piena sovranità non-custodiale dell'utente.
+                </p>
+
+                <h2 style="color: #00FFCC; font-size: 18px; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif;">2. Cookie Tecnici &amp; Crittografici (Strettamente Necessari)</h2>
+                <p style="margin-bottom: 12px;">
+                    Questi elementi sono indispensabili per il funzionamento del protocollo e non possono essere disattivati nei nostri sistemi:
+                </p>
+                <ul style="margin-left: 20px; margin-bottom: 20px;">
+                    <li><strong>luxa_user_vaults:</strong> memorizza sul tuo browser in forma protetta gli indirizzi pubblici dei tuoi Spider Vault derivati localmente.</li>
+                    <li><strong>luxa_cookie_consent:</strong> registra la tua scelta sul consenso (Accetta Tutto o Solo Essenziali).</li>
+                    <li><strong>Telegram WebApp Session:</strong> garantisce la validazione crittografica della sessione miner e del conteggio streak di 24 ore.</li>
+                </ul>
+
+                <h2 style="color: #00FFCC; font-size: 18px; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif;">3. Tutela Radicale delle Chiavi Private (Zero-Knowledge)</h2>
+                <p style="margin-bottom: 20px;">
+                    Conformemente alla Costituzione del Protocollo LUXA, <strong>nessun cookie o script remoto ha accesso alle tue frasi seed (12/24 parole) o alle chiavi private</strong>. La crittografia (PBKDF2 a 210.000 iterazioni e AES-256-GCM) avviene interamente sul client. I server di validazione e i nodi non conservano traccia delle credenziali.
+                </p>
+
+                <h2 style="color: #00FFCC; font-size: 18px; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif;">4. Nessuna Profilazione di Terze Parti</h2>
+                <p style="margin-bottom: 24px;">
+                    L'Ecosistema LUXA non commercializza dati di navigazione, non installa tracker di terze parti pubblicitari e non profila le transazioni per scopi di marketing. Tutte le verifiche documentali per la migrazione Mainnet (Sumsub) avvengono in canali protetti e conformi ai requisiti legali internazionali.
+                </p>
+
+                <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 18px; font-size: 11.5px; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <span>Ultima revisione costituzionale: 1 Ottobre 2026</span>
+                    <a href="privacy-policy.html" style="color: #00FFCC; text-decoration: none; font-weight: 700;">Informativa Privacy Completa ➔</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div data-include="footer"></div>
+
+    <script src="js/include.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        function updateConsentUI() {
+            const raw = localStorage.getItem('luxa_cookie_consent');
+            const display = document.getElementById('consentStatusDisplay');
+            if (!display) return;
+
+            if (!raw) {
+                display.innerHTML = '<span style="color:#f59e0b;">⚠️ Nessun consenso salvato (in attesa di scelta)</span>';
+            } else {
+                try {
+                    const data = JSON.parse(raw);
+                    const isAll = data.choice === 'all';
+                    display.innerHTML = isAll 
+                        ? '<span style="color:#00FFCC;">● Accettati Tutti (Funzionalità &amp; Telemetria attiva)</span>' 
+                        : '<span style="color:#cbd5e1;">● Solo Tecnici Essenziali</span>';
+                } catch (_) {
+                    display.textContent = 'Salvato';
+                }
+            }
+        }
+
+        document.getElementById('btnResetConsent')?.addEventListener('click', () => {
+            localStorage.removeItem('luxa_cookie_consent');
+            updateConsentUI();
+            location.reload();
+        });
+
+        document.addEventListener('DOMContentLoaded', updateConsentUI);
+    </script>
+</body>
+</html>

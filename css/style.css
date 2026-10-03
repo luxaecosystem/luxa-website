@@ -163,6 +163,148 @@ h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; }
 .btn-large { padding: 14px 26px; font-size: .88rem; }
 .btn-xlarge { padding: 16px 30px; font-size: .92rem; }
 
+/* ============================================================
+   LUXA PRIVACY & COOKIE CONSENT BANNER (GLASSMORPHIC CYBER)
+   ============================================================ */
+.luxa-cookie-banner {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    max-width: 420px;
+    width: calc(100vw - 32px);
+    background: linear-gradient(165deg, rgba(14, 18, 36, 0.96), rgba(6, 8, 18, 0.98));
+    border: 1.5px solid rgba(0, 255, 204, 0.4);
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75), 0 0 25px rgba(0, 255, 204, 0.15);
+    border-radius: 18px;
+    padding: 20px 22px;
+    z-index: 999999;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    display: none;
+    flex-direction: column;
+    gap: 14px;
+    animation: cookieSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.luxa-cookie-banner.is-visible {
+    display: flex;
+}
+
+@keyframes cookieSlideUp {
+    from { opacity: 0; transform: translateY(24px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cookie-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cookie-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: #FFFFFF;
+}
+
+.cookie-title i {
+    color: #00FFCC;
+    font-size: 15px;
+}
+
+.cookie-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    color: #00FFCC;
+    background: rgba(0, 255, 204, 0.1);
+    border: 1px solid rgba(0, 255, 204, 0.3);
+    padding: 2px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+
+.cookie-body {
+    font-size: 12px;
+    line-height: 1.55;
+    color: #94a3b8;
+    margin: 0;
+    text-align: left;
+}
+
+.cookie-body strong {
+    color: #cbd5e1;
+}
+
+.cookie-link {
+    color: #00FFCC;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.cookie-link:hover {
+    color: #fff;
+}
+
+.cookie-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-cookie-accept {
+    flex: 1.2;
+    padding: 10px 14px;
+    border-radius: 9px;
+    background: linear-gradient(90deg, #0066FF, #00FFCC);
+    color: #030712;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11.5px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 255, 204, 0.25);
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.btn-cookie-accept:hover {
+    filter: brightness(1.1);
+    transform: scale(0.98);
+}
+
+.btn-cookie-essential {
+    flex: 1;
+    padding: 10px 12px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-cookie-essential:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
+}
+
+@media (max-width: 640px) {
+    .luxa-cookie-banner {
+        bottom: 16px;
+        right: 16px;
+        left: 16px;
+        width: auto;
+    }
+}
+
 /* Pulsante Web3 Connect Vault */
 .btn-connect-vault {
     display: inline-flex;
