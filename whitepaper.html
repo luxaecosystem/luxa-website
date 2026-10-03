@@ -56,72 +56,83 @@
         /* ============================================================
            WHITEPAPER SUITE & CYBER-NEBULA AURA STYLES
            ============================================================ */
+        /* ============================================================
+           SOVEREIGN CYBER-NEBULA (HIGH VISIBILITY & NEON CONTRAST)
+           ============================================================ */
         .wp-hero-section {
             position: relative;
-            padding: 140px 20px 45px;
+            padding: 140px 20px 50px;
             text-align: center;
             overflow: hidden;
+            background: #060713;
         }
 
-        /* 100% Pure CSS Cyber-Nebula (Zero Image Assets) */
         .wp-cyber-aura {
             position: absolute;
-            top: 45%;
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 860px;
-            max-width: 95vw;
-            height: 480px;
+            width: 900px;
+            max-width: 96vw;
+            height: 450px;
             pointer-events: none;
-            z-index: 0;
+            z-index: 1;
         }
 
         .wp-orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(75px);
-            mix-blend-mode: screen;
-            will-change: transform;
+            filter: blur(45px);
+            will-change: transform, opacity;
         }
 
+        /* 1. Globo Ciano Elettrico LUXA L1 (Sinistra) */
         .wp-orb-cyan {
-            top: 10%;
-            left: 18%;
-            width: 380px;
-            height: 380px;
-            background: radial-gradient(circle, rgba(0, 255, 204, 0.28) 0%, rgba(0, 255, 204, 0.05) 60%, transparent 75%);
-            animation: wpAuraDrift1 12s ease-in-out infinite alternate;
+            top: 15%;
+            left: 10%;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(0, 255, 204, 0.65) 0%, rgba(0, 255, 204, 0.2) 50%, transparent 75%);
+            animation: wpAuraDrift1 10s ease-in-out infinite alternate;
         }
 
+        /* 2. Globo Viola Cosmos / CometBFT (Destra) */
         .wp-orb-violet {
-            bottom: 8%;
-            right: 15%;
-            width: 420px;
-            height: 420px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(56, 189, 248, 0.08) 55%, transparent 75%);
-            animation: wpAuraDrift2 14s ease-in-out infinite alternate;
+            bottom: 10%;
+            right: 10%;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.6) 0%, rgba(56, 189, 248, 0.25) 50%, transparent 75%);
+            animation: wpAuraDrift2 12s ease-in-out infinite alternate;
         }
 
+        /* 3. Nucleo Aureo Conseil de la Genèse (Centro pulsante) */
         .wp-orb-gold {
-            top: 35%;
-            left: 45%;
-            width: 240px;
-            height: 240px;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 75%);
-            animation: wpAuraPulse 9s ease-in-out infinite alternate;
+            top: 30%;
+            left: 40%;
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.5) 0%, rgba(255, 122, 0, 0.15) 55%, transparent 75%);
+            animation: wpAuraPulse 7s ease-in-out infinite alternate;
         }
 
+        /* Movimenti fluidi e fluttuanti */
         @keyframes wpAuraDrift1 {
-            0% { transform: translate3d(0, 0, 0) scale(1); }
-            100% { transform: translate3d(40px, -25px, 0) scale(1.12); }
+            0%   { transform: translate3d(0, 0, 0) scale(1); }
+            50%  { transform: translate3d(50px, -30px, 0) scale(1.15); }
+            100% { transform: translate3d(-30px, 40px, 0) scale(0.95); }
         }
+
         @keyframes wpAuraDrift2 {
-            0% { transform: translate3d(0, 0, 0) scale(1); }
-            100% { transform: translate3d(-35px, 30px, 0) scale(1.15); }
+            0%   { transform: translate3d(0, 0, 0) scale(1); }
+            50%  { transform: translate3d(-45px, 35px, 0) scale(1.18); }
+            100% { transform: translate3d(40px, -35px, 0) scale(0.92); }
         }
+
         @keyframes wpAuraPulse {
-            0% { opacity: 0.35; transform: scale(0.92); }
-            100% { opacity: 0.75; transform: scale(1.18); }
+            0%   { opacity: 0.45; transform: scale(0.9); }
+            50%  { opacity: 0.85; transform: scale(1.2); }
+            100% { opacity: 0.45; transform: scale(0.9); }
         }
 
         .wp-hero-content {
