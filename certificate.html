@@ -349,6 +349,12 @@
       color: var(--cyan);
     }
 
+    .cert-frame[data-state="verified"] .seal-stamp { border-color:#22c55e; color:#22c55e; background:rgba(34,197,94,.1); }
+    .cert-frame[data-state="not_found"] .seal-stamp { border-color:#ef4444; color:#ef4444; background:rgba(239,68,68,.1); }
+    .cert-frame[data-state="unverified"] .seal-stamp,
+    .cert-frame[data-state="loading"] .seal-stamp { border-color:#f59e0b; color:#f59e0b; background:rgba(245,158,11,.1); }
+    .cert-frame:not([data-state="verified"]) .qr-code-wrapper { opacity:.35; }
+
     @media print {
       body { background: #ffffff !important; color: #000 !important; padding: 0; }
       .cert-page-wrapper { padding: 0; }
@@ -371,50 +377,50 @@
       <div class="cert-header">
         <div class="govt-badge">🏛️ GENESIS COUNCIL • L1 LUXA-1</div>
         <h1 class="cert-title">ATTESTATION OF AUTHENTICITY</h1>
-        <div class="cert-sub">Cryptographic Proof of Sovereign Ownership &amp; Immutability</div>
+        <div class="cert-sub">Live On-Chain Ownership Attestation</div>
       </div>
 
       <div class="doc-tracking-row">
         <span>CONSTITUTIONAL TRACKING ID:</span>
-        <span id="certDocId">LUXA-DOC-GENESIS-XXXXXX</span>
+        <span data-cert="docId">LUXA-ATTESTATION-…</span>
       </div>
 
       <div class="cert-grid">
         <!-- SOVEREIGN ASSET NAME -->
         <div class="cert-item">
           <div class="cert-item-label"><span>🛡️</span> Sovereign Asset Name</div>
-          <div class="cert-item-value highlight-gold" id="certAssetName">Genesis Progenitor — Citizen Zero</div>
+          <div class="cert-item-value highlight-gold" data-cert="assetName">Loading…</div>
         </div>
 
         <!-- ON-CHAIN REGISTRY SPECIFICATIONS -->
         <div class="cert-item">
           <div class="cert-item-label"><span>📜</span> On-Chain Registry Specifications</div>
-          <div class="cert-item-value" id="certRegistrySpecs">Class: luxa-relics • Token ID: #0 • Standard: Cosmos SDK x/nft</div>
+          <div class="cert-item-value" data-cert="registry">Loading…</div>
         </div>
 
         <!-- AUTHENTICATED VAULT HOLDER -->
         <div class="cert-item">
           <div class="cert-item-label"><span>👛</span> Authenticated Sovereign Vault Holder</div>
-          <div class="cert-item-value highlight-cyan" id="certHolderAddress">luxa1...</div>
+          <div class="cert-item-value highlight-cyan" data-cert="holder">Loading…</div>
         </div>
 
         <!-- LEDGER ANCHOR REFERENCE -->
         <div class="cert-item">
-          <div class="cert-item-label"><span>🔗</span> Ledger Anchor Reference (Tx / Origin Hash)</div>
-          <div class="cert-item-value" id="certTxHash">GENESIS_BLOCK_ANCHOR_LUXA_RELIC_0</div>
+          <div class="cert-item-label"><span>🔗</span> Verified At (Chain • Block)</div>
+          <div class="cert-item-value" data-cert="anchor">Loading…</div>
         </div>
       </div>
 
       <!-- DYNAMIC QR VERIFICATION & NOTARIAL SEAL -->
       <div class="cert-seal-box">
         <div class="qr-code-wrapper">
-          <img id="certQrCode" src="" alt="Cryptographic Ledger QR" class="cert-qr-img">
+          <canvas data-cert="qr" class="cert-qr-img" aria-label="Verification QR"></canvas>
           <span class="qr-caption">SCAN TO AUDIT</span>
         </div>
 
         <div class="seal-text">
           <div class="seal-badge-row">
-            <span class="seal-stamp">★ CRYPTOGRAPHICALLY SECURED ★</span>
+            <span class="seal-stamp" data-cert="status">Verifying on-chain…</span>
             <span class="seal-chain-id">luxa-1 • CometBFT</span>
           </div>
           <p class="seal-description">
@@ -433,7 +439,7 @@
         <div class="sig-col right-align">
           <span class="sig-label">RATIFICATION STATUS</span>
           <div class="sig-status-badge">RATIFIED CONSTITUTION (luxa-1)</div>
-          <div class="sig-chain">Anchored: October 1, 2026</div>
+          
         </div>
       </div>
 
@@ -442,7 +448,7 @@
         <button type="button" class="btn btn-print" onclick="window.print()">
           <i class="fas fa-print"></i> <span>Print / Save PDF</span>
         </button>
-        <a href="#" class="btn btn-explorer" id="btnVerifyExplorer" target="_blank" rel="noopener noreferrer">
+        <a href="#" class="btn btn-explorer" data-cert="verifyLink" target="_blank" rel="noopener noreferrer">
           <i class="fas fa-search"></i> <span>Verify on Ledger ↗</span>
         </a>
       </div>
@@ -454,59 +460,14 @@
 
   <script src="js/include.js"></script>
   <script src="js/script.js"></script>
+  <script src="js/qrcode-embedded.js"></script>
+  <script src="js/luxa-certificate.js"></script>
   <script>
-    // Official Genesis Relics mapping aligned with White Paper v3.0
-    const GENESIS_RELICS = {
-      '0': { name: 'Genesis Progenitor — Citizen Zero', role: 'Root Validator & Sovereign Architect (Origin 1/1)' },
-      '1': { name: 'Chrono-Key Master', role: 'Minister of Settlement & Regulations (Genesis Council Multisig 3/5)' },
-      '2': { name: 'Cyber-Shadow Node', role: 'Minister of Cryptographic Security (Genesis Council Multisig 3/5)' },
-      '3': { name: 'Grandmaster of Servers', role: 'Minister of Infrastructure & Nodes (Genesis Council Multisig 3/5)' },
-      '4': { name: 'Neon Data Valkyrie', role: 'Minister of Liquidity & AMM Stability (Genesis Council Multisig 3/5)' }
-    };
-
-    // Parse URL query parameters
-    const params = new URLSearchParams(window.location.search);
-    const rawId = String(params.get('id') || '0').replace(/[^0-9]/g, '');
-    const cleanId = (parseInt(rawId, 10) >= 0 && parseInt(rawId, 10) <= 4) ? rawId : '0';
-    
-    const relicMeta = GENESIS_RELICS[cleanId] || GENESIS_RELICS['0'];
-    const assetTitle = params.get('name') || relicMeta.name;
-
-    // Constitutional custody distribution
-    const defaultHolder = cleanId === '0' 
-      ? 'luxa1z4jpt568npsvpass9f93m0v3edn9f6h8nksfaz'
-      : 'luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue';
-
-    const holder = (params.get('holder') && params.get('holder').startsWith('luxa1')) 
-      ? params.get('holder') 
-      : defaultHolder;
-
-    const tx = params.get('tx') || `0x7F4A8B9C0D1E2F3A4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C4D5E6F7A`;
-
-    // Populate DOM elements
-    document.getElementById('certAssetName').textContent = assetTitle;
-    document.getElementById('certRegistrySpecs').textContent = `Class: luxa-relics • Token ID: #${cleanId} • Role: ${relicMeta.role}`;
-    document.getElementById('certHolderAddress').textContent = holder;
-    document.getElementById('certTxHash').textContent = tx;
-
-    // Generate unique constitutional tracking identifier
-    const trackingHash = (tx.length > 12) ? tx.slice(-8).toUpperCase() : `GEN-${cleanId}-2026`;
-    document.getElementById('certDocId').textContent = `LUXA-ATTESTATION-#${cleanId}-${trackingHash}`;
-
-    // Dynamic verification link
-    const verificationUrl = `https://luxaecosystem.xyz/explorer.html?q=${encodeURIComponent(holder)}`;
-
-    // Generate real-time QR matrix code
-    const qrElement = document.getElementById('certQrCode');
-    if (qrElement) {
-      qrElement.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(verificationUrl)}`;
-    }
-
-    // Bind explorer action button
-    const btnExplorer = document.getElementById('btnVerifyExplorer');
-    if (btnExplorer) {
-      btnExplorer.href = verificationUrl;
-    }
+    // Solo l'ID arriva dall'URL; titolare e dati vengono letti dalla chain.
+    LuxaCertificate.mount(
+      document.querySelector('.cert-frame'),
+      { id: new URLSearchParams(window.location.search).get('id') }
+    );
   </script>
 </body>
 </html>
