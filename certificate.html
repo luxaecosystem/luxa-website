@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUXA Protocol — Official Attestation of Authenticity</title>
+  <link rel="icon" type="image/png" href="assets/images/logoluxa.png">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    :root {
+      --bg: #05060d;
+      --card-bg: #090c18;
+      --cyan: #00FFCC;
+      --gold: #FFD700;
+      --border: rgba(0, 255, 204, 0.35);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: radial-gradient(circle at 50% 20%, #0d152c 0%, #05060d 75%);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cert-page-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 120px 16px 60px;
+    }
+
+    .cert-frame {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 32px;
+      max-width: 620px;
+      width: 100%;
+      box-shadow: 0 0 50px rgba(0, 255, 204, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cert-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-25deg);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 85px;
+      font-weight: 900;
+      color: rgba(0, 255, 204, 0.025);
+      pointer-events: none;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .cert-header {
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+
+    .govt-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cyan);
+      background: rgba(0, 255, 204, 0.1);
+      border: 1px solid var(--cyan);
+      padding: 4px 10px;
+      border-radius: 99px;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .cert-title {
+      font-family: 'Orbitron', sans-serif;
+      color: #FFFFFF;
+      font-size: 19px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      margin: 0;
+    }
+
+    .cert-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .doc-tracking-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 20px;
+    }
+
+    .doc-tracking-row span:first-child { color: var(--muted); }
+    .doc-tracking-row span:last-child { color: var(--gold); font-weight: bold; }
+
+    .cert-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .cert-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+    }
+
+    .cert-item-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .cert-item-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: #FFFFFF;
+      word-break: break-all;
+    }
+
+    .cert-item-value.highlight-gold {
+      color: var(--gold);
+      border-color: rgba(255, 215, 0, 0.3);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .cert-item-value.highlight-cyan {
+      color: var(--cyan);
+    }
+
+    .cert-seal-box {
+      border: 1px dashed rgba(0, 255, 204, 0.35);
+      background: rgba(0, 255, 204, 0.03);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .qr-code-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      background: #FFFFFF;
+      padding: 6px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+    }
+
+    .cert-qr-img {
+      width: 88px;
+      height: 88px;
+      display: block;
+    }
+
+    .qr-caption {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8px;
+      font-weight: 800;
+      color: #030712;
+      letter-spacing: 0.5px;
+    }
+
+    .seal-text {
+      text-align: left;
+      flex: 1;
+    }
+
+    .seal-badge-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .seal-stamp {
+      border: 1.5px solid #22c55e;
+      color: #22c55e;
+      background: rgba(34, 197, 94, 0.1);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .seal-chain-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      color: var(--cyan);
+      font-weight: bold;
+    }
+
+    .seal-description {
+      font-size: 11px;
+      line-height: 1.5;
+      color: #cbd5e1;
+    }
+
+    .signature-block {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      padding-top: 18px;
+      margin-bottom: 24px;
+      gap: 16px;
+    }
+
+    .sig-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      text-align: left;
+    }
+
+    .sig-col.right-align {
+      text-align: right;
+      align-items: flex-end;
+    }
+
+    .sig-label {
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .sig-handwritten {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+    }
+
+    .sig-address code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--cyan);
+      background: rgba(0, 255, 204, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .sig-status-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: #00FFCC;
+      background: rgba(0, 255, 204, 0.1);
+      border: 1px solid rgba(0, 255, 204, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .sig-chain {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .cert-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-print {
+      background: linear-gradient(90deg, #00FFCC, #0099FF);
+      color: #040612;
+      border: none;
+    }
+    .btn-print:active { transform: scale(0.98); }
+
+    .btn-explorer {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #FFFFFF;
+    }
+    .btn-explorer:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    @media print {
+      body { background: #ffffff !important; color: #000 !important; padding: 0; }
+      .cert-page-wrapper { padding: 0; }
+      .cert-frame { border: 2px solid #000 !important; box-shadow: none !important; background: #fff !important; max-width: 100% !important; }
+      .cert-title, .sig-handwritten { color: #000 !important; }
+      .cert-item-value { background: #f8fafc !important; color: #000 !important; border: 1px solid #cbd5e1 !important; }
+      .cert-actions, [data-include="nav"], [data-include="footer"] { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Include -->
+  <div data-include="nav"></div>
+
+  <div class="cert-page-wrapper">
+    <div class="cert-frame">
+      <div class="cert-watermark">SOVEREIGN</div>
+
+      <div class="cert-header">
+        <div class="govt-badge">🏛️ CONSEIL DE LA GENÈSE • L1 LUXA-1</div>
+        <h1 class="cert-title">ATTESTATION OF AUTHENTICITY</h1>
+        <div class="cert-sub">Cryptographic Proof of Sovereign Ownership &amp; Immutability</div>
+      </div>
+
+      <div class="doc-tracking-row">
+        <span>CONSTITUTIONAL TRACKING ID:</span>
+        <span id="certDocId">LUXA-DOC-GENESIS-XXXXXX</span>
+      </div>
+
+      <div class="cert-grid">
+        <!-- SOVEREIGN ASSET NAME -->
+        <div class="cert-item">
+          <div class="cert-item-label"><span>🛡️</span> Sovereign Asset Name</div>
+          <div class="cert-item-value highlight-gold" id="certAssetName">Genesis Progenitor — Citizen Zero</div>
+        </div>
+
+        <!-- ON-CHAIN REGISTRY SPECIFICATIONS -->
+        <div class="cert-item">
+          <div class="cert-item-label"><span>📜</span> On-Chain Registry Specifications</div>
+          <div class="cert-item-value" id="certRegistrySpecs">Class: luxa-relics • Token ID: #0 • Standard: Cosmos SDK x/nft</div>
+        </div>
+
+        <!-- AUTHENTICATED VAULT HOLDER -->
+        <div class="cert-item">
+          <div class="cert-item-label"><span>👛</span> Authenticated Sovereign Vault Holder</div>
+          <div class="cert-item-value highlight-cyan" id="certHolderAddress">luxa1...</div>
+        </div>
+
+        <!-- LEDGER ANCHOR REFERENCE -->
+        <div class="cert-item">
+          <div class="cert-item-label"><span>🔗</span> Ledger Anchor Reference (Tx / Origin Hash)</div>
+          <div class="cert-item-value" id="certTxHash">GENESIS_BLOCK_ANCHOR_LUXA_RELIC_0</div>
+        </div>
+      </div>
+
+      <!-- DYNAMIC QR VERIFICATION & NOTARIAL SEAL -->
+      <div class="cert-seal-box">
+        <div class="qr-code-wrapper">
+          <img id="certQrCode" src="" alt="Cryptographic Ledger QR" class="cert-qr-img">
+          <span class="qr-caption">SCAN TO AUDIT</span>
+        </div>
+
+        <div class="seal-text">
+          <div class="seal-badge-row">
+            <span class="seal-stamp">★ CRYPTOGRAPHICALLY SECURED ★</span>
+            <span class="seal-chain-id">luxa-1 • CometBFT</span>
+          </div>
+          <p class="seal-description">
+            Scan the QR matrix with any camera to verify state machine records on-chain. Ratified under the Sovereign Codex of <strong>Citizen Zero (#0)</strong> for the 5-Seat <em>Conseil de la Genèse</em> (Multisig 3-of-5).
+          </p>
+        </div>
+      </div>
+
+      <!-- SOVEREIGN REGENCY SIGNATURE -->
+      <div class="signature-block">
+        <div class="sig-col">
+          <span class="sig-label">SOVEREIGN ARCHITECT &amp; ROOT VALIDATOR</span>
+          <div class="sig-handwritten">Yassine Ouaadil (واعديل ياسين)</div>
+          <div class="sig-address"><code>luxa1z4jpt568npsvpass9f93m0v3edn9f6h8nksfaz</code></div>
+        </div>
+        <div class="sig-col right-align">
+          <span class="sig-label">RATIFICATION STATUS</span>
+          <div class="sig-status-badge">RATIFIED CONSTITUTION (luxa-1)</div>
+          <div class="sig-chain">Anchored: October 1, 2026</div>
+        </div>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="cert-actions">
+        <button type="button" class="btn btn-print" onclick="window.print()">
+          <i class="fas fa-print"></i> <span>Print / Save PDF</span>
+        </button>
+        <a href="#" class="btn btn-explorer" id="btnVerifyExplorer" target="_blank" rel="noopener noreferrer">
+          <i class="fas fa-search"></i> <span>Verify on Ledger ↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Include -->
+  <div data-include="footer"></div>
+
+  <script src="js/include.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    // Official Genesis Relics mapping aligned with White Paper v3.0
+    const GENESIS_RELICS = {
+      '0': { name: 'Genesis Progenitor — Citizen Zero', role: 'Root Validator & Sovereign Architect (Origin 1/1)' },
+      '1': { name: 'Chrono-Key Master', role: 'Minister of Settlement & Regulations (Conseil Multisig 3/5)' },
+      '2': { name: 'Cyber-Shadow Node', role: 'Minister of Cryptographic Security (Conseil Multisig 3/5)' },
+      '3': { name: 'Grandmaster of Servers', role: 'Minister of Infrastructure & Nodes (Conseil Multisig 3/5)' },
+      '4': { name: 'Neon Data Valkyrie', role: 'Minister of Liquidity & AMM Stability (Conseil Multisig 3/5)' }
+    };
+
+    // Parse URL query parameters
+    const params = new URLSearchParams(window.location.search);
+    const rawId = String(params.get('id') || '0').replace(/[^0-9]/g, '');
+    const cleanId = (parseInt(rawId, 10) >= 0 && parseInt(rawId, 10) <= 4) ? rawId : '0';
+    
+    const relicMeta = GENESIS_RELICS[cleanId] || GENESIS_RELICS['0'];
+    const assetTitle = params.get('name') || relicMeta.name;
+
+    // Constitutional custody distribution
+    const defaultHolder = cleanId === '0' 
+      ? 'luxa1z4jpt568npsvpass9f93m0v3edn9f6h8nksfaz'
+      : 'luxa1eg6d8axpw2t3en2g8t0g5qtj4wm2fh3q4tmkue';
+
+    const holder = (params.get('holder') && params.get('holder').startsWith('luxa1')) 
+      ? params.get('holder') 
+      : defaultHolder;
+
+    const tx = params.get('tx') || `0x7F4A8B9C0D1E2F3A4B5C6D7E8F9A0B1C2D3E4F5A6B7C8D9E0F1A2B3C4D5E6F7A`;
+
+    // Populate DOM elements
+    document.getElementById('certAssetName').textContent = assetTitle;
+    document.getElementById('certRegistrySpecs').textContent = `Class: luxa-relics • Token ID: #${cleanId} • Role: ${relicMeta.role}`;
+    document.getElementById('certHolderAddress').textContent = holder;
+    document.getElementById('certTxHash').textContent = tx;
+
+    // Generate unique constitutional tracking identifier
+    const trackingHash = (tx.length > 12) ? tx.slice(-8).toUpperCase() : `GEN-${cleanId}-2026`;
+    document.getElementById('certDocId').textContent = `LUXA-ATTESTATION-#${cleanId}-${trackingHash}`;
+
+    // Dynamic verification link
+    const verificationUrl = `https://luxaecosystem.xyz/explorer.html?q=${encodeURIComponent(holder)}`;
+
+    // Generate real-time QR matrix code
+    const qrElement = document.getElementById('certQrCode');
+    if (qrElement) {
+      qrElement.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(verificationUrl)}`;
+    }
+
+    // Bind explorer action button
+    const btnExplorer = document.getElementById('btnVerifyExplorer');
+    if (btnExplorer) {
+      btnExplorer.href = verificationUrl;
+    }
+  </script>
+</body>
+</html>
