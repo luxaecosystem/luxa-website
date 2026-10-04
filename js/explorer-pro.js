@@ -186,7 +186,13 @@
 
       for (const attr of attrs) {
         const k = smartDecode(attr.key);
-        const v = smartDecode(attr.value);
+        let v = smartDecode(attr.value);
+        if (v.startsWith('"') && v.endsWith('"')) {
+          try {
+            const parsedValue = JSON.parse(v);
+            if (typeof parsedValue === 'string') v = parsedValue;
+          } catch (_) {}
+        }
 
         if (['sender', 'spender', 'from_address'].includes(k) && isCleanAddress(v)) sender = v;
         if (['recipient', 'receiver', 'to_address'].includes(k) && isCleanAddress(v)) recipient = v;
