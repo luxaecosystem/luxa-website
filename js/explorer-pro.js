@@ -283,15 +283,22 @@
 
     if (isNft) {
       amountDisplay = `<strong style="color:${accent};">1x Ministerial Seal (${escapeHtml(meta.name)})</strong>`;
-      const marquee = (` ⚡ CONSEIL SEAL: #${data.nftId} • ${meta.name.toUpperCase()} • LUXA-1 ON-CHAIN ⚡ `).repeat(3);
+      const currentHolder = (data.recipient && data.recipient !== 'luxa1...') ? data.recipient : data.sender;
+      const marquee = (` ⚡ HOLDER: ${currentHolder} • SEAL: #${data.nftId} • ${meta.name.toUpperCase()} • LUXA-1 ON-CHAIN ⚡ `).repeat(3);
 
       visual = `
+        <style>
+          @keyframes tickerRun {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-33.333333%); }
+          }
+        </style>
         <div class="highway-box" style="border:1.5px solid ${accent}; max-width:320px; margin:14px auto 18px; border-radius:16px; overflow:hidden; background:#020617; box-shadow:0 8px 25px ${accent}25;">
           <div style="width:100%; aspect-ratio:4/5; overflow:hidden; background:#000;">
             <img src="${escapeHtml(meta.image)}" alt="${escapeHtml(meta.name)}" style="width:100%; height:100%; object-fit:cover; object-position:top center; display:block;" onerror="this.src='https://luxaecosystem.alwaysdata.net/assets/128.png';">
           </div>
-          <div class="sovereign-highway-ticker" style="background:#020617; padding:7px 0; border-top:1px solid ${accent};">
-            <div class="highway-track" style="color:${accent}; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; white-space:nowrap; animation:tickerRun 16s linear infinite;">
+          <div class="sovereign-highway-ticker" style="background:#020617; padding:7px 0; border-top:1px solid ${accent}; overflow:hidden; white-space:nowrap; width:100%;">
+            <div class="highway-track" style="display:inline-block; color:${accent}; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; white-space:nowrap; will-change:transform; animation:tickerRun 14s linear infinite;">
               ${escapeHtml(marquee)}
             </div>
           </div>
