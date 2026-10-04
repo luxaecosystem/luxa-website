@@ -283,8 +283,7 @@
 
     if (isNft) {
       amountDisplay = `<strong style="color:${accent};">1x Ministerial Seal (${escapeHtml(meta.name)})</strong>`;
-      const currentHolder = (data.recipient && data.recipient !== 'luxa1...') ? data.recipient : data.sender;
-      const marquee = (` ⚡ HOLDER: ${currentHolder} • SEAL: #${data.nftId} • ${meta.name.toUpperCase()} • LUXA-1 ON-CHAIN ⚡ `).repeat(3);
+      const marquee = (` ⚡ HOLDER: ${data.recipient} • SEAL: #${data.nftId} • ${meta.name.toUpperCase()} • LUXA-1 ON-CHAIN ⚡ `).repeat(3);
 
       visual = `
         <style>
