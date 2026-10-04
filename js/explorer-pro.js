@@ -164,11 +164,12 @@
   }
 
   // Decora un indirizzo utilizzando il registro centrale di wallet-labels.js
-  function renderDecoratedAddress(addr) {
+  function renderDecoratedAddress(addr, truncate = true) {
     if (window.luxaRenderAddress && typeof window.luxaRenderAddress === 'function') {
-      return window.luxaRenderAddress(addr, true);
+      return window.luxaRenderAddress(addr, truncate);
     }
-    return `<span class="mono">${escapeHtml(shorten(addr, 10, 6))}</span>`;
+    const displayAddress = truncate ? shorten(addr, 10, 6) : String(addr || '');
+    return `<span class="mono">${escapeHtml(displayAddress)}</span>`;
   }
 
   function parseCosmosEvents(events, rawTxB64) {
@@ -349,7 +350,7 @@
           <div class="details-row"><span class="details-label">Transfer Asset:</span><span class="details-val">${amountDisplay}</span></div>
           <div class="details-row"><span class="details-label">Network Fee:</span><span class="details-val mono">${escapeHtml(data.fee)}</span></div>
           <div class="details-row"><span class="details-label">Sender (From):</span><span class="details-val click-hash" onclick="window.LuxaExplorer.inspect('${data.sender}')">${renderDecoratedAddress(data.sender)}</span></div>
-          <div class="details-row"><span class="details-label">Recipient (To):</span><span class="details-val click-hash" onclick="window.LuxaExplorer.inspect('${data.recipient}')">${renderDecoratedAddress(data.recipient)}</span></div>
+          <div class="details-row"><span class="details-label">Recipient (To):</span><span class="details-val click-hash" onclick="window.LuxaExplorer.inspect('${data.recipient}')">${renderDecoratedAddress(data.recipient, false)}</span></div>
           <div class="details-row"><span class="details-label">Gas Consumed:</span><span class="details-val mono">${escapeHtml(data.gasUsed)} / ${escapeHtml(data.gasWanted)}</span></div>
         </div>
         ${attributesHtml}
